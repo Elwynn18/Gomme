@@ -4,7 +4,14 @@ from collections.abc import Collection, Mapping
 from datetime import date
 from typing import Annotated, Self
 
-from pydantic import BaseModel, ConfigDict, StringConstraints, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 from gomme.brokers.fields import ProfileField
 from gomme.brokers.schema import CountryCode, EmailAddress
@@ -77,6 +84,9 @@ PhoneNumber = Annotated[
 ]
 
 
+MAX_OTHERS = 5  # other emails, other phones, previous addresses: at most this many each
+
+
 class MissingProfileDataError(ValueError):
     """The profile lacks a field a broker needs."""
 
@@ -123,6 +133,11 @@ class Profile(_StrictModel):
     postal_address: PostalAddress | None = None
     birth_date: date | None = None
     phone: PhoneNumber | None = None
+    # Other identifiers the user used, whose data should be erased too. Each one only goes
+    # to the brokers that identify people by that kind of field (minimisation).
+    other_emails: Annotated[tuple[EmailAddress, ...], Field(max_length=MAX_OTHERS)] = ()
+    other_phones: Annotated[tuple[PhoneNumber, ...], Field(max_length=MAX_OTHERS)] = ()
+    previous_addresses: Annotated[tuple[PostalAddress, ...], Field(max_length=MAX_OTHERS)] = ()
 
     @field_validator("birth_date")
     @classmethod
@@ -163,6 +178,12 @@ class Profile(_StrictModel):
             summary["date de naissance"] = "**/**/****"
         if self.phone:
             summary["téléphone"] = mask_phone(self.phone)
+        if self.other_emails:
+            summary["autres emails"] = ", ".join(mask_email(e) for e in self.other_emails)
+        if self.other_phones:
+            summary["autres téléphones"] = ", ".join(mask_phone(p) for p in self.other_phones)
+        if self.previous_addresses:
+            summary["anciennes adresses"] = str(len(self.previous_addresses))
         return summary
 
 

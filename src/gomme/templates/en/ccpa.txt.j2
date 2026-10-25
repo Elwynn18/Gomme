@@ -16,6 +16,10 @@ To find me in your records:
 {%- for label, value in identity %}
 - {{ label }}: {{ value }}
 {%- endfor %}
+{%- if covers_others %}
+
+This request covers all data associated with each of these items, including the previous details listed above.
+{%- endif %}
 
 This information may only be used to handle this request. I am not enclosing any identity document; please let me know if you need anything else to verify this request.
 {%- if california_resident %}

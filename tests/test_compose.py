@@ -141,3 +141,42 @@ def test_ccpa_request_claims_residency_only_for_californians(profile: Profile) -
     assert "California resident" not in other.replace("California residents", "")
     assert "45 calendar days" not in other
     assert "§1798.105" in other
+
+
+def with_others(profile: Profile) -> Profile:
+    return profile.model_copy(
+        update={
+            "other_emails": ("ancienne@example.org",),
+            "other_phones": ("06 00 00 00 01",),
+            "previous_addresses": (
+                PostalAddress(
+                    street="2 avenue de l'Ancien",
+                    postal_code="00001",
+                    city="Autrefois",
+                    country="FR",
+                ),
+            ),
+        }
+    )
+
+
+def test_other_identifiers_are_covered(profile: Profile, french_broker: Broker) -> None:
+    text = compose(french_broker, with_others(profile))
+
+    assert "- Autres adresses email utilisées : ancienne@example.org" in text.body
+    assert "- Anciennes adresses postales : 2 avenue de l'Ancien, 00001 Autrefois, FR" in text.body
+    assert "y compris mes anciennes coordonnées" in text.body
+    # The broker does not identify people by phone: the old number stays private.
+    assert "06 00 00 00 01" not in text.body
+
+
+def test_other_identifiers_follow_the_required_fields(profile: Profile) -> None:
+    text = compose(broker(), with_others(profile))  # full_name and email only
+
+    assert "Other email addresses used: ancienne@example.org" in text.body
+    assert "Autrefois" not in text.body
+    assert "previous details" in text.body
+
+
+def test_no_mention_without_other_identifiers(profile: Profile, french_broker: Broker) -> None:
+    assert "anciennes coordonnées" not in compose(french_broker, profile).body

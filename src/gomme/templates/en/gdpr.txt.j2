@@ -20,6 +20,10 @@ To find me in your records:
 {%- for label, value in identity %}
 - {{ label }}: {{ value }}
 {%- endfor %}
+{%- if covers_others %}
+
+This request covers all data associated with each of these items, including the previous details listed above.
+{%- endif %}
 
 This information may only be used to handle this request. It is sufficient to identify me: I am not enclosing any identity document. Should you have reasonable doubts about my identity, Article 12(6) allows you to request additional information limited to what is necessary.
 

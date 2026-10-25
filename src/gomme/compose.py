@@ -70,6 +70,21 @@ LABELS = {
 }
 
 
+# Labels of the other identifiers the user declared (old emails, phones, addresses).
+OTHER_LABELS = {
+    "fr": {
+        ProfileField.EMAIL: "Autres adresses email utilisées",
+        ProfileField.POSTAL_ADDRESS: "Anciennes adresses postales",
+        ProfileField.PHONE: "Autres numéros de téléphone",
+    },
+    "en": {
+        ProfileField.EMAIL: "Other email addresses used",
+        ProfileField.POSTAL_ADDRESS: "Previous postal addresses",
+        ProfileField.PHONE: "Other phone numbers",
+    },
+}
+
+
 class NoApplicableLawError(ValueError):
     pass
 
@@ -125,7 +140,28 @@ def identity_lines(
                 assert profile.phone is not None  # noqa: S101 - checked above
                 value = profile.phone
         lines.append((labels[field], value))
+        others = other_identifiers(profile, field)
+        if others:
+            lines.append((OTHER_LABELS[language][field], " ; ".join(others)))
     return lines
+
+
+def other_identifiers(profile: Profile, field: ProfileField) -> tuple[str, ...]:
+    """The user's other values of `field` (old emails, phones, addresses), as text."""
+    match field:
+        case ProfileField.EMAIL:
+            return profile.other_emails
+        case ProfileField.PHONE:
+            return profile.other_phones
+        case ProfileField.POSTAL_ADDRESS:
+            return tuple(address.one_line() for address in profile.previous_addresses)
+        case _:
+            return ()
+
+
+def covers_others(profile: Profile, fields: Sequence[ProfileField]) -> bool:
+    """Whether the request lists other identifiers than the current ones."""
+    return any(other_identifiers(profile, field) for field in fields)
 
 
 @cache
@@ -157,6 +193,7 @@ def compose(
             broker_name=broker.name,
             full_name=profile.full_name,
             identity=identity_lines(profile, broker.required_fields, language),
+            covers_others=covers_others(profile, broker.required_fields),
             access=access,
             notify_recipients=notify_recipients,
             authority_fr=authority_fr,
