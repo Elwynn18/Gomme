@@ -299,8 +299,16 @@ def init(
         "country": _ask_required("Pays de résidence (code ISO, ex. FR)", "FR").upper(),
         "language": _ask_required("Langue de l'interface (fr ou en)", "fr"),
     }
-    out.print("Certains brokers demandent votre adresse pour vous retrouver.")
-    if typer.confirm("Renseigner une adresse postale ?", default=True):
+    out.print(
+        "Pour supprimer vos données, un broker doit d'abord retrouver votre fiche dans ses "
+        "fichiers. Les informations qui suivent servent uniquement à cela : chacune n'est "
+        "envoyée qu'aux brokers qui en ont besoin pour vous identifier."
+    )
+    if typer.confirm(
+        "Renseigner votre adresse postale ? (sans elle, les brokers qui en ont besoin "
+        "pour vous retrouver seront écartés)",
+        default=True,
+    ):
         country = str(profile_data["country"])
         address: dict[str, object] = {
             "street": _ask_required("  Rue"),
@@ -311,10 +319,16 @@ def init(
         if country == "US":
             address["state"] = _ask_required("  État (code, ex. CA)").upper()
         profile_data["postal_address"] = address
-    birth = _ask("Date de naissance (AAAA-MM-JJ), demandée par quelques brokers", optional=True)
+    birth = _ask(
+        "Date de naissance (AAAA-MM-JJ), utile à quelques brokers pour vous distinguer "
+        "d'un homonyme",
+        optional=True,
+    )
     if birth:
         profile_data["birth_date"] = birth
-    phone = _ask("Téléphone, demandé par quelques brokers", optional=True)
+    phone = _ask(
+        "Téléphone, utile aux brokers qui vous ont enregistré par ce numéro", optional=True
+    )
     if phone:
         profile_data["phone"] = phone
 
