@@ -12,7 +12,12 @@ channels:
   - type: postal
     address: "CRIF GmbH, Victor-Gollancz-Str. 5, 76137 Karlsruhe, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
+# TODO(verify): https://www.crif.de/fuer-privatpersonen/selbstauskunft-fuer-privatpersonen/ indique « Die notwendigen Angaben sind Ihr vollständiger Name, Ihre aktuelle Adresse, Ihr Geburtsdatum und die Gültigkeit des Ausweisdokumentes » : date de naissance (birth_date) absente de required_fields.
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La page d'auto-consultation compte parmi les « notwendigen Angaben » (informations nécessaires) « Ihr vollständiger Name » (votre nom complet) (https://www.crif.de/fuer-privatpersonen/selbstauskunft-fuer-privatpersonen/)."
+  email: "Estimation : pour écrire à datenschutz.de@crif.com et recevoir la réponse ; la page d'auto-consultation ne demande pas d'email."
+  postal_address: "La page demande pour toute auto-consultation « Ihre aktuellen Adressdaten » (votre adresse actuelle) (https://www.crif.de/fuer-privatpersonen/selbstauskunft-fuer-privatpersonen/)."
 requires_id: false
 language: de
 source: manual

@@ -13,6 +13,9 @@ channels:
     address: "Infolegale, 20 bd Eugène Deruelle, CS 83755, 69432 Lyon Cedex 03"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique ne dit pas quoi fournir ; la base contient « des données professionnelles sur les entreprises », dont celles de leurs dirigeants (https://www.infolegale.fr/donnees-personnelles)."
+  email: "Les droits « doivent être exercés auprès du délégué à la Protection des Données Personnelles via l'adresse mail suivante : dpo@infolegale.fr » ; l'email sert aussi à recevoir la réponse (https://www.infolegale.fr/donnees-personnelles)."
 requires_id: false
 language: fr
 source: manual

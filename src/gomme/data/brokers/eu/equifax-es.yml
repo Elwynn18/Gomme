@@ -14,6 +14,10 @@ channels:
     address: "Equifax Ibérica, Paseo de la Castellana 259D, planta 26 – Torre Emperador, 28046 Madrid, España"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : nécessaire pour toute demande ; la page demande seulement d'agir « acreditando su identidad » (en justifiant son identité) sans lister les informations (https://soluciones.equifax.es/legal/)."
+  email: "Estimation : pour l'inscription sur le portail consommateurs et pour recevoir la réponse ; le portail (https://www2.equifax.es/consumidores/) était illisible sans JavaScript le 2026-10-25."
+  postal_address: "Estimation : le fichier de crédit est classé par identité et adresse, et la demande peut se faire par courrier ; la page ne liste pas les informations à fournir (https://soluciones.equifax.es/legal/)."
 requires_id: true
 language: es
 source: manual

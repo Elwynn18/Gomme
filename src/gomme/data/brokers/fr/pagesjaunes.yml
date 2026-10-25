@@ -16,6 +16,10 @@ channels:
     address: "Solocal Group, DPO, 204 rond-point du Pont de Sèvres, 92649 Boulogne-Billancourt Cedex"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La page cite « Nom et prénom » parmi les données traitées pour la gestion des demandes d'exercice des droits (https://www.pagesjaunes.fr/infoslegales/vieprivee-protection/)."
+  email: "La page cite « E-mail » parmi les données traitées pour la gestion des demandes d'exercice des droits (https://www.pagesjaunes.fr/infoslegales/vieprivee-protection/)."
+  postal_address: "La page cite « Coordonnées postale et/ou téléphone » pour la gestion des demandes ; l'annuaire classe les fiches par adresse (https://www.pagesjaunes.fr/infoslegales/vieprivee-protection/)."
 requires_id: false
 language: fr
 source: manual

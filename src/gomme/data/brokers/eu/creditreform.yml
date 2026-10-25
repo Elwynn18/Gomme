@@ -13,6 +13,10 @@ channels:
     address: "Verband der Vereine Creditreform e.V., Hammfelddamm 13, 41460 Neuss, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : nécessaire pour toute demande ; la page de confidentialité ne précise pas les informations à fournir."
+  email: "Estimation : pour écrire au délégué à la protection des données et recevoir la réponse ; la page ne précise pas les informations à fournir."
+  postal_address: "Estimation : les informations de solvabilité et les fichiers de marketing direct sont classés par nom et adresse ; la page ne précise pas les informations à fournir."
 requires_id: false
 language: de
 source: manual

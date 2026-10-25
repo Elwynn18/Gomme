@@ -12,6 +12,10 @@ channels:
     address: "Annu - Philippe, 16 rue de la ville l'évêque, 75008 Paris"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La page demande d'indiquer « vos nom, prénom, adresse et si possible votre numéro de client » (https://www.annu.com/html/mentions.html)."
+  email: "Estimation : la page accepte les demandes « par E-mail » ; l'email sert à vous identifier et à recevoir la réponse (https://www.annu.com/html/mentions.html)."
+  postal_address: "La page demande « vos nom, prénom, adresse » pour traiter la demande (https://www.annu.com/html/mentions.html)."
 requires_id: false
 language: fr
 source: manual

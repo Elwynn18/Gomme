@@ -12,6 +12,9 @@ channels:
     address: "ELLISPHERE – Relation Client, Immeuble Alpierre, 74 rue Gorge de Loup, 69009 Lyon"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique ne dit pas quoi fournir ; la base recense les « Dirigeants statutaires (identité, fonction, données de contact) » (https://www.ellisphere.com/uploads/documents/rgpd/Politique_RGPD_Ellisphere.pdf)."
+  email: "Pour exercer vos droits, la politique invite à « contacter notre service relation client par e-mail » ; l'email sert aussi à recevoir la réponse (https://www.ellisphere.com/uploads/documents/rgpd/Politique_RGPD_Ellisphere.pdf)."
 requires_id: false
 language: fr
 source: manual

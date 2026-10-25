@@ -12,6 +12,9 @@ channels:
     address: "CCM Benchmark Group - « Données personnelles » Copains d'avant, 21 rue Chauchat, CS 61209, 75440 Paris Cedex 09"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique ne liste pas les informations à fournir ; la demande doit être « obligatoirement accompagnée d'une photocopie d'une pièce d'identité conforme et valide », dont le nom doit correspondre (https://www.ccmbenchmark.com/donnees-personnelles?origin=copainsdavant.linternaute.com)."
+  email: "Estimation : sert à retrouver un compte Copains d'avant, la politique citant « votre adresse de courriel » parmi les données d'inscription, et à recevoir la réponse (https://www.ccmbenchmark.com/donnees-personnelles?origin=copainsdavant.linternaute.com)."
 requires_id: true
 language: fr
 source: manual

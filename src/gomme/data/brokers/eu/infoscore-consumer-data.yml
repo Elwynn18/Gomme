@@ -12,7 +12,12 @@ channels:
   - type: postal
     address: "infoscore Consumer Data GmbH, Abteilung Datenschutz, Rheinstraße 99, 76532 Baden-Baden, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
+# TODO(verify): https://www.experian.de/icd-infoblatt demande « Name (ggf. Geburtsname), Vorname(n), Geburtsdatum, Aktuelle Anschrift (Straße, Hausnummer, Postleitzahl und Ort) » : date de naissance (birth_date) absente de required_fields.
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La fiche demande « Name (ggf. Geburtsname), Vorname(n) » (nom, nom de naissance le cas échéant, prénoms) « Um einen Missbrauch des Auskunftsrechts durch Dritte zu vermeiden » (pour éviter qu'un tiers abuse du droit d'accès) (https://www.experian.de/icd-infoblatt)."
+  email: "Estimation : pour écrire à ICD-Datenschutz@experian.com et recevoir la réponse ; la fiche ne demande pas d'email."
+  postal_address: "La fiche demande l'« Aktuelle Anschrift (Straße, Hausnummer, Postleitzahl und Ort) » (adresse actuelle complète), et le cas échéant les adresses des cinq dernières années (https://www.experian.de/icd-infoblatt)."
 requires_id: false
 language: de
 source: manual

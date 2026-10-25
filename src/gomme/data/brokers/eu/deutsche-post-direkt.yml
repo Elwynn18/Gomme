@@ -13,6 +13,10 @@ channels:
     address: "Deutsche Post Direkt GmbH, Junkersring 57, 53844 Troisdorf, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : le document ne dit pas quoi fournir, mais liste « Anrede, Vorname, Name » (civilité, prénom, nom) parmi les données des adresses de consommateurs (https://www.deutschepost.de/dam/jcr:d2c20ba5-1b40-45c3-ab68-5ab2373b4119/dp-ddp-informationen-zur-dv-fuer-av-und-adressabgleich.pdf)."
+  email: "Estimation : pour écrire à datenschutz@postdirekt.de et recevoir la réponse ; le document ne précise pas les informations à fournir."
+  postal_address: "Le document précise : « Ein Werbewiderspruch lässt sich nur durch Speicherung Ihrer Adressdaten in der Sperrliste umsetzen » (l'opposition passe par l'inscription de votre adresse sur une liste de blocage) (https://www.deutschepost.de/dam/jcr:d2c20ba5-1b40-45c3-ab68-5ab2373b4119/dp-ddp-informationen-zur-dv-fuer-av-und-adressabgleich.pdf)."
 requires_id: false
 language: de
 source: manual

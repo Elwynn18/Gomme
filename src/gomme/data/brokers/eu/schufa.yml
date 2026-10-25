@@ -12,7 +12,12 @@ channels:
   - type: postal
     address: "SCHUFA Holding AG, Privatkunden ServiceCenter, Postfach 10 34 41, 50474 Köln, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
+# TODO(verify): pour s'identifier par PIN-Brief, https://app.schufa.de/assets/260203_Plattform%20AGB%20und%20Leistungsbeschreibung_v1.1.pdf demande « Ihren Namen, Ihre Adresse sowie Ihr Geburtsdatum » : date de naissance (birth_date) absente de required_fields. Formulaire de copie des données (https://www.meineschufa.de/dakobs/) illisible sans JavaScript le 2026-10-25.
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Pour s'identifier par courrier (PIN-Brief), les conditions du compte SCHUFA indiquent « geben Sie Ihren Namen, Ihre Adresse sowie Ihr Geburtsdatum ein » (saisissez votre nom, votre adresse et votre date de naissance) (https://app.schufa.de/assets/260203_Plattform%20AGB%20und%20Leistungsbeschreibung_v1.1.pdf)."
+  email: "Estimation : pour écrire à datenschutz@schufa.de et recevoir la réponse ; la page de confidentialité ne précise pas les informations à fournir."
+  postal_address: "Les conditions du compte SCHUFA demandent « Ihre Adresse » et, « In einzelnen Fällen » (dans certains cas), une « Voradresse » (adresse précédente) (https://app.schufa.de/assets/260203_Plattform%20AGB%20und%20Leistungsbeschreibung_v1.1.pdf)."
 requires_id: false
 language: de
 source: manual

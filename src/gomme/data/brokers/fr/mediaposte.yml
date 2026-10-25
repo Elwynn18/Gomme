@@ -17,6 +17,10 @@ channels:
     address: "MEDIAPOSTE, Monsieur le DPO Délégué, 111 boulevard Brune, Case postale D432, 75618 Paris Cedex 14"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La charte demande d'écrire « en précisant votre nom, prénom et adresse » (https://www.mediaposte.fr/charte-dinformation/)."
+  email: "Le formulaire d'exercice des droits rend obligatoire « Votre e-mail (*) » (https://donneespersonnelles.mdpe.fr/)."
+  postal_address: "La charte demande d'écrire « en précisant votre nom, prénom et adresse » : c'est la clé de ses fichiers de prospection postale (https://www.mediaposte.fr/charte-dinformation/)."
 requires_id: false
 language: fr
 source: manual

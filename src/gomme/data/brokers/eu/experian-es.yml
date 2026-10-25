@@ -13,6 +13,10 @@ channels:
     address: "Experian Bureau de Crédito, S.A., Apartado de Correos 1188, 28108 Alcobendas (Madrid), España"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : nécessaire pour toute demande ; la page du fichier exige seulement de « acreditar previamente su identidad » (justifier d'abord son identité) sans lister les informations (https://www.experian.es/legal/salir-fichero)."
+  email: "La politique de confidentialité indique : « Para ejercer cualquiera de tus derechos escribe a este correo electrónico » (pour exercer vos droits, écrivez à cette adresse email) (https://www.experian.es/politica-de-privacidad)."
+  postal_address: "Estimation : le fichier de crédit est classé par identité et adresse, et la demande peut se faire par courrier ; les pages ne listent pas les informations à fournir (https://www.experian.es/legal/salir-fichero)."
 requires_id: true
 language: es
 source: manual

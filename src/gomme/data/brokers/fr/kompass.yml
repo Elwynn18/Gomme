@@ -13,6 +13,9 @@ channels:
     address: "Kompass, service DPO, 6-10 rue Troyon, 92310 Sèvres"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : annuaire B2B classé par entreprise et par dirigeant, le nom sert à retrouver votre fiche ; la page de la politique était inaccessible le 2026-10-25 (blocage anti-robot)."
+  email: "Estimation : pour vous identifier, retrouver les adresses email déduites à votre nom et recevoir la réponse ; la page de la politique était inaccessible le 2026-10-25 (blocage anti-robot)."
 requires_id: false
 language: fr
 source: manual

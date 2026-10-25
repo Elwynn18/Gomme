@@ -14,7 +14,12 @@ channels:
   - type: postal
     address: "DTM Deutsche Tele Medien GmbH, Wiesenhüttenstraße 18, 60329 Frankfurt am Main, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
+# TODO(verify): le formulaire https://www.dtme.de/ihr-eintrag/privat-eintrag-loeschen/ rend obligatoire le numéro de l'inscription (« Telefon* », « Mobil* » ou « Fax* ») : téléphone (phone) absent de required_fields ; l'adresse (« Straße », « PLZ », « Ort ») y est facultative.
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Le formulaire de suppression d'une inscription privée rend obligatoire le champ « Nachname* » (nom) (https://www.dtme.de/ihr-eintrag/privat-eintrag-loeschen/)."
+  email: "Le formulaire rend obligatoire « E-Mail Adresse* » dans les « Kontaktdaten für Rückfragen sowie zur Verifizierung der Daten » (coordonnées pour les questions et la vérification) (https://www.dtme.de/ihr-eintrag/privat-eintrag-loeschen/)."
+  postal_address: "Estimation : les champs « Straße », « PLZ » et « Ort » du formulaire sont facultatifs ; l'adresse aide à retrouver la bonne inscription parmi les homonymes (https://www.dtme.de/ihr-eintrag/privat-eintrag-loeschen/)."
 requires_id: false
 language: de
 source: manual

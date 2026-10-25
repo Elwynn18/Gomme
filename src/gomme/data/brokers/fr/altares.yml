@@ -11,6 +11,9 @@ channels:
     address: dpo@altares.com
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique ne dit pas quoi fournir ; elle traite notamment « les prénoms, les noms et, le cas échéant, les dates de naissance des dirigeants statutaires » (https://www.altares.com/fr/mentions-legales-cgu-altares/donnees-personnelles/)."
+  email: "Les droits « s'exercent par courrier électronique » auprès du DPO, « sur présentation d'un justificatif d'identité » ; l'email sert aussi à recevoir la réponse (https://www.altares.com/fr/mentions-legales-cgu-altares/donnees-personnelles/)."
 requires_id: true
 language: fr
 source: manual

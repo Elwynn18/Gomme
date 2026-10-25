@@ -14,6 +14,10 @@ channels:
     address: "AZ Direct GmbH, Data Protection Officer, Carl-Bertelsmann-Str. 161s, 33311 Gütersloh, Deutschland"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La FAQ demande « Surname (if applicable, maiden name), first name(s) » (nom, nom de naissance le cas échéant, prénoms) pour une demande d'information (https://www.az-direct.com/site/en/links/data-protection-faq)."
+  email: "La FAQ invite à écrire à datenschutz(at)az-direct.com mais répond par courrier, « as we cannot clearly establish your identity when you send us an inquiry by email » (l'email seul ne suffit pas à vous identifier) (https://www.az-direct.com/site/en/links/data-protection-faq)."
+  postal_address: "La FAQ demande « your full postal address » (votre adresse postale complète) : « Only in this way can we clearly assign data to you and rule out personal mix-ups » (seul moyen de vous attribuer les données sans confusion entre homonymes) (https://www.az-direct.com/site/en/links/data-protection-faq)."
 requires_id: false
 language: de
 source: manual

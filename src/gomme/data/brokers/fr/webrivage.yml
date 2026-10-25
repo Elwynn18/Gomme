@@ -12,6 +12,9 @@ channels:
     address: "DPO Consulting Sud-Est (DPO de WebRivage), 2 rue David Girin, 69002 Lyon"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "La base contient votre « Identité : civilité, nom, prénom, adresse, numéro de téléphone, adresse électronique » (https://webrivage.com/policy/)."
+  email: "L'« adresse électronique » fait partie des données d'identité de la base, issues des jeux-concours (https://webrivage.com/policy/)."
 requires_id: true
 language: fr
 source: manual

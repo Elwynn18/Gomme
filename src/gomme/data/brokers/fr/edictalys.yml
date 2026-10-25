@@ -12,6 +12,9 @@ channels:
     address: "EDICTALYS, 3 avenue des Platanes, 94340 Joinville-le-Pont"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique ne dit pas quoi fournir ; parmi les données traitées : « Identité et coordonnées professionnelles (nom, prénom, fonction, entreprise, e-mail professionnel, téléphone professionnel) » (https://www.optinplay.com/confidentialite.html)."
+  email: "Estimation : le site propose la « Location d'adresses emails de particulier » ; votre email permet de vous retrouver dans ces fichiers et de recevoir la réponse (https://www.optinplay.com/confidentialite.html)."
 requires_id: false
 language: fr
 source: manual

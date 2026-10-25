@@ -12,6 +12,9 @@ channels:
     address: "DPO Tagadamedia, Société Tagadamedia, 55 rue Legendre, 75017 Paris"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : nécessaire pour toute demande ; la page dit seulement « nous pourrons prendre des mesures raisonnables pour vérifier votre identité » (https://www.tagadamedia.com/fr/politique-de-protection-des-donnees-et-cookies/)."
+  email: "Estimation : clé probable des fichiers issus des jeux-concours et adresse de réponse ; la page ne précise pas les informations à fournir."
 requires_id: false
 language: fr
 source: manual

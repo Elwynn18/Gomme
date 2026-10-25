@@ -13,6 +13,10 @@ channels:
     address: "Pratique Media & Services, 16 rue Auber, 75009 Paris"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "La page demande d'accompagner la demande « des éléments nécessaires à votre identification (nom, prénom, email) » (https://www.118000.fr/cgu.html)."
+  email: "L'email fait partie des « éléments nécessaires à votre identification (nom, prénom, email) » ; il sert aussi à recevoir la réponse (https://www.118000.fr/cgu.html)."
+  postal_address: "Estimation : la page ne cite que le nom, le prénom et l'email ; l'adresse aide à distinguer les homonymes dans un annuaire classé par nom et par ville."
 requires_id: false
 language: fr
 source: manual

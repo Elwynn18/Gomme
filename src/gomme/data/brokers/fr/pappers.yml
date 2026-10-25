@@ -13,6 +13,9 @@ channels:
     address: contact@pappers.fr
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Les fiches viennent du RNE, dont Pappers traite notamment les « Nom et Prénom » des dirigeants : c'est la clé pour retrouver les vôtres (https://www.pappers.fr/protection-des-donnees)."
+  email: "Pour un contact par email, la page cite l'« Adresse électronique (nécessairement) » (https://www.pappers.fr/protection-des-donnees)."
 requires_id: false
 language: fr
 source: manual

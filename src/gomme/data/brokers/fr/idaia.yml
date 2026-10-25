@@ -12,6 +12,10 @@ channels:
     address: "IDAIA – DPO, 3 rue Christian Franceries, Parc Chavailles 2, BP 80011, 33522 Bruges"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : la politique ne dit pas quoi fournir ; par courrier, elle demande « une copie de pièce d'identité » (https://www.idaia.group/fr/donnees-personnelles)."
+  email: "Les droits s'exercent notamment « par email à l'adresse suivante : dpo@idaia.group » ; l'email sert aussi à recevoir la réponse (https://www.idaia.group/fr/donnees-personnelles)."
+  postal_address: "Estimation : fichiers de particuliers utilisés pour contacter les personnes par « courrier postal, téléphone, email, sms » ; l'adresse aide à retrouver votre fiche (https://www.idaia.group/fr/donnees-personnelles)."
 requires_id: false
 language: fr
 source: manual

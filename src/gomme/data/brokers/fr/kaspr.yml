@@ -14,6 +14,9 @@ channels:
     url: https://kaspr.privacy.saymine.io/kaspr
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la politique dit seulement « We may need to request specific information from you to help us confirm your identity » ; les profils contiennent le « Name » (https://www.kaspr.io/privacy-policy)."
+  email: "Estimation : les profils contiennent « Contact information (including email, telephone number, social media profile URL) » ; votre email aide à retrouver le vôtre et à recevoir la réponse (https://www.kaspr.io/privacy-policy)."
 requires_id: false
 language: fr
 source: manual

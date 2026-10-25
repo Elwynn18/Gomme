@@ -13,6 +13,10 @@ channels:
     address: "Dun & Bradstreet Sverige AB, 169 93 Solna, Sverige"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email, postal_address]
+fields_why:
+  full_name: "Estimation : nécessaire pour toute demande ; les pages de Dun & Bradstreet Sverige ne précisent pas les informations à fournir."
+  email: "Estimation : la page invite à « kontakta oss genom epost » (nous contacter par email) ; l'email sert aussi à recevoir la réponse (https://www.dnb.com/sv-se/varfor-dnb/dataskydd.html)."
+  postal_address: "Estimation : la base MIA contient « namn, adress, telefonnummer, personnummer » (nom, adresse, téléphone, numéro d'identité) ; l'adresse aide à distinguer les homonymes, la page ne précise pas les informations à fournir (https://www.dnb.com/sv-se/varfor-dnb/dataskydd/personuppgifter/behandlingar-i-sverige.html)."
 requires_id: false
 language: sv
 source: manual

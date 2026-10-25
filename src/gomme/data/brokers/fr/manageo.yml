@@ -13,6 +13,9 @@ channels:
     address: "ALTARES - D&B Data Protection Officer, 290 avenue Galilée, Parc Cézanne 2 Bât. J, 13594 Aix-en-Provence Cedex 3"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "Estimation : la base liste les dirigeants d'entreprise sous leur nom ; la page ne précise pas les informations à fournir pour exercer vos droits."
+  email: "Estimation : pour vous identifier et recevoir la réponse ; la page ne précise pas les informations à fournir pour exercer vos droits."
 requires_id: false
 language: fr
 source: manual

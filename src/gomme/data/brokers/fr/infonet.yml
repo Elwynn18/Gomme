@@ -13,6 +13,9 @@ channels:
     address: "Infonet Web Group SL, Avinguda Diagonal 598, 2-2, 08021 Barcelone, Espagne"
 legal_basis: [gdpr_art17, gdpr_art21]
 required_fields: [full_name, email]
+fields_why:
+  full_name: "En cas de doute, Infonet peut demander de justifier votre identité « en mentionnant notamment ses nom et prénom, adresse de courrier électronique » (https://infonet.fr/politique-de-confidentialite/)."
+  email: "La politique cite l'« adresse de courrier électronique » pour justifier de votre identité ; l'email est aussi obligatoire dans le formulaire (https://infonet.fr/exercice-des-droits-sur-les-donnees-personnelles/)."
 requires_id: false
 language: fr
 source: manual
