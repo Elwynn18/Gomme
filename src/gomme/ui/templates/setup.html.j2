@@ -37,10 +37,14 @@
     <h1>Aider les brokers à vous retrouver</h1>
     {{ m.details_fields(values, errors, needs, us_states) }}
 
+  {% elif step.name == "others" %}
+    <h1>Vos anciennes coordonnées</h1>
+    {{ m.others_fields(values, errors, needs) }}
+
   {% elif step.name == "sending" %}
-    <h1>Comment envoyez-vous vos emails ?</h1>
-    <p class="muted">Gomme prépare chaque demande ; c'est vous qui l'envoyez, en un clic.</p>
-    {{ m.composer_fields(values, errors) }}
+    <h1>Comment envoyer vos demandes ?</h1>
+    <p class="muted">Gomme rédige chaque demande. Elle part ensuite de votre propre adresse email.</p>
+    {{ m.sending_fields(values, errors) }}
 
   {% elif step.name == "review" %}
     <h1>Tout est prêt</h1>
@@ -52,7 +56,10 @@
       <div><dt>Adresse postale</dt><dd>{% if values.street %}{{ values.street }}, {{ values.postal_code }} {{ values.city }}{% else %}<span class="muted">non renseignée</span>{% endif %}</dd></div>
       <div><dt>Date de naissance</dt><dd>{{ values.birth_date or "non renseignée" }}</dd></div>
       <div><dt>Téléphone</dt><dd>{{ values.phone or "non renseigné" }}</dd></div>
-      <div><dt>Envoi</dt><dd>{{ "Gmail, dans le navigateur" if values.composer == "gmail" else "Logiciel de messagerie" }}</dd></div>
+      {% if values.other_emails %}<div><dt>Autres emails</dt><dd>{{ values.other_emails | replace("\n", ", ") }}</dd></div>{% endif %}
+      {% if values.other_phones %}<div><dt>Autres téléphones</dt><dd>{{ values.other_phones | replace("\n", ", ") }}</dd></div>{% endif %}
+      {% for slot in range(3) %}{% if values["prev_street_" ~ slot] %}<div><dt>Ancienne adresse</dt><dd>{{ values["prev_street_" ~ slot] }}, {{ values["prev_postal_code_" ~ slot] }} {{ values["prev_city_" ~ slot] }}</dd></div>{% endif %}{% endfor %}
+      <div><dt>Envoi</dt><dd>{{ sending_labels[values.sending] }}</dd></div>
     </dl>
     <p class="small muted" style="margin-top:16px">{{ m.icon("lock") }} Enregistré dans un fichier lisible par vous seul, sur cet ordinateur.</p>
   {% endif %}

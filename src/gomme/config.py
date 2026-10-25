@@ -10,6 +10,7 @@ variable (`password_env`), or from the system keyring when the optional `keyring
 package is installed.
 """
 
+import contextlib
 import importlib
 import os
 from enum import StrEnum
@@ -176,20 +177,63 @@ def config_is_private(path: Path | None = None) -> bool:
     return is_private(path or config_path())
 
 
-def smtp_password(smtp: SmtpConfig) -> str:
+class PasswordStoreError(Exception):
+    """The system keyring is missing or refused the operation."""
+
+
+class SystemKeyring:
+    """The SMTP password in the system keyring (optional `keyring` package).
+
+    Secret Service (GNOME, KDE), macOS Keychain or Windows Credential Locker: the password
+    is encrypted by the system, never written by Gomme.
+    """
+
+    def _module(self) -> Any:
+        try:
+            return importlib.import_module("keyring")
+        except ImportError:
+            return None
+
+    def available(self) -> bool:
+        return self._module() is not None
+
+    def get(self, username: str) -> str | None:
+        keyring = self._module()
+        if keyring is None:
+            return None
+        try:
+            stored = keyring.get_password(KEYRING_SERVICE, username)
+        except Exception:  # any backend failure (locked, no service): as if nothing stored
+            return None
+        return str(stored) if stored else None
+
+    def set(self, username: str, password: str) -> None:
+        keyring = self._module()
+        if keyring is None:
+            raise PasswordStoreError("le paquet keyring n'est pas installé")
+        try:
+            keyring.set_password(KEYRING_SERVICE, username, password)
+        except Exception as exc:
+            raise PasswordStoreError(f"trousseau indisponible ({type(exc).__name__})") from None
+
+    def delete(self, username: str) -> None:
+        keyring = self._module()
+        if keyring is None:
+            return
+        with contextlib.suppress(Exception):
+            keyring.delete_password(KEYRING_SERVICE, username)
+
+
+def smtp_password(smtp: SmtpConfig, store: SystemKeyring | None = None) -> str:
     """The password from the environment, else from the keyring if available."""
     password = os.environ.get(smtp.password_env)
     if password:
         return password
-    try:
-        keyring: Any = importlib.import_module("keyring")
-    except ImportError:
-        keyring = None
-    if keyring is not None:
-        stored = keyring.get_password(KEYRING_SERVICE, smtp.username)
-        if stored:
-            return str(stored)
+    store = store or SystemKeyring()
+    stored = store.get(smtp.username)
+    if stored:
+        return stored
     raise ConfigError(
         f"mot de passe SMTP introuvable : définir la variable {smtp.password_env}"
-        + ("" if keyring is None else f" ou l'enregistrer dans le trousseau ({KEYRING_SERVICE})")
+        + (f" ou l'enregistrer dans le trousseau ({KEYRING_SERVICE})" if store.available() else "")
     )

@@ -215,11 +215,18 @@ legend { font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; padding: 0; }
 .choice strong { display: block; }
 .choice span { color: var(--muted); font-size: .93rem; }
 
+.check { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; cursor: pointer; }
+.check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+input[type=password] { width: 100%; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .why {
   display: flex; gap: 12px; background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
 }
 .why svg { flex: none; width: 22px; height: 22px; color: var(--accent); margin-top: 1px; }
 .why p { margin: 0; }
+.sending-wrap:has(input[value=smtp]:not(:checked)) .smtp-fields { display: none; }
+.smtp-fields { margin-top: 14px; }
+.smtp-fields h3 { margin-top: 0; }
+.muted-need { color: var(--muted); background: var(--surface-2); }
 .need { display: inline-block; font-size: .85rem; color: var(--accent-strong); background: var(--accent-soft); border-radius: 999px; padding: 1px 10px; margin-left: 6px; font-weight: 500; }
 
 /* --- wizard ------------------------------------------------------------------------------ */

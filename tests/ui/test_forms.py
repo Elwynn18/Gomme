@@ -17,7 +17,7 @@ VALID = {
     "last_name": "Exemple",
     "email": "jeanne.exemple@example.org",
     "country": "FR",
-    "composer": "mail_app",
+    "sending": "mail_app",
 }
 
 
@@ -47,7 +47,10 @@ def test_valid_minimal_profile() -> None:
         ({"birth_date": "2030-01-01"}, "birth_date"),
         ({"birth_date": "10/12/2002"}, "birth_date"),
         ({"phone": "appelez-moi"}, "phone"),
-        ({"composer": "pigeon"}, "composer"),
+        ({"sending": "pigeon"}, "sending"),
+        ({"other_emails": "a@example.org\nnope"}, "other_emails"),
+        ({"other_phones": "abc"}, "other_phones"),
+        ({"prev_city_1": "Autrefois", "prev_street_1": "1 rue X"}, "prev_postal_code_1"),
     ],
 )
 def test_errors_point_at_the_field(changes: dict[str, str], field: str) -> None:
@@ -87,7 +90,7 @@ def test_build_config_from_scratch() -> None:
             city="Nulle-Part",
             birth_date="2000-01-31",
             phone="06 00 00 00 00",
-            composer="gmail",
+            sending="gmail",
         )
     )
 

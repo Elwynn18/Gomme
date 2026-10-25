@@ -22,7 +22,13 @@ web = ["playwright>=1.60"]
 # Local web interface (gomme ui), for people who prefer it to the command line.
 # Starlette rather than FastAPI: recent FastAPI releases bundle OpenTelemetry hooks, and
 # Gomme promises no telemetry at all; Starlette (FastAPI's base) is all the UI needs.
-ui = ["starlette>=1.0", "uvicorn>=0.50"]
+# keyring: keeps the SMTP app password in the system keyring (Secret Service, KWallet,
+# macOS Keychain, Windows Credential Locker), never in the configuration file.
+ui = [
+    "keyring>=25.7",
+    "starlette>=1.0",
+    "uvicorn>=0.50",
+]
 
 [project.scripts]
 gomme = "gomme.cli:app"

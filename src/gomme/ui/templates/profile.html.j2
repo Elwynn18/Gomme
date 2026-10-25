@@ -7,8 +7,19 @@
 <div class="card">
   <dl class="facts">
     {% for label, value in summary.items() %}<div><dt>{{ label | capitalize }}</dt><dd>{{ value }}</dd></div>{% endfor %}
-    <div><dt>Envoi des emails</dt><dd>{{ "Gmail, dans le navigateur" if email.composer.value == "gmail" else "Logiciel de messagerie" }}{% if email.mode.value == "smtp" %}<br><span class="small muted">+ envoi automatique en ligne de commande</span>{% endif %}</dd></div>
+    <div><dt>Envoi des demandes</dt><dd>{% if email.mode.value == "smtp" %}Envoi automatique{% elif email.composer.value == "gmail" %}Une par une, dans Gmail{% else %}Une par une, dans le logiciel de messagerie{% endif %}</dd></div>
   </dl>
+  {% if email.mode.value == "smtp" and email.smtp %}
+  <div class="card soft" style="margin-top:16px">
+    <p style="margin:0 0 8px"><strong>Envoi automatique</strong> depuis {{ email.smtp.username | mask_email }}, via {{ email.smtp.host }}.</p>
+    {% if password_saved %}
+    <p class="small" style="margin:0 0 8px">{{ m.icon("lock") }} Mot de passe gardé dans le trousseau sécurisé de votre ordinateur.</p>
+    <form method="post" action="/smtp/forget">{{ m.csrf_field() }}<button class="btn small">Oublier ce mot de passe</button></form>
+    {% else %}
+    <p class="small muted" style="margin:0">Le mot de passe d'application vous sera demandé au premier envoi.</p>
+    {% endif %}
+  </div>
+  {% endif %}
   <p class="small muted" style="margin-top:14px">{{ m.icon("lock") }} Valeurs masquées à l'affichage. Elles sont enregistrées sur cet ordinateur, dans un fichier lisible par vous seul.</p>
   <div class="actions"><a class="btn primary" href="/profile/edit">Modifier mon profil</a></div>
 </div>

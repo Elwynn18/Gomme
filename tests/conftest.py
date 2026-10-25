@@ -1,6 +1,7 @@
 """Shared test fixtures and safety guards."""
 
 import socket
+import sys
 from pathlib import Path
 from typing import NoReturn
 
@@ -23,6 +24,12 @@ def _block_network(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(socket.socket, "connect_ex", guard)
     monkeypatch.setattr(socket, "create_connection", guard)
     monkeypatch.setattr(socket, "getaddrinfo", guard)
+
+
+@pytest.fixture(autouse=True)
+def _no_system_keyring(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never read or write the developer's real keyring."""
+    monkeypatch.setitem(sys.modules, "keyring", None)
 
 
 @pytest.fixture(autouse=True)

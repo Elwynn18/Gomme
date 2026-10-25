@@ -14,11 +14,12 @@ Only for the person running it, on their machine:
 
 import hashlib
 import hmac
+import os
 import re
 import secrets
 from collections.abc import Awaitable, Callable
 from contextlib import AbstractContextManager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -32,8 +33,23 @@ from starlette.routing import Route
 
 from gomme.brokers.fields import ProfileField
 from gomme.brokers.schema import Broker, Region
-from gomme.channels.email import build_message, gmail_compose_link, mailto_link
-from gomme.config import Composer, Config, ConfigError, EmailMode
+from gomme.channels.email import (
+    SmtpFactory,
+    SmtpSender,
+    build_message,
+    connect,
+    gmail_compose_link,
+    mailto_link,
+)
+from gomme.config import (
+    Composer,
+    Config,
+    ConfigError,
+    EmailMode,
+    PasswordStoreError,
+    SmtpConfig,
+    SystemKeyring,
+)
 from gomme.labels import (
     ACTION_BUTTONS,
     ACTION_LABELS,
@@ -45,10 +61,12 @@ from gomme.labels import (
     REGION_LABELS,
     STATUS_LABELS,
 )
+from gomme.privacy import mask_email
 from gomme.profile import US_STATES
 from gomme.tracker.db import Tracker, TrackerError
 from gomme.tracker.state import Action, InvalidTransitionError, Status, allowed_actions
 from gomme.ui import forms
+from gomme.ui.sending import Jobs, PasswordStore, SendJob, explain_failure, in_background
 from gomme.ui.views import STATUS_TONES, board, countdown, french_date, plural, scope, selection
 from gomme.workflow import (
     Prepared,
@@ -57,6 +75,8 @@ from gomme.workflow import (
     monitor,
     prepare_emails,
     queue_requests,
+    send_emails,
+    smtp_quota,
     web_form_channel,
     write_letters,
 )
@@ -77,7 +97,7 @@ SECURITY_HEADERS = {
 }
 
 # Where a form may send the user back to, after an action.
-_SAFE_NEXT = re.compile(r"^/(send|requests/\d{1,18})?$")
+_SAFE_NEXT = re.compile(r"^/(send|profile|requests/\d{1,18})?$")
 
 # Button style of each action on a request page.
 _ACTION_STYLES = {
@@ -110,6 +130,9 @@ class UiContext:
     letters_dir: Path
     token: str
     port: int
+    passwords: PasswordStore = field(default_factory=SystemKeyring)
+    smtp_factory: SmtpFactory = connect
+    run_background: Callable[[Callable[[], None]], None] = in_background
 
     @property
     def csrf(self) -> str:
@@ -142,6 +165,7 @@ _templates.filters |= {
     "fr_date": french_date,
     "countdown": countdown,
     "event_label": _event_label,
+    "mask_email": lambda value: mask_email(value) if "@" in value else "***",
 }
 _templates.globals |= {
     "status_labels": STATUS_LABELS,
@@ -156,6 +180,12 @@ _templates.globals |= {
     "countries": forms.COUNTRIES,
     "field_keys": ProfileField,
     "action_send": Action.SEND,
+    "is_gmail": forms.is_gmail,
+    "sending_labels": {
+        "smtp": "Envoi automatique",
+        "gmail": "Une par une, dans Gmail",
+        "mail_app": "Une par une, dans le logiciel de messagerie",
+    },
 }
 
 
@@ -201,6 +231,12 @@ def create_app(ctx: UiContext) -> Starlette:
     def brokers_by_slug() -> dict[str, Broker]:
         return {broker.slug: broker for broker in ctx.load_brokers()}
 
+    jobs = Jobs()
+
+    def known_password(smtp: SmtpConfig) -> str | None:
+        """The SMTP password from the environment or the keyring, if any."""
+        return os.environ.get(smtp.password_env) or ctx.passwords.get(smtp.username)
+
     async def form(request: Request) -> dict[str, str]:
         # Parsed here rather than with python-multipart: one small dependency less.
         body = (await request.body()).decode("utf-8", errors="replace")
@@ -217,6 +253,8 @@ def create_app(ctx: UiContext) -> Starlette:
         values: dict[str, str],
         errors: dict[str, str] | None = None,
     ) -> Response:
+        if step.name == "sending":
+            values = forms.with_sending_defaults(values)
         return page(
             request,
             "setup.html.j2",
@@ -255,20 +293,19 @@ def create_app(ctx: UiContext) -> Starlette:
         errors = forms.errors_for(values, step.fields, today())
         if errors:
             return setup_page(request, step, values, errors)
-        following = forms.next_step(step, 1)
-        if following.name == "sending" and not values["composer"]:
-            values["composer"] = forms.suggested_composer(values["email"]).value
-        return setup_page(request, following, values)
+        return setup_page(request, forms.next_step(step, 1), values)
 
     async def profile(request: Request) -> Response:
         config = current_config(request)
         if isinstance(config, Response):
             return config
+        smtp = config.email.smtp
         return page(
             request,
             "profile.html.j2",
             summary=config.profile.masked(),
             email=config.email,
+            password_saved=bool(smtp and ctx.passwords.get(smtp.username)),
         )
 
     def profile_form(
@@ -277,7 +314,7 @@ def create_app(ctx: UiContext) -> Starlette:
         return page(
             request,
             "profile_edit.html.j2",
-            values=values,
+            values=forms.with_sending_defaults(values),
             errors=errors or {},
             needs=forms.fields_needed(ctx.load_brokers(), values.get("country") or "FR"),
             us_states=US_STATES,
@@ -395,9 +432,11 @@ def create_app(ctx: UiContext) -> Starlette:
             return config
         brokers = brokers_by_slug()
         skipped = Report()
+        smtp = config.email.smtp
         with ctx.open_tracker() as tracker:
             emails = prepare_emails(tracker, brokers, config, skipped)
             queued = tracker.requests(status=Status.QUEUED)
+            quota = smtp_quota(tracker, config, today())
         letters = [
             {
                 "request": r,
@@ -422,7 +461,13 @@ def create_app(ctx: UiContext) -> Starlette:
             web_forms=web_forms,
             skipped=skipped.skipped,
             composer=config.email.composer,
-            smtp=config.email.mode is EmailMode.SMTP,
+            smtp=config.email.smtp if config.email.mode is EmailMode.SMTP else None,
+            password_known=bool(smtp and known_password(smtp)),
+            keyring_available=ctx.passwords.available(),
+            quota=quota,
+            daily_limit=config.email.daily_limit,
+            delay=round(config.email.delay_seconds),
+            sending_now=jobs.running(),
         )
 
     async def eml_download(request: Request) -> Response:
@@ -548,6 +593,103 @@ def create_app(ctx: UiContext) -> Starlette:
             message += " Non préparés : " + " ; ".join(f"{s} ({r})" for s, r in report.skipped)
         return back("/send", message)
 
+    async def send_auto(request: Request) -> Response:
+        config = current_config(request)
+        if isinstance(config, Response):
+            return config
+        smtp = config.email.smtp
+        if config.email.mode is not EmailMode.SMTP or smtp is None:
+            return back("/send", "L'envoi automatique n'est pas activé : voir « Mon profil ».")
+        if jobs.running():
+            return RedirectResponse("/send/progress", status_code=303)
+        values = await form(request)
+        if values.get("confirm") != "yes":
+            return back("/send", "Cochez la case de confirmation pour lancer l'envoi.")
+        password = known_password(smtp)
+        from_form = password is None
+        if from_form:
+            password = values.get("password", "").replace(" ", "")  # Gmail shows it in groups
+        if not password:
+            return back("/send", "Indiquez le mot de passe d'application.")
+        remember = from_form and values.get("remember") == "yes"
+        brokers = brokers_by_slug()
+        with ctx.open_tracker() as tracker:
+            prepared = prepare_emails(tracker, brokers, config, Report())
+            quota = smtp_quota(tracker, config, today())
+        if not prepared:
+            return back("/send", "Aucun email à envoyer.")
+        if quota == 0:
+            return back("/send", "Limite du jour atteinte : la suite partira demain.")
+        job = SendJob(
+            request_ids=tuple(item.request.id for item in prepared),
+            planned=min(len(prepared), quota),
+            delay_seconds=config.email.delay_seconds,
+            started_at=ctx.clock(),
+        )
+
+        def work(job: SendJob) -> None:
+            def session() -> SmtpSender:
+                return SmtpSender(
+                    smtp,
+                    password,
+                    factory=ctx.smtp_factory,
+                    delay_seconds=config.email.delay_seconds,
+                )
+
+            with ctx.open_tracker() as tracker:
+                report = send_emails(
+                    tracker,
+                    brokers,
+                    config,
+                    ctx.clock,
+                    outbox=ctx.outbox,
+                    dry_run=False,
+                    sender=session,
+                )
+            job.sent = len(report.done)
+            job.limit_reached = report.limit_reached
+            session_errors = [e for e in report.errors if not e.startswith("n° ")]
+            job.errors = [e for e in report.errors if e.startswith("n° ")]
+            if session_errors:
+                job.failure = explain_failure(session_errors[0])
+            if remember and report.done:
+                try:
+                    ctx.passwords.set(smtp.username, password)
+                    job.keyring_note = "Mot de passe gardé dans le trousseau du système."
+                except PasswordStoreError as exc:
+                    job.keyring_note = f"Mot de passe non gardé : {exc}."
+
+        jobs.start(job, work, ctx.run_background)
+        return RedirectResponse("/send/progress", status_code=303)
+
+    async def send_progress(request: Request) -> Response:
+        job = jobs.current
+        if job is None:
+            return RedirectResponse("/send", status_code=303)
+        with ctx.open_tracker() as tracker:
+            done = sum(
+                1
+                for request_id in job.request_ids
+                if tracker.get(request_id).status is not Status.QUEUED
+            )
+        remaining = max(job.planned - done, 0)
+        return page(
+            request,
+            "progress.html.j2",
+            job=job,
+            done=min(done, job.planned),
+            percent=round(100 * min(done, job.planned) / job.planned) if job.planned else 100,
+            minutes_left=max(1, round(remaining * job.delay_seconds / 60)),
+        )
+
+    async def forget_password(request: Request) -> Response:
+        config = current_config(request)
+        if isinstance(config, Response):
+            return config
+        if config.email.smtp is not None:
+            ctx.passwords.delete(config.email.smtp.username)
+        return back("/profile", "Mot de passe retiré du trousseau.")
+
     async def run_monitor(request: Request) -> Response:
         config = current_config(request)
         if isinstance(config, Response):
@@ -576,6 +718,9 @@ def create_app(ctx: UiContext) -> Starlette:
         Route("/requests/{id:int}/received", receipt, methods=["POST"]),
         Route("/send", send_page),
         Route("/letters", make_letters, methods=["POST"]),
+        Route("/send/auto", send_auto, methods=["POST"]),
+        Route("/send/progress", send_progress),
+        Route("/smtp/forget", forget_password, methods=["POST"]),
         Route("/queue", queue_default, methods=["POST"]),
         Route("/monitor", run_monitor, methods=["POST"]),
     ]

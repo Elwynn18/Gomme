@@ -16,6 +16,7 @@ class FakeSmtp:
         self.sent: list[tuple[EmailMessage, list[str] | None]] = []
         self.fail_on = fail_on
         self.refuse: set[str] = set()  # recipients the server rejects at RCPT
+        self.reject_login = False  # wrong password
 
     def _record(self, name: str) -> None:
         self.calls.append(name)
@@ -31,6 +32,9 @@ class FakeSmtp:
 
     def login(self, user: str, password: str) -> None:
         self._record(f"login:{user}")
+        if self.reject_login:
+            raise smtplib.SMTPAuthenticationError(535, b"5.7.8 Username and Password not accepted")
+        self.password = password
 
     def send_message(
         self, msg: EmailMessage, from_addr: str | None = None, to_addrs: list[str] | None = None

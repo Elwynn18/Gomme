@@ -101,13 +101,95 @@
 </div>
 {%- endmacro %}
 
-{% macro composer_fields(values, errors) -%}
-<div class="choices" role="radiogroup" aria-label="Façon d'envoyer vos emails">
-  <label class="choice"><input type="radio" name="composer" value="gmail"{% if values.get('composer') == 'gmail' %} checked{% endif %}>
-    <div><strong>Gmail, dans mon navigateur</strong><span>Un clic ouvre un nouveau message Gmail déjà rempli : destinataire, objet et texte. Vous le relisez et cliquez sur Envoyer.</span></div></label>
-  <label class="choice"><input type="radio" name="composer" value="mail_app"{% if values.get('composer') == 'mail_app' %} checked{% endif %}>
-    <div><strong>Mon logiciel de messagerie</strong><span>Thunderbird, Outlook, Mail… Un clic ouvre le message prêt à partir dans ce logiciel.</span></div></label>
+{% macro need_note(count) -%}
+{% if count %}<span class="need">utile à {{ count }} broker{{ "s" if count > 1 else "" }}</span>{% else %}<span class="need muted-need">aucun broker de votre sélection ne s'en sert</span>{% endif %}
+{%- endmacro %}
+
+{% macro textarea_field(name, label, values, errors, help, rows=3) -%}
+<div class="field{% if errors.get(name) %} has-error{% endif %}">
+  <label for="f-{{ name }}">{{ label }} <span class="optional">(facultatif)</span></label>
+  <p class="help" id="h-{{ name }}">{{ help }}</p>
+  <textarea id="f-{{ name }}" name="{{ name }}" rows="{{ rows }}" aria-describedby="h-{{ name }}"{% if errors.get(name) %} aria-invalid="true"{% endif %}>{{ values.get(name, '') }}</textarea>
+  {% if errors.get(name) %}<p class="error">{{ errors[name] }}</p>{% endif %}
 </div>
-{% if errors.get('composer') %}<p class="error">{{ errors['composer'] }}</p>{% endif %}
-<p class="small muted">Dans les deux cas, les emails partent de <strong>votre</strong> boîte mail : Gomme ne connaît jamais votre mot de passe.</p>
+{%- endmacro %}
+
+{% macro previous_slot(slot, values, errors) -%}
+{{ text_field("prev_street_" ~ slot, "Numéro et rue", values, errors, optional=True, autocomplete="off") }}
+<div class="row city">
+  {{ text_field("prev_postal_code_" ~ slot, "Code postal", values, errors, optional=True, autocomplete="off") }}
+  {{ text_field("prev_city_" ~ slot, "Ville", values, errors, optional=True, autocomplete="off") }}
+</div>
+{%- endmacro %}
+
+{% macro others_fields(values, errors, needs) -%}
+<div class="why">{{ icon("info") }}<p>Les brokers gardent souvent d'<strong>anciennes coordonnées</strong> : une adresse email que vous n'utilisez plus, un ancien domicile, un ancien numéro. Indiquez ceux que vous avez réellement utilisés : votre demande d'effacement les couvrira aussi. Chacun n'est envoyé qu'aux brokers qui identifient les personnes par ce type d'information ; un broker qui ne le connaissait pas l'apprendra, n'ajoutez donc que les vôtres.</p></div>
+<fieldset>
+  <legend>Autres adresses email {{ need_note(needs[field_keys.EMAIL]) }}</legend>
+  {{ textarea_field("other_emails", "Adresses email", values, errors, "Une par ligne, 5 au plus : anciennes adresses, adresses secondaires…") }}
+</fieldset>
+<fieldset>
+  <legend>Anciennes adresses postales {{ need_note(needs[field_keys.POSTAL_ADDRESS]) }}</legend>
+  {{ previous_slot(0, values, errors) }}
+  <details{% if values.get('prev_street_1') or errors.get('prev_street_1') or errors.get('prev_postal_code_1') or errors.get('prev_city_1') %} open{% endif %}>
+    <summary>Ajouter une autre ancienne adresse</summary>
+    {{ previous_slot(1, values, errors) }}
+    <details{% if values.get('prev_street_2') or errors.get('prev_street_2') or errors.get('prev_postal_code_2') or errors.get('prev_city_2') %} open{% endif %}>
+      <summary>Ajouter une troisième ancienne adresse</summary>
+      {{ previous_slot(2, values, errors) }}
+    </details>
+  </details>
+</fieldset>
+<fieldset>
+  <legend>Autres numéros de téléphone {{ need_note(needs[field_keys.PHONE]) }}</legend>
+  {{ textarea_field("other_phones", "Numéros", values, errors, "Un par ligne, 5 au plus : ancien portable, fixe…", rows=2) }}
+</fieldset>
+{%- endmacro %}
+
+{% macro sending_fields(values, errors) -%}
+{% set gmail = is_gmail(values.get('email', '')) %}
+<div class="sending-wrap">
+<div class="choices" role="radiogroup" aria-label="Façon d'envoyer vos emails">
+  <label class="choice"><input type="radio" name="sending" value="smtp"{% if values.get('sending') == 'smtp' %} checked{% endif %}>
+    <div><strong>Envoi automatique</strong><span>Gomme envoie lui-même les demandes depuis votre adresse, une par une, après votre confirmation. Il faut créer une fois un mot de passe d'application{% if gmail %} Google{% endif %}.</span></div></label>
+  <label class="choice"><input type="radio" name="sending" value="gmail"{% if values.get('sending') == 'gmail' %} checked{% endif %}>
+    <div><strong>Une par une, dans Gmail</strong><span>Un clic ouvre un nouveau message Gmail déjà rempli : destinataire, objet et texte. Vous le relisez et cliquez sur Envoyer.</span></div></label>
+  <label class="choice"><input type="radio" name="sending" value="mail_app"{% if values.get('sending') == 'mail_app' %} checked{% endif %}>
+    <div><strong>Une par une, dans mon logiciel de messagerie</strong><span>Thunderbird, Outlook, Mail… Un clic ouvre le message prêt à partir dans ce logiciel.</span></div></label>
+</div>
+{% if errors.get('sending') %}<p class="error">{{ errors['sending'] }}</p>{% endif %}
+
+<div class="smtp-fields card soft">
+  <h3>Préparer l'envoi automatique</h3>
+  {% if gmail %}
+  <ol class="numbered">
+    <li><span>Activez la <strong>validation en deux étapes</strong> de votre compte Google, si ce n'est pas déjà fait.</span></li>
+    <li><span>Créez un <strong>mot de passe d'application</strong> (16 lettres) : <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer noopener">myaccount.google.com/apppasswords</a>. Donnez-lui un nom comme « Gomme ».</span></li>
+    <li><span>Gomme vous le demandera au premier envoi et le gardera dans le <strong>trousseau sécurisé</strong> de votre ordinateur, jamais dans un fichier.</span></li>
+  </ol>
+  <p class="small muted">Ce mot de passe ne sert qu'à envoyer des emails ; vous pouvez le révoquer à tout moment depuis la même page Google.</p>
+  {% else %}
+  <p>Indiquez le serveur d'envoi (SMTP) de votre messagerie ; votre fournisseur le donne dans son aide. Le mot de passe vous sera demandé au premier envoi et gardé dans le trousseau sécurisé de votre ordinateur, jamais dans un fichier.</p>
+  {% endif %}
+  {% set smtp_error = errors.get('smtp_host') or errors.get('smtp_port') or errors.get('smtp_security') or errors.get('smtp_username') %}
+  <details{% if not gmail or smtp_error %} open{% endif %}>
+    <summary>Réglages du serveur{% if gmail %} (déjà remplis pour Gmail){% endif %}</summary>
+    <div class="row">
+      {{ text_field("smtp_host", "Serveur SMTP", values, errors, autocomplete="off", extra="") }}
+      {{ text_field("smtp_port", "Port", values, errors, autocomplete="off") }}
+    </div>
+    <div class="row">
+      <div class="field{% if errors.get('smtp_security') %} has-error{% endif %}">
+        <label for="f-smtp_security">Sécurité</label>
+        <select id="f-smtp_security" name="smtp_security">
+          <option value="starttls"{% if values.get('smtp_security') == 'starttls' %} selected{% endif %}>STARTTLS (port 587, le plus courant)</option>
+          <option value="ssl"{% if values.get('smtp_security') == 'ssl' %} selected{% endif %}>SSL (port 465)</option>
+        </select>
+      </div>
+      {{ text_field("smtp_username", "Identifiant", values, errors, autocomplete="off") }}
+    </div>
+  </details>
+</div>
+</div>
+<p class="small muted">Quel que soit votre choix, les emails partent de <strong>votre</strong> boîte mail. Vous pourrez changer d'avis dans « Mon profil ».</p>
 {%- endmacro %}

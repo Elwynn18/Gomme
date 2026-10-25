@@ -1,0 +1,27 @@
+{% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Envoi en cours{% endblock %}
+{% block head %}{% if not job.finished %}<meta http-equiv="refresh" content="3">{% endif %}{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
+{% block content %}
+<div class="card">
+{% if not job.finished %}
+  <h1>{{ m.icon("send") }} Envoi en cours…</h1>
+  <p class="lead muted">{{ done }} sur {{ job.planned }} envoyé{{ "s" if done > 1 else "" }}. Gomme marque une pause de {{ job.delay_seconds | round | int }} secondes entre deux emails, pour ne pas être pris pour un envoi en masse.</p>
+  <div class="progress" role="progressbar" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement"><span style="width: {{ percent }}%"></span></div>
+  <p class="small muted">Encore environ {{ minutes_left }} minute{{ "s" if minutes_left > 1 else "" }}. Vous pouvez quitter cette page ; ne fermez pas Gomme (le terminal) avant la fin.</p>
+{% elif job.failure and not job.sent %}
+  <h1>{{ m.icon("alert") }} L'envoi n'a pas pu commencer</h1>
+  <p>{{ job.failure }}</p>
+  <div class="actions"><a class="btn primary" href="/send">Revenir à « À envoyer »</a><a class="btn" href="/profile">Vérifier mes réglages</a></div>
+{% else %}
+  <h1>{{ m.icon("check") }} {{ job.sent }} demande{{ "s" if job.sent > 1 else "" }} envoyée{{ "s" if job.sent > 1 else "" }}</h1>
+  <p class="muted">Une copie de chaque email est dans votre boîte d'envoi. Le délai légal d'un mois court désormais pour chacune ; Gomme le suit depuis l'accueil.</p>
+  {% if job.failure %}<p class="late">L'envoi s'est arrêté en route : {{ job.failure }}</p>{% endif %}
+  {% if job.limit_reached %}<p>La limite du jour est atteinte : les demandes restantes partiront demain.</p>{% endif %}
+  {% if job.errors %}<details open><summary>{{ job.errors | length }} adresse{{ "s" if job.errors | length > 1 else "" }} refusée{{ "s" if job.errors | length > 1 else "" }}</summary><ul>{% for e in job.errors %}<li>{{ e }}</li>{% endfor %}</ul><p class="small muted">Ces demandes restent dans « À envoyer » : essayez un autre moyen de contact depuis la fiche du broker.</p></details>{% endif %}
+  {% if job.keyring_note %}<p class="small muted">{{ m.icon("lock") }} {{ job.keyring_note }}</p>{% endif %}
+  <div class="actions"><a class="btn primary" href="/">Retour à l'accueil</a></div>
+{% endif %}
+</div>
+{% endblock %}

@@ -185,6 +185,12 @@ def prepare_emails(
     return prepared
 
 
+def smtp_quota(tracker: Tracker, config: Config, today: date) -> int:
+    """Emails that may still go through SMTP today (daily limit minus those sent)."""
+    sent = tracker.notes_on(today, (SMTP_SEND_NOTE, SMTP_REMINDER_NOTE))
+    return max(config.email.daily_limit - sent, 0)
+
+
 def send_emails(
     tracker: Tracker,
     brokers: Mapping[str, Broker],
@@ -204,7 +210,7 @@ def send_emails(
     report = SendReport()
     prepared = prepare_emails(tracker, brokers, config, report)
     today = clock().date()
-    quota = config.email.daily_limit - tracker.notes_on(today, (SMTP_SEND_NOTE, SMTP_REMINDER_NOTE))
+    quota = smtp_quota(tracker, config, today)
     if limit is not None:
         quota = min(quota, limit)
     if len(prepared) > max(quota, 0):

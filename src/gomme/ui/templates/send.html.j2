@@ -12,6 +12,36 @@
 </div>
 {% endif %}
 
+{% if emails and smtp %}
+<section class="card accent">
+  <h2 style="margin-top:0">{{ m.icon("send") }} Envoi automatique</h2>
+  {% if sending_now %}
+  <p>Un envoi est en cours. <a href="/send/progress">Voir l'avancement</a></p>
+  {% elif quota == 0 %}
+  <p>La limite du jour ({{ daily_limit }} emails) est atteinte : la suite partira demain.</p>
+  {% else %}
+  <p>Gomme envoie {{ [emails | length, quota] | min }} demande{{ "s" if ([emails | length, quota] | min) > 1 else "" }} depuis <strong>{{ smtp.username }}</strong>, une par une, avec une pause de {{ delay }} secondes{% if emails | length > quota %} (limite du jour : {{ quota }} ; la suite partira demain){% endif %}. Une copie de chacune arrive dans votre boîte, comme preuve.</p>
+  <form method="post" action="/send/auto" novalidate>
+    {{ m.csrf_field() }}
+    {% if not password_known %}
+    <div class="field">
+      <label for="f-password">Mot de passe d'application</label>
+      <p class="help" id="h-password">{% if is_gmail(smtp.username) %}Les 16 lettres créées sur <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer noopener">myaccount.google.com/apppasswords</a>, pas votre mot de passe Google habituel.{% else %}Celui de votre messagerie pour l'envoi (SMTP).{% endif %}</p>
+      <input type="password" id="f-password" name="password" autocomplete="off" aria-describedby="h-password" style="max-width:360px">
+    </div>
+    {% if keyring_available %}
+    <label class="check"><input type="checkbox" name="remember" value="yes" checked> Le garder dans le trousseau sécurisé de cet ordinateur</label>
+    {% else %}
+    <p class="small muted">Il servira le temps de cet envoi, puis sera oublié.</p>
+    {% endif %}
+    {% endif %}
+    <label class="check"><input type="checkbox" name="confirm" value="yes" required> J'ai relu les demandes ci-dessous et je confirme leur envoi</label>
+    <div class="actions"><button class="btn primary big">{{ m.icon("send") }} Tout envoyer automatiquement</button></div>
+  </form>
+  {% endif %}
+</section>
+{% endif %}
+
 {% if emails %}
 <div class="section-title"><h2>{{ m.icon("mail") }} Emails ({{ emails | length }})</h2></div>
 <div class="card soft">
@@ -20,7 +50,7 @@
     <li>Relisez-le et envoyez-le depuis votre boîte mail.</li>
     <li>Revenez ici et cliquez sur « C'est envoyé » : le délai légal d'un mois commence.</li>
   </ol>
-  {% if smtp %}<p class="small muted">Votre configuration permet aussi l'envoi automatique, en ligne de commande : <code>gomme send</code>.</p>{% endif %}
+  {% if smtp %}<p class="small muted">Ou bien utilisez l'envoi automatique, plus haut.</p>{% else %}<p class="small muted">Beaucoup de demandes ? L'envoi automatique les envoie toutes d'un coup : à activer dans <a href="/profile/edit">Mon profil</a>.</p>{% endif %}
 </div>
 {% for item, link in emails %}
 <article class="card" id="r{{ item.request.id }}">

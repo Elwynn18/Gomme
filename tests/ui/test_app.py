@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from fakes import FakeSmtp
 from starlette.testclient import TestClient
 
 from gomme.brokers.registry import load_registry
@@ -38,6 +39,25 @@ IDENTITY = {
 ADDRESS = {"street": "1 rue de l'Exemple", "postal_code": "00000", "city": "Nulle-Part"}
 
 
+class Passwords:
+    """The system keyring, in memory."""
+
+    def __init__(self) -> None:
+        self.saved: dict[str, str] = {}
+
+    def available(self) -> bool:
+        return True
+
+    def get(self, username: str) -> str | None:
+        return self.saved.get(username)
+
+    def set(self, username: str, password: str) -> None:
+        self.saved[username] = password
+
+    def delete(self, username: str) -> None:
+        self.saved.pop(username, None)
+
+
 class Store:
     """The configuration file, in memory."""
 
@@ -64,7 +84,18 @@ def store(profile: Profile) -> Store:
 
 
 @pytest.fixture
-def ctx(tmp_path: Path, store: Store, fixtures_brokers_dir: Path) -> UiContext:
+def passwords() -> Passwords:
+    return Passwords()
+
+
+@pytest.fixture
+def ctx(
+    tmp_path: Path,
+    store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+    fixtures_brokers_dir: Path,
+) -> UiContext:
     brokers = load_registry(fixtures_brokers_dir)
     db_path = tmp_path / "gomme.db"
 
@@ -84,6 +115,9 @@ def ctx(tmp_path: Path, store: Store, fixtures_brokers_dir: Path) -> UiContext:
         letters_dir=tmp_path / "letters",
         token="test-token-not-secret",
         port=PORT,
+        passwords=passwords,
+        smtp_factory=lambda _config, _context: fake_smtp,
+        run_background=lambda work: work(),  # synchronous in tests
     )
 
 
@@ -209,19 +243,39 @@ def test_wizard_walkthrough_saves_the_profile(
     assert "utile à 1 broker" in details.text  # courtier-fictif needs the address
     assert 'value="Jeanne"' in details.text  # carried over, hidden
 
-    sending = post(client, ctx, "/setup", step="details", go="next", **IDENTITY, **ADDRESS)
-    assert "Comment envoyez-vous" in sending.text
+    others = post(client, ctx, "/setup", step="details", go="next", **IDENTITY, **ADDRESS)
+    assert "anciennes coordonnées" in others.text
+
+    sending = post(
+        client,
+        ctx,
+        "/setup",
+        step="others",
+        go="next",
+        other_emails="ancienne@example.org",
+        **IDENTITY,
+        **ADDRESS,
+    )
+    assert "Comment envoyer vos demandes" in sending.text
     assert 'value="mail_app" checked' in sending.text  # not a Gmail address
 
     review = post(
-        client, ctx, "/setup", step="sending", go="next", composer="gmail", **IDENTITY, **ADDRESS
+        client, ctx, "/setup", step="sending", go="next", sending="gmail", **IDENTITY, **ADDRESS
     )
     assert "Tout est prêt" in review.text
     assert "Nulle-Part" in review.text
     assert first_run.config is None  # nothing written before the last step
 
     saved = post(
-        client, ctx, "/setup", step="review", go="save", composer="gmail", **IDENTITY, **ADDRESS
+        client,
+        ctx,
+        "/setup",
+        step="review",
+        go="save",
+        sending="gmail",
+        other_emails="ancienne@example.org",
+        **IDENTITY,
+        **ADDRESS,
     )
     assert saved.status_code == 303
     assert saved.headers["location"].startswith("/?msg=")
@@ -230,6 +284,8 @@ def test_wizard_walkthrough_saves_the_profile(
     assert config.profile.full_name == "Jeanne Exemple"
     assert config.profile.postal_address is not None
     assert config.email.composer is Composer.GMAIL
+    assert config.email.mode is EmailMode.MANUAL
+    assert config.profile.other_emails == ("ancienne@example.org",)
     assert "Préparer ma demande" in client.get("/").text
 
 
@@ -238,9 +294,11 @@ def test_wizard_suggests_gmail_for_a_gmail_address(
 ) -> None:
     gmail = {**IDENTITY, "email": "jeanne.exemple@gmail.com"}
 
-    sending = post(client, ctx, "/setup", step="details", go="next", **gmail)
+    sending = post(client, ctx, "/setup", step="others", go="next", **gmail)
 
     assert 'value="gmail" checked' in sending.text
+    assert 'value="smtp.gmail.com"' in sending.text  # ready if automatic sending is chosen
+    assert "myaccount.google.com/apppasswords" in sending.text
 
 
 def test_wizard_errors_keep_the_values(
@@ -336,8 +394,19 @@ def test_profile_edit_keeps_the_other_settings(
     form = client.get("/profile/edit").text
     assert 'value="Nulle-Part"' in form
 
+    assert 'value="smtp" checked' in form
+
     response = post(
-        client, ctx, "/profile", **IDENTITY, **{**ADDRESS, "city": "Ailleurs"}, composer="gmail"
+        client,
+        ctx,
+        "/profile",
+        **IDENTITY,
+        **{**ADDRESS, "city": "Ailleurs"},
+        sending="smtp",
+        smtp_host="smtp.example.org",
+        smtp_port="465",
+        smtp_security="ssl",
+        smtp_username="u",
     )
 
     assert response.status_code == 303
@@ -346,14 +415,19 @@ def test_profile_edit_keeps_the_other_settings(
     assert config.profile.postal_address.city == "Ailleurs"
     assert config.email.mode is EmailMode.SMTP
     assert config.email.smtp is not None
+    assert config.email.smtp.port == 465
     assert config.requests.access is True
-    assert config.email.composer is Composer.GMAIL
+
+    post(client, ctx, "/profile", **IDENTITY, **ADDRESS, sending="gmail")
+    assert store.config.email.mode is EmailMode.MANUAL
+    assert store.config.email.composer is Composer.GMAIL
+    assert store.config.email.smtp is not None  # kept, to switch back later
 
 
 def test_profile_edit_errors(client: TestClient, ctx: UiContext, store: Store) -> None:
     before = store.config
 
-    page = post(client, ctx, "/profile", **IDENTITY, phone="appelez-moi", composer="mail_app")
+    page = post(client, ctx, "/profile", **IDENTITY, phone="appelez-moi", sending="mail_app")
 
     assert page.status_code == 200
     assert "Uniquement des chiffres" in page.text
@@ -361,7 +435,7 @@ def test_profile_edit_errors(client: TestClient, ctx: UiContext, store: Store) -
 
 
 def test_profile_can_drop_the_address(client: TestClient, ctx: UiContext, store: Store) -> None:
-    post(client, ctx, "/profile", **IDENTITY, composer="mail_app")
+    post(client, ctx, "/profile", **IDENTITY, sending="mail_app")
 
     assert store.config is not None
     assert store.config.profile.postal_address is None
@@ -450,22 +524,6 @@ def test_web_forms(client: TestClient, ctx: UiContext) -> None:
     assert "gomme submit --broker fake-people-search" in page
 
 
-def test_smtp_mode_points_to_the_command_line(
-    client: TestClient, ctx: UiContext, store: Store, profile: Profile
-) -> None:
-    store.config = Config(
-        profile=profile,
-        email=EmailConfig(
-            mode=EmailMode.SMTP, smtp=SmtpConfig(host="smtp.example.org", username="u")
-        ),
-    )
-    post(client, ctx, "/queue")
-
-    assert "gomme send" in client.get("/send").text
-    with ctx.open_tracker() as tracker:
-        assert tracker.get(1).status is Status.QUEUED
-
-
 def test_follow_a_request(client: TestClient, ctx: UiContext) -> None:
     post(client, ctx, "/queue")
     post(client, ctx, "/requests/1/mark", action="send")
@@ -546,3 +604,154 @@ def test_unknown_pages(client: TestClient) -> None:
 
 def test_huge_request_number(client: TestClient) -> None:
     assert "introuvable" in client.get(f"/requests/{2**70}").text
+
+
+# --- Other identifiers ----------------------------------------------------------------------
+
+
+def test_other_identifiers_are_saved_and_sent(
+    client: TestClient, ctx: UiContext, store: Store
+) -> None:
+    post(
+        client,
+        ctx,
+        "/profile",
+        **IDENTITY,
+        **ADDRESS,
+        sending="mail_app",
+        other_emails="ancienne@example.org\nJeanne.Exemple@example.org, autre@example.org",
+        other_phones="06 00 00 00 01",
+        prev_street_0="2 avenue de l'Ancien",
+        prev_postal_code_0="00001",
+        prev_city_0="Autrefois",
+    )
+
+    assert store.config is not None
+    profile = store.config.profile
+    assert profile.other_emails == ("ancienne@example.org", "autre@example.org")  # main dropped
+    assert profile.other_phones == ("06 00 00 00 01",)
+    assert [a.city for a in profile.previous_addresses] == ["Autrefois"]
+    assert "Anciennes adresses" in client.get("/profile").text
+
+    post(client, ctx, "/queue")
+    body = client.get("/send").text
+    assert "ancienne@example.org" in body  # courtier-fictif identifies by email
+    assert "Autrefois" in body  # and by postal address
+    assert "06 00 00 00 01" not in body  # but not by phone: minimisation
+
+
+def test_other_identifiers_errors(client: TestClient, ctx: UiContext, store: Store) -> None:
+    before = store.config
+
+    page = post(
+        client,
+        ctx,
+        "/profile",
+        **IDENTITY,
+        sending="mail_app",
+        other_emails="ancienne@example.org\npas-un-email",
+        prev_street_0="2 avenue",
+    )
+
+    assert "La 2e adresse de la liste ne semble pas valide" in page.text
+    assert "pas-un-email" in page.text  # kept in the field, not in the message
+    assert page.text.count("pour une adresse complète") == 2
+    assert store.config is before
+
+
+# --- Automatic sending -----------------------------------------------------------------------
+
+
+@pytest.fixture
+def smtp_store(store: Store, profile: Profile) -> Store:
+    store.config = Config(
+        profile=profile,
+        email=EmailConfig(
+            mode=EmailMode.SMTP,
+            smtp=SmtpConfig(host="smtp.example.org", username="jeanne.exemple@example.org"),
+            delay_seconds=0,
+        ),
+    )
+    return store
+
+
+def test_automatic_sending(
+    client: TestClient,
+    ctx: UiContext,
+    smtp_store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+) -> None:
+    post(client, ctx, "/queue")
+    page = client.get("/send").text
+    assert "Tout envoyer automatiquement" in page
+    assert 'name="password"' in page
+
+    response = post(
+        client, ctx, "/send/auto", password="abcd efgh ijkl mnop", remember="yes", confirm="yes"
+    )
+
+    assert response.headers["location"] == "/send/progress"
+    assert len(fake_smtp.sent) == 1
+    assert fake_smtp.password == "abcdefghijklmnop"  # spaces of Gmail's display removed
+    with ctx.open_tracker() as tracker:
+        assert tracker.get(1).status is Status.SENT
+    progress = client.get("/send/progress").text
+    assert "1 demande envoyée" in progress
+    assert "trousseau" in progress
+    assert passwords.saved == {"jeanne.exemple@example.org": "abcdefghijklmnop"}
+    assert "abcdefghijklmnop" not in progress
+    assert 'name="password"' not in client.get("/send").text  # known now
+
+
+def test_automatic_sending_needs_confirmation(
+    client: TestClient, ctx: UiContext, smtp_store: Store, fake_smtp: FakeSmtp
+) -> None:
+    post(client, ctx, "/queue")
+
+    response = post(client, ctx, "/send/auto", password="secret")
+
+    assert "Cochez" in client.get(response.headers["location"]).text
+    assert fake_smtp.sent == []
+
+
+def test_wrong_password_is_explained_and_not_kept(
+    client: TestClient,
+    ctx: UiContext,
+    smtp_store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+) -> None:
+    fake_smtp.reject_login = True
+    post(client, ctx, "/queue")
+
+    post(client, ctx, "/send/auto", password="wrong", remember="yes", confirm="yes")
+
+    progress = client.get("/send/progress").text
+    assert "pas pu commencer" in progress
+    assert "mot de passe d&#39;application" in progress
+    assert passwords.saved == {}
+    with ctx.open_tracker() as tracker:
+        assert tracker.get(1).status is Status.QUEUED
+
+
+def test_forget_the_saved_password(
+    client: TestClient, ctx: UiContext, smtp_store: Store, passwords: Passwords
+) -> None:
+    passwords.saved["jeanne.exemple@example.org"] = "secret"
+    page = client.get("/profile").text
+    assert "Oublier ce mot de passe" in page
+    assert "jeanne.exemple@example.org" not in page  # masked
+
+    post(client, ctx, "/smtp/forget")
+
+    assert passwords.saved == {}
+
+
+def test_automatic_sending_needs_smtp_mode(client: TestClient, ctx: UiContext) -> None:
+    post(client, ctx, "/queue")
+
+    response = post(client, ctx, "/send/auto", password="x", confirm="yes")
+
+    assert "pas%20activ%C3%A9" in response.headers["location"]
+    assert "Tout envoyer automatiquement" not in client.get("/send").text
