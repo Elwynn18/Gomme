@@ -755,3 +755,73 @@ def test_automatic_sending_needs_smtp_mode(client: TestClient, ctx: UiContext) -
 
     assert "pas%20activ%C3%A9" in response.headers["location"]
     assert "Tout envoyer automatiquement" not in client.get("/send").text
+
+
+SMTP_FORM = {
+    "sending": "smtp",
+    "smtp_host": "smtp.example.org",
+    "smtp_port": "587",
+    "smtp_security": "starttls",
+    "smtp_username": "jeanne.exemple@example.org",
+}
+
+
+def test_password_typed_in_the_profile_is_checked_and_kept(
+    client: TestClient,
+    ctx: UiContext,
+    store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+) -> None:
+    response = post(
+        client, ctx, "/profile", **IDENTITY, **SMTP_FORM, smtp_password="abcd efgh ijkl mnop"
+    )
+
+    assert "v%C3%A9rifi%C3%A9" in response.headers["location"]
+    assert passwords.saved == {"jeanne.exemple@example.org": "abcdefghijklmnop"}
+    assert fake_smtp.sent == []  # a login only, no email
+    assert "login:jeanne.exemple@example.org" in fake_smtp.calls
+    assert store.config is not None
+    assert store.config.email.mode is EmailMode.SMTP
+    form = client.get("/profile/edit").text
+    assert "déjà enregistré" in form
+    assert "abcdefghijklmnop" not in form  # never shown again
+    assert 'name="password"' not in client.get("/send").text
+
+
+def test_wrong_password_in_the_profile_is_refused(
+    client: TestClient,
+    ctx: UiContext,
+    store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+) -> None:
+    fake_smtp.reject_login = True
+    before = store.config
+
+    page = post(client, ctx, "/profile", **IDENTITY, **SMTP_FORM, smtp_password="wrong")
+
+    assert "mot de passe d&#39;application" in page.text
+    assert "wrong" not in page.text
+    assert passwords.saved == {}
+    assert store.config is before
+
+
+def test_wizard_keeps_the_typed_password(
+    client: TestClient, ctx: UiContext, first_run: Store, passwords: Passwords
+) -> None:
+    review = post(
+        client,
+        ctx,
+        "/setup",
+        step="sending",
+        go="next",
+        smtp_password="secret",
+        **IDENTITY,
+        **SMTP_FORM,
+    )
+
+    assert "Tout est prêt" in review.text
+    assert "mot de passe vérifié et enregistré" in review.text
+    assert "secret" not in review.text  # not carried in hidden fields
+    assert passwords.saved == {"jeanne.exemple@example.org": "secret"}

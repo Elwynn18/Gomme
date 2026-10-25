@@ -353,6 +353,19 @@ def _previous_addresses(values: Mapping[str, str], country: str) -> tuple[Postal
     )
 
 
+def smtp_settings(
+    values: Mapping[str, str], password_env: str = DEFAULT_PASSWORD_ENV
+) -> SmtpConfig:
+    """The SMTP settings of valid form values (see `errors_for`)."""
+    return SmtpConfig(
+        host=values["smtp_host"],
+        port=int(values["smtp_port"]),
+        security=SmtpSecurity(values["smtp_security"]),
+        username=values["smtp_username"],
+        password_env=password_env,
+    )
+
+
 def build_config(values: Mapping[str, str], base: Config | None = None) -> Config:
     """The configuration from valid form values, keeping the rest of `base` (request
     options, limits...). Call `errors_for` first: this raises ValueError."""
@@ -394,13 +407,7 @@ def build_config(values: Mapping[str, str], base: Config | None = None) -> Confi
     current = base.email if base else EmailConfig()
     smtp = current.smtp
     if sending == "smtp":
-        smtp = SmtpConfig(
-            host=values["smtp_host"],
-            port=int(values["smtp_port"]),
-            security=SmtpSecurity(values["smtp_security"]),
-            username=values["smtp_username"],
-            password_env=smtp.password_env if smtp else DEFAULT_PASSWORD_ENV,
-        )
+        smtp = smtp_settings(values, smtp.password_env if smtp else DEFAULT_PASSWORD_ENV)
         mode, composer = EmailMode.SMTP, suggested_composer(email)
     else:
         mode, composer = EmailMode.MANUAL, Composer(sending)

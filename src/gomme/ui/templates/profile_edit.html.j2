@@ -11,7 +11,7 @@
   <section class="card"><h2 style="margin-top:0">Vous</h2>{{ m.identity_fields(values, errors) }}</section>
   <section class="card"><h2 style="margin-top:0">Vous retrouver</h2>{{ m.details_fields(values, errors, needs, us_states) }}</section>
   <section class="card"><h2 style="margin-top:0">Anciennes coordonnées</h2>{{ m.others_fields(values, errors, needs) }}</section>
-  <section class="card"><h2 style="margin-top:0">Envoi des demandes</h2>{{ m.sending_fields(values, errors) }}</section>
+  <section class="card"><h2 style="margin-top:0">Envoi des demandes</h2>{{ m.sending_fields(values, errors, password_saved) }}</section>
   <div class="actions">
     <button class="btn primary big">Enregistrer</button>
     <a class="btn ghost" href="/profile">Annuler</a>

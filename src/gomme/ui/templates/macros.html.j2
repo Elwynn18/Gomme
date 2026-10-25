@@ -146,7 +146,7 @@
 </fieldset>
 {%- endmacro %}
 
-{% macro sending_fields(values, errors) -%}
+{% macro sending_fields(values, errors, password_saved=False) -%}
 {% set gmail = is_gmail(values.get('email', '')) %}
 <div class="sending-wrap">
 <div class="choices" role="radiogroup" aria-label="Façon d'envoyer vos emails">
@@ -165,12 +165,18 @@
   <ol class="numbered">
     <li><span>Activez la <strong>validation en deux étapes</strong> de votre compte Google, si ce n'est pas déjà fait.</span></li>
     <li><span>Créez un <strong>mot de passe d'application</strong> (16 lettres) : <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer noopener">myaccount.google.com/apppasswords</a>. Donnez-lui un nom comme « Gomme ».</span></li>
-    <li><span>Gomme vous le demandera au premier envoi et le gardera dans le <strong>trousseau sécurisé</strong> de votre ordinateur, jamais dans un fichier.</span></li>
+    <li><span>Collez-le ci-dessous. Gomme vérifie qu'il fonctionne (sans envoyer d'email) et le garde dans le <strong>trousseau sécurisé</strong> de votre ordinateur, jamais dans un fichier.</span></li>
   </ol>
   <p class="small muted">Ce mot de passe ne sert qu'à envoyer des emails ; vous pouvez le révoquer à tout moment depuis la même page Google.</p>
   {% else %}
-  <p>Indiquez le serveur d'envoi (SMTP) de votre messagerie ; votre fournisseur le donne dans son aide. Le mot de passe vous sera demandé au premier envoi et gardé dans le trousseau sécurisé de votre ordinateur, jamais dans un fichier.</p>
+  <p>Indiquez le serveur d'envoi (SMTP) de votre messagerie ; votre fournisseur le donne dans son aide. Le mot de passe est vérifié puis gardé dans le trousseau sécurisé de votre ordinateur, jamais dans un fichier.</p>
   {% endif %}
+  <div class="field{% if errors.get('smtp_password') %} has-error{% endif %}">
+    <label for="f-smtp_password">{{ "Mot de passe d'application" if gmail else "Mot de passe d'envoi" }}{% if password_saved %} <span class="optional">(déjà enregistré)</span>{% endif %}</label>
+    <p class="help" id="h-smtp_password">{% if password_saved %}{{ icon("lock") }} Un mot de passe est déjà gardé dans le trousseau. Laissez vide pour le conserver, ou collez-en un nouveau.{% elif gmail %}Les 16 lettres données par Google, espaces compris ou non. Pas votre mot de passe Google habituel.{% else %}Vous pouvez aussi le laisser vide : il sera demandé au premier envoi.{% endif %}</p>
+    <input type="password" id="f-smtp_password" name="smtp_password" autocomplete="new-password" aria-describedby="h-smtp_password" style="max-width:360px"{% if errors.get('smtp_password') %} aria-invalid="true"{% endif %}>
+    {% if errors.get('smtp_password') %}<p class="error">{{ errors['smtp_password'] }}</p>{% endif %}
+  </div>
   {% set smtp_error = errors.get('smtp_host') or errors.get('smtp_port') or errors.get('smtp_security') or errors.get('smtp_username') %}
   <details{% if not gmail or smtp_error %} open{% endif %}>
     <summary>Réglages du serveur{% if gmail %} (déjà remplis pour Gmail){% endif %}</summary>

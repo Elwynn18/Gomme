@@ -27,6 +27,7 @@ from urllib.parse import parse_qs, quote
 
 import jinja2
 from starlette.applications import Starlette
+from starlette.concurrency import run_in_threadpool
 from starlette.requests import Request
 from starlette.responses import FileResponse, HTMLResponse, RedirectResponse, Response
 from starlette.routing import Route
@@ -34,6 +35,7 @@ from starlette.routing import Route
 from gomme.brokers.fields import ProfileField
 from gomme.brokers.schema import Broker, Region
 from gomme.channels.email import (
+    SendError,
     SmtpFactory,
     SmtpSender,
     build_message,
@@ -233,6 +235,31 @@ def create_app(ctx: UiContext) -> Starlette:
 
     jobs = Jobs()
 
+    def check_and_keep(smtp: SmtpConfig, typed: str) -> tuple[str | None, str]:
+        """Log in once with the typed password (nothing is sent), then keep it in the
+        keyring. Returns (error for the field, note for the user)."""
+        password = typed.replace(" ", "")  # Gmail shows app passwords in groups of four
+        note = "Mot de passe vérifié et gardé dans le trousseau sécurisé de cet ordinateur."
+        try:
+            with SmtpSender(smtp, password, factory=ctx.smtp_factory):
+                pass
+        except SendError as exc:
+            if "Authentication" in str(exc):
+                return explain_failure(str(exc)), ""
+            note = (
+                "Connexion au serveur impossible pour le vérifier maintenant ; "
+                "il est gardé dans le trousseau quand même."
+            )
+        try:
+            ctx.passwords.set(smtp.username, password)
+        except PasswordStoreError as exc:
+            note = f"Trousseau indisponible ({exc}) : le mot de passe sera demandé à chaque envoi."
+        return None, note
+
+    def password_saved_for(values: dict[str, str]) -> bool:
+        username = values.get("smtp_username", "")
+        return bool(username and ctx.passwords.get(username))
+
     def known_password(smtp: SmtpConfig) -> str | None:
         """The SMTP password from the environment or the keyring, if any."""
         return os.environ.get(smtp.password_env) or ctx.passwords.get(smtp.username)
@@ -266,6 +293,7 @@ def create_app(ctx: UiContext) -> Starlette:
             hidden={k: v for k, v in values.items() if k not in step.fields and v},
             needs=forms.fields_needed(ctx.load_brokers(), values.get("country") or "FR"),
             us_states=US_STATES,
+            password_saved=password_saved_for(values),
         )
 
     async def setup(request: Request) -> Response:
@@ -293,6 +321,11 @@ def create_app(ctx: UiContext) -> Starlette:
         errors = forms.errors_for(values, step.fields, today())
         if errors:
             return setup_page(request, step, values, errors)
+        typed = submitted.get("smtp_password", "")
+        if step.name == "sending" and values["sending"] == "smtp" and typed:
+            problem, _ = await run_in_threadpool(check_and_keep, forms.smtp_settings(values), typed)
+            if problem:
+                return setup_page(request, step, values, {"smtp_password": problem})
         return setup_page(request, forms.next_step(step, 1), values)
 
     async def profile(request: Request) -> Response:
@@ -318,6 +351,7 @@ def create_app(ctx: UiContext) -> Starlette:
             errors=errors or {},
             needs=forms.fields_needed(ctx.load_brokers(), values.get("country") or "FR"),
             us_states=US_STATES,
+            password_saved=password_saved_for(forms.with_sending_defaults(values)),
         )
 
     async def profile_edit(request: Request) -> Response:
@@ -330,12 +364,20 @@ def create_app(ctx: UiContext) -> Starlette:
         config = current_config(request)
         if isinstance(config, Response):
             return config
-        values = forms.clean(await form(request))
+        submitted = await form(request)
+        values = forms.clean(submitted)
         errors = forms.errors_for(values, forms.FIELDS, today())
         if errors:
             return profile_form(request, values, errors)
-        ctx.save_config(forms.build_config(values, base=config))
-        return back("/profile", "Profil mis à jour.")
+        updated = forms.build_config(values, base=config)
+        note = ""
+        typed = submitted.get("smtp_password", "")
+        if updated.email.mode is EmailMode.SMTP and updated.email.smtp and typed:
+            problem, note = await run_in_threadpool(check_and_keep, updated.email.smtp, typed)
+            if problem:
+                return profile_form(request, values, {"smtp_password": problem})
+        ctx.save_config(updated)
+        return back("/profile", f"Profil mis à jour. {note}".strip())
 
     # --- pages --------------------------------------------------------------------------
 

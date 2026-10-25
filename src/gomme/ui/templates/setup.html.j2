@@ -44,7 +44,7 @@
   {% elif step.name == "sending" %}
     <h1>Comment envoyer vos demandes ?</h1>
     <p class="muted">Gomme rédige chaque demande. Elle part ensuite de votre propre adresse email.</p>
-    {{ m.sending_fields(values, errors) }}
+    {{ m.sending_fields(values, errors, password_saved) }}
 
   {% elif step.name == "review" %}
     <h1>Tout est prêt</h1>
@@ -59,7 +59,7 @@
       {% if values.other_emails %}<div><dt>Autres emails</dt><dd>{{ values.other_emails | replace("\n", ", ") }}</dd></div>{% endif %}
       {% if values.other_phones %}<div><dt>Autres téléphones</dt><dd>{{ values.other_phones | replace("\n", ", ") }}</dd></div>{% endif %}
       {% for slot in range(3) %}{% if values["prev_street_" ~ slot] %}<div><dt>Ancienne adresse</dt><dd>{{ values["prev_street_" ~ slot] }}, {{ values["prev_postal_code_" ~ slot] }} {{ values["prev_city_" ~ slot] }}</dd></div>{% endif %}{% endfor %}
-      <div><dt>Envoi</dt><dd>{{ sending_labels[values.sending] }}</dd></div>
+      <div><dt>Envoi</dt><dd>{{ sending_labels[values.sending] }}{% if values.sending == "smtp" %}<br><span class="small muted">{{ "mot de passe vérifié et enregistré" if password_saved else "mot de passe demandé au premier envoi" }}</span>{% endif %}</dd></div>
     </dl>
     <p class="small muted" style="margin-top:16px">{{ m.icon("lock") }} Enregistré dans un fichier lisible par vous seul, sur cet ordinateur.</p>
   {% endif %}
