@@ -5,11 +5,12 @@ from pathlib import Path
 
 from gomme.brokers.fields import ProfileField
 from gomme.brokers.registry import load_registry
+from gomme.brokers.schema import Source
 from gomme.legal.statutes import Jurisdiction
 from gomme.profile import Profile
 from gomme.tracker.db import RequestRecord
 from gomme.tracker.state import Status
-from gomme.ui.views import board, countdown, french_date, selection
+from gomme.ui.views import board, countdown, field_reason, french_date, selection, sent_items
 
 NOW = datetime(2026, 10, 26, 9, 0, tzinfo=UTC)
 
@@ -79,3 +80,26 @@ def test_countdown_and_dates() -> None:
     assert countdown(-3) == "délai dépassé de 3 jours"
     assert french_date(date(2026, 8, 1)) == "1 août 2026"
     assert french_date(None) == "—"
+
+
+def test_field_reasons_by_source(fixtures_brokers_dir: Path) -> None:
+    broker = load_registry(fixtures_brokers_dir)[0]
+    sourced = broker.model_copy(
+        update={
+            "fields_why": {ProfileField.EMAIL: "« Indiquez votre email » (https://example.org)."}
+        }
+    )
+    assert field_reason(sourced, ProfileField.EMAIL).startswith("« Indiquez")
+    eraser = broker.model_copy(update={"source": Source.ERASER})
+    assert field_reason(eraser, ProfileField.POSTAL_ADDRESS).startswith("Estimation")
+    assert "Eraser" in field_reason(eraser, ProfileField.EMAIL)
+    optout = broker.model_copy(update={"source": Source.OPTOUT})
+    assert "OptOut" in field_reason(optout, ProfileField.FULL_NAME)
+
+
+def test_sent_items_count_the_values(fixtures_brokers_dir: Path, profile: Profile) -> None:
+    broker = next(b for b in load_registry(fixtures_brokers_dir) if b.slug == "courtier-fictif")
+    richer = profile.model_copy(update={"other_emails": ("ancienne@example.org",)})
+
+    assert sent_items(broker, profile) == ["nom", "adresse email", "adresse postale"]
+    assert sent_items(broker, richer) == ["nom", "2 adresses email", "adresse postale"]

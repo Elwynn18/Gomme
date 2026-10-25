@@ -346,6 +346,9 @@ class PostalChannel(_StrictModel):
 Channel = Annotated[EmailChannel | WebFormChannel | PostalChannel, Field(discriminator="type")]
 
 
+WhyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=600)]
+
+
 class Broker(_StrictModel):
     """A data broker and the ways to send it a removal request."""
 
@@ -358,6 +361,9 @@ class Broker(_StrictModel):
     channels: Annotated[tuple[Channel, ...], AfterValidator(_not_empty)]
     legal_basis: Annotated[tuple[LegalBasis, ...], AfterValidator(_not_empty_no_duplicates)]
     required_fields: Annotated[tuple[ProfileField, ...], AfterValidator(_not_empty_no_duplicates)]
+    # Why the broker needs each field: a quote from its own pages, or an estimate said as
+    # such. Shown to the user next to what the request will send.
+    fields_why: dict[ProfileField, WhyText] = Field(default_factory=dict)
     requires_id: StrictBool
     language: LanguageCode
     source: Source
@@ -414,6 +420,15 @@ class Broker(_StrictModel):
         if value is None and info.data.get("source") is Source.MANUAL:
             raise ValueError("required when source is 'manual'")
         return value
+
+    @model_validator(mode="after")
+    def _reasons_only_for_sent_fields(self) -> Self:
+        extra = [field.value for field in self.fields_why if field not in self.required_fields]
+        if extra:
+            raise ValueError(
+                f"fields_why explique des champs absents de required_fields : {', '.join(extra)}"
+            )
+        return self
 
     @model_validator(mode="after")
     def _manual_entries_must_have_a_country(self) -> Self:

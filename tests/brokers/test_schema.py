@@ -413,3 +413,14 @@ def test_imported_entries_may_omit_the_country(source: str) -> None:
     del data["country"]
 
     assert Broker.model_validate(data).country is None
+
+
+def test_fields_why_only_for_sent_fields(fixtures_brokers_dir: Path) -> None:
+    path = fixtures_brokers_dir / "fr" / "courtier-fictif.yml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["fields_why"] = {"postal_address": "Estimation : annuaire classé par adresse."}
+    assert Broker.model_validate(data).fields_why
+
+    data["fields_why"] = {"phone": "Estimation : sans objet."}
+    with pytest.raises(pydantic.ValidationError, match="phone"):
+        Broker.model_validate(data)

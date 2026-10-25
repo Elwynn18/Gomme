@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import date
 
 from gomme.brokers.fields import ProfileField
-from gomme.brokers.schema import Broker
+from gomme.brokers.schema import Broker, Source
 from gomme.compose import EU_EEA
 from gomme.legal.deadlines import Deadline
 from gomme.profile import Profile
@@ -163,3 +163,52 @@ def selection(
         for missing_field in missing:
             blocked[missing_field] = blocked.get(missing_field, 0) + 1
     return Selection(description, len(chosen), ready, blocked)
+
+
+# --- what each broker receives, and why ---------------------------------------------------
+
+_ERASER_ESTIMATE = "Eraser, d'où vient cette fiche, ne précise pas les informations demandées"
+
+
+def field_reason(broker: Broker, field: ProfileField) -> str:
+    """Why the broker needs `field`: from its definition, else said plainly per source."""
+    reason = broker.fields_why.get(field)
+    if reason:
+        return reason
+    match broker.source:
+        case Source.OPTOUT:
+            return "Demandé par le formulaire de ce broker, d'après le projet OptOut."
+        case Source.ERASER if field is ProfileField.POSTAL_ADDRESS:
+            return (
+                "Estimation : ce type de site classe les personnes par adresse ; "
+                f"{_ERASER_ESTIMATE}."
+            )
+        case Source.ERASER:
+            return f"Estimation : nécessaire à toute demande par email ; {_ERASER_ESTIMATE}."
+        case _:
+            return "Pas encore de justification détaillée dans la fiche de ce broker."
+
+
+def sent_items(broker: Broker, profile: Profile) -> list[str]:
+    """What a request to this broker will contain, in words ("nom", "2 adresses email")."""
+    counts = {
+        ProfileField.FULL_NAME: 1,
+        ProfileField.EMAIL: len(profile.emails_to_erase),
+        ProfileField.POSTAL_ADDRESS: (1 if profile.postal_address else 0)
+        + len(profile.previous_addresses),
+        ProfileField.BIRTH_DATE: 1 if profile.birth_date else 0,
+        ProfileField.PHONE: (1 if profile.phone else 0) + len(profile.other_phones),
+    }
+    words = {
+        ProfileField.FULL_NAME: ("nom", "nom"),
+        ProfileField.EMAIL: ("adresse email", "adresses email"),
+        ProfileField.POSTAL_ADDRESS: ("adresse postale", "adresses postales"),
+        ProfileField.BIRTH_DATE: ("date de naissance", "date de naissance"),
+        ProfileField.PHONE: ("téléphone", "téléphones"),
+    }
+    items = []
+    for kind in broker.required_fields:
+        count = counts[kind]
+        one, several = words[kind]
+        items.append(one if count <= 1 else f"{count} {several}")
+    return items
