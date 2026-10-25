@@ -25,7 +25,12 @@ uv sync --extra ui
 uv run gomme ui
 ```
 
-Une page s'ouvre dans votre navigateur. Elle tourne sur votre ordinateur seulement, protégée par un jeton. Un assistant vous demande votre profil, puis Gomme prépare une demande par broker. Chaque demande s'ouvre en un clic dans Gmail ou dans votre logiciel de messagerie, déjà remplie : vous la relisez, l'envoyez depuis votre propre boîte, et le signalez. Gomme suit ensuite les délais légaux, prépare les courriers PDF et vous dit quoi faire à chaque réponse.
+Une page s'ouvre dans votre navigateur. Elle tourne sur votre ordinateur seulement, protégée par un jeton. Un assistant vous demande votre profil, y compris vos anciennes coordonnées (anciennes adresses email ou postales, anciens numéros), que la demande d'effacement couvrira aussi. Gomme prépare ensuite une demande par broker, que vous envoyez :
+
+- **automatiquement**, depuis votre adresse, après confirmation : avec Gmail, il faut un [mot de passe d'application](https://myaccount.google.com/apppasswords), gardé dans le trousseau sécurisé du système (jamais dans un fichier) ;
+- ou **une par une**, ouverte en un clic dans Gmail ou dans votre logiciel de messagerie, déjà remplie.
+
+Gomme suit ensuite les délais légaux, prépare les courriers PDF et vous dit quoi faire à chaque réponse.
 
 ### En ligne de commande
 
