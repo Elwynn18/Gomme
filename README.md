@@ -11,12 +11,23 @@ La priorité est l'**Europe et la France** (RGPD), mal couvertes par les outils 
 ## Principes
 
 - **Usage personnel uniquement** : l'outil agit au nom de la personne qui l'exécute, et de personne d'autre.
-- **Aucune donnée personnelle ne quitte votre machine**, sauf vers le courtier destinataire et votre propre serveur mail. Ni télémétrie, ni statistiques d'usage.
+- **Aucune donnée personnelle ne quitte votre machine**, sauf vers le courtier destinataire et votre propre messagerie (serveur mail, ou Gmail quand vous ouvrez une demande dans Gmail pour l'envoyer). Ni télémétrie, ni statistiques d'usage.
 - **Minimisation** : chaque courtier ne reçoit que les champs nécessaires pour vous identifier. Aucune pièce d'identité n'est jamais envoyée automatiquement.
 - **Pas de résolution automatique de CAPTCHA** : le navigateur s'ouvre et vous le résolvez vous-même.
 - **Pas de recherche de personnes** : l'outil ne vérifie que votre propre présence chez un courtier.
 
 ## Utilisation
+
+### Dans le navigateur (le plus simple)
+
+```sh
+uv sync --extra ui
+uv run gomme ui
+```
+
+Une page s'ouvre dans votre navigateur. Elle tourne sur votre ordinateur seulement, protégée par un jeton. Un assistant vous demande votre profil, puis Gomme prépare une demande par broker. Chaque demande s'ouvre en un clic dans Gmail ou dans votre logiciel de messagerie, déjà remplie : vous la relisez, l'envoyez depuis votre propre boîte, et le signalez. Gomme suit ensuite les délais légaux, prépare les courriers PDF et vous dit quoi faire à chaque réponse.
+
+### En ligne de commande
 
 ```sh
 uv run gomme init              # votre profil ; les emails partent par défaut en mode manuel (.eml)
@@ -32,8 +43,6 @@ uv run gomme escalate 1        # brouillon de plainte CNIL si un broker ne répo
 ```
 
 Pour le démarchage téléphonique (fin de Bloctel en août 2026) et les listes rouge et anti-prospection des annuaires, voir [docs/opposition-fr.md](docs/opposition-fr.md).
-
-Vous préférez le navigateur ? `uv sync --extra ui`, puis `uv run gomme ui` ouvre une interface locale (sur votre machine seulement, protégée par un jeton).
 
 Les formulaires web demandent Playwright : `uv sync --extra web`, puis `uv run playwright install chromium`. Gomme ne résout jamais de CAPTCHA : il vous rend la main.
 
