@@ -51,12 +51,12 @@
     <p class="muted">Vérifiez vos informations. Vous pourrez les modifier à tout moment dans « Mon profil ».</p>
     <dl class="facts">
       <div><dt>Nom</dt><dd>{{ values.first_name }} {{ values.last_name }}</dd></div>
-      <div><dt>Email</dt><dd>{{ values.email }}</dd></div>
+      <div><dt>Email de contact</dt><dd>{{ values.email }}<br><span class="small muted">{{ "à effacer aussi" if values.erase_contact != "no" else "pour les réponses seulement" }}</span></dd></div>
       <div><dt>Pays</dt><dd>{{ countries.get(values.country, values.country) }}</dd></div>
       <div><dt>Adresse postale</dt><dd>{% if values.street %}{{ values.street }}, {{ values.postal_code }} {{ values.city }}{% else %}<span class="muted">non renseignée</span>{% endif %}</dd></div>
       <div><dt>Date de naissance</dt><dd>{{ values.birth_date or "non renseignée" }}</dd></div>
       <div><dt>Téléphone</dt><dd>{{ values.phone or "non renseigné" }}</dd></div>
-      {% if values.other_emails %}<div><dt>Autres emails</dt><dd>{{ values.other_emails | replace("\n", ", ") }}</dd></div>{% endif %}
+      {% if values.other_emails %}<div><dt>{{ "Autres emails à effacer" if values.erase_contact != "no" else "Emails à effacer" }}</dt><dd>{{ values.other_emails | replace("\n", ", ") }}</dd></div>{% endif %}
       {% if values.other_phones %}<div><dt>Autres téléphones</dt><dd>{{ values.other_phones | replace("\n", ", ") }}</dd></div>{% endif %}
       {% for slot in range(3) %}{% if values["prev_street_" ~ slot] %}<div><dt>Ancienne adresse</dt><dd>{{ values["prev_street_" ~ slot] }}, {{ values["prev_postal_code_" ~ slot] }} {{ values["prev_city_" ~ slot] }}</dd></div>{% endif %}{% endfor %}
       <div><dt>Envoi</dt><dd>{{ sending_labels[values.sending] }}{% if values.sending == "smtp" %}<br><span class="small muted">{{ "mot de passe vérifié et enregistré" if password_saved else "mot de passe demandé au premier envoi" }}</span>{% endif %}</dd></div>

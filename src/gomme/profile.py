@@ -127,12 +127,15 @@ class Profile(_StrictModel):
 
     first_name: SingleLine
     last_name: SingleLine
-    email: EmailAddress
+    email: EmailAddress  # contact address: sends the requests and receives the answers
     country: CountryCode  # country of residence: decides GDPR or CCPA
     language: Language = "fr"
     postal_address: PostalAddress | None = None
     birth_date: date | None = None
     phone: PhoneNumber | None = None
+    # Whether the contact address is also one whose data should be erased. When it is not
+    # (an address kept for these requests only), it is never given as an identifier.
+    include_contact_email: bool = True
     # Other identifiers the user used, whose data should be erased too. Each one only goes
     # to the brokers that identify people by that kind of field (minimisation).
     other_emails: Annotated[tuple[EmailAddress, ...], Field(max_length=MAX_OTHERS)] = ()
@@ -150,10 +153,24 @@ class Profile(_StrictModel):
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def emails_to_erase(self) -> tuple[str, ...]:
+        """The email addresses whose data the requests are about (not the contact
+        address, unless the user said so)."""
+        contact = (self.email,) if self.include_contact_email else ()
+        others = tuple(e for e in self.other_emails if e.lower() != self.email.lower())
+        return contact + others
+
+    @property
+    def contact_is_identifier(self) -> bool:
+        return self.email.lower() in (e.lower() for e in self.emails_to_erase)
+
     def has(self, field: ProfileField) -> bool:
         match field:
-            case ProfileField.FULL_NAME | ProfileField.EMAIL:
+            case ProfileField.FULL_NAME:
                 return True
+            case ProfileField.EMAIL:
+                return bool(self.emails_to_erase)
             case ProfileField.POSTAL_ADDRESS:
                 return self.postal_address is not None
             case ProfileField.BIRTH_DATE:
@@ -168,7 +185,7 @@ class Profile(_StrictModel):
         """A summary safe to print: every value is masked."""
         summary = {
             "nom": f"{mask_text(self.first_name)} {mask_text(self.last_name)}",
-            "email": mask_email(self.email),
+            "email de contact": mask_email(self.email),
             "pays": self.country,
             "langue": self.language,
         }
@@ -178,8 +195,9 @@ class Profile(_StrictModel):
             summary["date de naissance"] = "**/**/****"
         if self.phone:
             summary["téléphone"] = mask_phone(self.phone)
-        if self.other_emails:
-            summary["autres emails"] = ", ".join(mask_email(e) for e in self.other_emails)
+        summary["emails à effacer"] = (
+            ", ".join(mask_email(e) for e in self.emails_to_erase) or "aucun"
+        )
         if self.other_phones:
             summary["autres téléphones"] = ", ".join(mask_phone(p) for p in self.other_phones)
         if self.previous_addresses:
@@ -211,7 +229,7 @@ def placeholder_values(
             "name_title_slug": "-".join(part.capitalize() for part in slug.split("-")),
         }
     if ProfileField.EMAIL in allowed:
-        values["email"] = profile.email
+        values["email"] = profile.emails_to_erase[0]  # an identifier, not the contact
     if ProfileField.POSTAL_ADDRESS in allowed and profile.postal_address is not None:
         address = profile.postal_address
         state_name = US_STATES.get(address.state or "", "")

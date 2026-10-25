@@ -825,3 +825,41 @@ def test_wizard_keeps_the_typed_password(
     assert "mot de passe vérifié et enregistré" in review.text
     assert "secret" not in review.text  # not carried in hidden fields
     assert passwords.saved == {"jeanne.exemple@example.org": "secret"}
+
+
+def test_dedicated_contact_address(client: TestClient, ctx: UiContext, store: Store) -> None:
+    form = client.get("/profile/edit").text
+    assert 'name="erase_contact" value="yes" checked' in form
+
+    post(
+        client,
+        ctx,
+        "/profile",
+        **IDENTITY,
+        **ADDRESS,
+        sending="mail_app",
+        erase_contact="no",
+        other_emails="ancienne@example.org",
+    )
+
+    assert store.config is not None
+    assert store.config.profile.include_contact_email is False
+    assert 'name="erase_contact" value="yes" checked' not in client.get("/profile/edit").text
+    post(client, ctx, "/queue")
+    letter = client.get("/send").text
+    assert "Adresse email : ancienne@example.org" in letter
+    assert "Merci de me répondre à l&#39;adresse jeanne.exemple@example.org" in letter
+
+
+def test_wizard_carries_the_contact_choice(
+    client: TestClient, ctx: UiContext, first_run: Store
+) -> None:
+    # A real browser sends the hidden "no" then, when ticked, the checkbox's "yes".
+    unticked = post(
+        client, ctx, "/setup", step="identity", go="next", erase_contact="no", **IDENTITY
+    )
+    assert 'name="erase_contact" value="no"' in unticked.text  # carried, hidden
+
+    others = post(client, ctx, "/setup", step="details", go="next", erase_contact="no", **IDENTITY)
+    assert "Adresses email à faire effacer" in others.text
+    assert "Votre adresse de contact n&#39;en fait pas partie" in others.text

@@ -63,7 +63,9 @@
   {{ text_field("first_name", "Prénom", values, errors, autocomplete="given-name") }}
   {{ text_field("last_name", "Nom", values, errors, autocomplete="family-name") }}
 </div>
-{{ text_field("email", "Votre adresse email", values, errors, type="email", autocomplete="email", help="Celle depuis laquelle vous enverrez les demandes. Les brokers vous répondront à cette adresse.") }}
+{{ text_field("email", "Votre adresse email de contact", values, errors, type="email", autocomplete="email", help="Celle qui envoie les demandes et reçoit les réponses des brokers. Vous pouvez utiliser une adresse réservée à ces démarches.") }}
+<input type="hidden" name="erase_contact" value="no">
+<label class="check" style="margin-top:-8px;margin-bottom:18px"><input type="checkbox" name="erase_contact" value="yes"{% if values.get('erase_contact') != 'no' %} checked{% endif %}> <span>Faire aussi effacer les données liées à cette adresse<br><span class="small muted">Décochez si c'est une adresse neuve, que les brokers ne connaissent pas : elle servira seulement à recevoir leurs réponses, et la demande leur interdira de l'ajouter à leurs fichiers.</span></span></label>
 {{ country_field(values, errors) }}
 {%- endmacro %}
 
@@ -125,8 +127,8 @@
 {% macro others_fields(values, errors, needs) -%}
 <div class="why">{{ icon("info") }}<p>Les brokers gardent souvent d'<strong>anciennes coordonnées</strong> : une adresse email que vous n'utilisez plus, un ancien domicile, un ancien numéro. Indiquez ceux que vous avez réellement utilisés : votre demande d'effacement les couvrira aussi. Chacun n'est envoyé qu'aux brokers qui identifient les personnes par ce type d'information ; un broker qui ne le connaissait pas l'apprendra, n'ajoutez donc que les vôtres.</p></div>
 <fieldset>
-  <legend>Autres adresses email {{ need_note(needs[field_keys.EMAIL]) }}</legend>
-  {{ textarea_field("other_emails", "Adresses email", values, errors, "Une par ligne, 5 au plus : anciennes adresses, adresses secondaires…") }}
+  <legend>{{ "Autres adresses email" if values.get('erase_contact') != 'no' else "Adresses email" }} à faire effacer {{ need_note(needs[field_keys.EMAIL]) }}</legend>
+  {{ textarea_field("other_emails", "Adresses email", values, errors, "Une par ligne, 5 au plus : anciennes adresses, adresses secondaires…" ~ (" Votre adresse de contact n'en fait pas partie : indiquez ici celles que les brokers peuvent connaître." if values.get('erase_contact') == 'no' else "")) }}
 </fieldset>
 <fieldset>
   <legend>Anciennes adresses postales {{ need_note(needs[field_keys.POSTAL_ADDRESS]) }}</legend>

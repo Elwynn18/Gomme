@@ -15,7 +15,8 @@ def test_full_name_and_masked_summary(profile: Profile) -> None:
     assert profile.full_name == "Jeanne Exemple"
     summary = profile.masked()
     assert summary["nom"] == "J*** E***"
-    assert summary["email"] == "j***@e***.org"
+    assert summary["email de contact"] == "j***@e***.org"
+    assert summary["emails à effacer"] == "j***@e***.org"
     assert "Exemple" not in str(summary)
     assert "rue" not in str(summary)
 
@@ -93,3 +94,16 @@ def test_invalid_profiles_are_rejected(profile: Profile, changes: dict[str, obje
 def test_state_is_only_for_us_addresses() -> None:
     with pytest.raises(pydantic.ValidationError, match="État américain"):
         PostalAddress(street="x", postal_code="0", city="y", country="FR", state="NY")
+
+
+def test_contact_address_is_not_always_an_identifier(profile: Profile) -> None:
+    dedicated = profile.model_copy(
+        update={"include_contact_email": False, "other_emails": ("ancienne@example.org",)}
+    )
+
+    assert dedicated.emails_to_erase == ("ancienne@example.org",)
+    assert not dedicated.contact_is_identifier
+    values = placeholder_values(dedicated, {ProfileField.EMAIL}, TODAY)
+    assert values == {"email": "ancienne@example.org"}  # web forms get an identifier
+    nothing = profile.model_copy(update={"include_contact_email": False})
+    assert nothing.missing([ProfileField.EMAIL]) == (ProfileField.EMAIL,)

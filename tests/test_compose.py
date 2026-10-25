@@ -180,3 +180,26 @@ def test_other_identifiers_follow_the_required_fields(profile: Profile) -> None:
 
 def test_no_mention_without_other_identifiers(profile: Profile, french_broker: Broker) -> None:
     assert "anciennes coordonnées" not in compose(french_broker, profile).body
+
+
+def test_contact_address_kept_out_of_the_identifiers(
+    profile: Profile, french_broker: Broker
+) -> None:
+    dedicated = profile.model_copy(
+        update={"include_contact_email": False, "other_emails": ("ancienne@example.org",)}
+    )
+
+    text = compose(french_broker, dedicated)
+
+    assert "- Adresse email : ancienne@example.org" in text.body
+    assert "- Adresse email : jeanne.exemple@example.org" not in text.body
+    assert "Merci de me répondre à l'adresse jeanne.exemple@example.org" in text.body
+    assert "ne doit pas être ajoutée à vos fichiers" in text.body
+    english = compose(broker(), dedicated)
+    assert "Please reply to jeanne.exemple@example.org" in english.body
+
+
+def test_no_reply_line_when_the_contact_is_an_identifier(
+    profile: Profile, french_broker: Broker
+) -> None:
+    assert "Merci de me répondre" not in compose(french_broker, profile).body

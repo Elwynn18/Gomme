@@ -128,7 +128,7 @@ def identity_lines(
             case ProfileField.FULL_NAME:
                 value = profile.full_name
             case ProfileField.EMAIL:
-                value = profile.email
+                value = profile.emails_to_erase[0]
             case ProfileField.POSTAL_ADDRESS:
                 assert profile.postal_address is not None  # noqa: S101 - checked above
                 value = profile.postal_address.one_line()
@@ -150,7 +150,7 @@ def other_identifiers(profile: Profile, field: ProfileField) -> tuple[str, ...]:
     """The user's other values of `field` (old emails, phones, addresses), as text."""
     match field:
         case ProfileField.EMAIL:
-            return profile.other_emails
+            return profile.emails_to_erase[1:]
         case ProfileField.PHONE:
             return profile.other_phones
         case ProfileField.POSTAL_ADDRESS:
@@ -194,6 +194,7 @@ def compose(
             full_name=profile.full_name,
             identity=identity_lines(profile, broker.required_fields, language),
             covers_others=covers_others(profile, broker.required_fields),
+            reply_to=None if profile.contact_is_identifier else profile.email,
             access=access,
             notify_recipients=notify_recipients,
             authority_fr=authority_fr,

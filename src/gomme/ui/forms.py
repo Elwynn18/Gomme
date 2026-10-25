@@ -84,6 +84,7 @@ FIELDS = (
     "first_name",
     "last_name",
     "email",
+    "erase_contact",  # "yes" or "no": is the contact address also one to erase?
     "country",
     "street",
     "postal_code",
@@ -118,7 +119,7 @@ class Step:
 
 STEPS = (
     Step("welcome", "Bienvenue", ()),
-    Step("identity", "Vous", ("first_name", "last_name", "email", "country")),
+    Step("identity", "Vous", ("first_name", "last_name", "email", "erase_contact", "country")),
     Step(
         "details",
         "Vous retrouver",
@@ -196,6 +197,7 @@ def values_of(config: Config) -> dict[str, str]:
         "first_name": profile.first_name,
         "last_name": profile.last_name,
         "email": profile.email,
+        "erase_contact": "yes" if profile.include_contact_email else "no",
         "country": profile.country,
         "street": address.street if address else "",
         "postal_code": address.postal_code if address else "",
@@ -391,10 +393,11 @@ def build_config(values: Mapping[str, str], base: Config | None = None) -> Confi
         postal_address=address,
         birth_date=date.fromisoformat(values["birth_date"]) if values.get("birth_date") else None,
         phone=phone,
+        include_contact_email=values.get("erase_contact") != "no",
         other_emails=tuple(
             other
             for other in split_emails(values.get("other_emails", ""))
-            if other.lower() != email.lower()
+            if other.lower() != email.lower() or values.get("erase_contact") == "no"
         ),
         other_phones=tuple(
             other
