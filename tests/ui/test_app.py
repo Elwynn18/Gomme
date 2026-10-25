@@ -11,6 +11,7 @@ from fakes import FakeSmtp
 from starlette.testclient import TestClient
 
 from gomme.brokers.registry import load_registry
+from gomme.brokers.schema import Broker
 from gomme.config import (
     Composer,
     Config,
@@ -128,6 +129,20 @@ def client(ctx: UiContext) -> TestClient:
     response = client.get("/login", params={"token": ctx.token}, follow_redirects=False)
     assert response.status_code == 303
     return client
+
+
+FIXTURES = Path(__file__).parent.parent / "fixtures" / "brokers"
+
+
+def load_registry_fixture() -> dict[str, Broker]:
+    return {broker.slug: broker for broker in load_registry(FIXTURES)}
+
+
+def postal_only() -> Broker:
+    """courtier-fictif without its email address: reminders go by letter."""
+    broker = load_registry_fixture()["courtier-fictif"]
+    channels = tuple(c for c in broker.channels if c.type == "postal")
+    return broker.model_copy(update={"channels": channels})
 
 
 def post(client: TestClient, ctx: UiContext, path: str, **data: str) -> Any:
@@ -863,3 +878,130 @@ def test_wizard_carries_the_contact_choice(
     others = post(client, ctx, "/setup", step="details", go="next", erase_contact="no", **IDENTITY)
     assert "Adresses email à faire effacer" in others.text
     assert "Votre adresse de contact n&#39;en fait pas partie" in others.text
+
+
+# --- What each broker receives ---------------------------------------------------------------
+
+
+def test_send_page_says_what_each_broker_receives(client: TestClient, ctx: UiContext) -> None:
+    post(client, ctx, "/queue")
+
+    page = client.get("/send").text
+
+    assert "Recevra : nom, adresse email, adresse postale" in page
+    assert "Rien d'autre n'est envoyé" in page
+    detail = client.get("/brokers/fake-people-search").text
+    assert "Informations envoyées, et pourquoi" in detail
+    assert "Pas encore de justification détaillée" in detail  # no fields_why: said plainly
+
+
+# --- Reminders and complaints ----------------------------------------------------------------
+
+
+def overdue(ctx: UiContext, channel: str = "email") -> int:
+    """A request sent two months ago and now late."""
+    sent = datetime(2026, 8, 20, 9, 0, tzinfo=UTC)
+    with ctx.open_tracker() as tracker:
+        request = tracker.create("courtier-fictif", channel, Jurisdiction.GDPR, sent)
+        tracker.apply(request.id, Action.QUEUE, sent)
+        tracker.apply(request.id, Action.SEND, sent)
+        tracker.apply(request.id, Action.MARK_OVERDUE, NOW)
+    return request.id
+
+
+def test_overdue_request_offers_a_reminder_and_a_complaint(
+    client: TestClient, ctx: UiContext
+) -> None:
+    request_id = overdue(ctx)
+
+    page = client.get(f"/requests/{request_id}").text
+
+    assert f"/requests/{request_id}/remind" in page
+    assert f"/requests/{request_id}/complaint" in page
+    assert "gomme remind" not in page
+
+
+def test_reminder_from_the_mailbox(client: TestClient, ctx: UiContext) -> None:
+    request_id = overdue(ctx)
+
+    page = client.get(f"/requests/{request_id}/remind").text
+    assert 'href="mailto:dpo@example.org?subject=' in page
+    assert "Envoyer la relance automatiquement" not in page  # manual mode
+
+    response = post(client, ctx, f"/requests/{request_id}/reminded")
+
+    assert "Relance%20not%C3%A9e" in response.headers["location"]
+    with ctx.open_tracker() as tracker:
+        notes = [e.note for e in tracker.events(request_id)]
+        assert tracker.get(request_id).status is Status.OVERDUE
+    assert "relance envoyée depuis votre messagerie" in notes
+    assert "déjà relancé 1 fois" in client.get(f"/requests/{request_id}/remind").text
+
+
+def test_automatic_reminder(
+    client: TestClient,
+    ctx: UiContext,
+    smtp_store: Store,
+    passwords: Passwords,
+    fake_smtp: FakeSmtp,
+) -> None:
+    passwords.saved["jeanne.exemple@example.org"] = "secret"
+    request_id = overdue(ctx)
+    assert "Envoyer la relance automatiquement" in client.get(f"/requests/{request_id}/remind").text
+
+    response = post(client, ctx, f"/requests/{request_id}/remind")
+
+    assert "Relance%20envoy%C3%A9e" in response.headers["location"]
+    assert len(fake_smtp.sent) == 1
+    assert fake_smtp.password == "secret"
+
+
+def test_reminder_by_letter(client: TestClient, ctx: UiContext, store: Store) -> None:
+    request_id = overdue(ctx, channel="postal")
+    no_email = {**load_registry_fixture(), "courtier-fictif": postal_only()}
+    letter_ctx = UiContext(**{**ctx.__dict__, "load_brokers": lambda: tuple(no_email.values())})
+    letter_client = TestClient(create_app(letter_ctx), base_url=BASE)
+    letter_client.get("/login", params={"token": ctx.token})
+
+    assert "Préparer la lettre (PDF)" in letter_client.get(f"/requests/{request_id}/remind").text
+    post(letter_client, letter_ctx, f"/requests/{request_id}/remind")
+
+    pdf = letter_client.get(f"/requests/{request_id}/reminder.pdf")
+    assert pdf.status_code == 200
+    assert pdf.headers["content-type"] == "application/pdf"
+
+
+def test_no_reminder_for_a_request_on_time(client: TestClient, ctx: UiContext) -> None:
+    post(client, ctx, "/queue")
+
+    assert "Pas de relance possible" in client.get("/requests/1/remind").text
+
+
+def test_complaint(client: TestClient, ctx: UiContext) -> None:
+    request_id = overdue(ctx)
+
+    page = client.get(f"/requests/{request_id}/complaint").text
+    assert "https://www.cnil.fr/fr/adresser-une-plainte" in page
+    assert "Absence de réponse de Courtier Fictif" in page
+    draft = client.get(f"/requests/{request_id}/complaint.txt")
+    assert draft.headers["content-type"].startswith("text/plain")
+    assert "attachment" in draft.headers["content-disposition"]
+
+    post(client, ctx, f"/requests/{request_id}/complaint")
+
+    with ctx.open_tracker() as tracker:
+        assert tracker.get(request_id).status is Status.ESCALATED
+    assert "Pas de plainte possible" in client.get(f"/requests/{request_id}/complaint").text
+
+
+def test_complaint_after_a_refusal_asks_to_contest_first(
+    client: TestClient, ctx: UiContext
+) -> None:
+    post(client, ctx, "/queue")
+    post(client, ctx, "/requests/1/mark", action="send")
+    post(client, ctx, "/requests/1/mark", action="refuse")
+
+    page = client.get("/requests/1/complaint").text
+
+    assert "contester le refus" in page
+    assert "/requests/1/complaint" in client.get("/requests/1").text

@@ -1,0 +1,33 @@
+{% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Saisir la CNIL{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
+{% block content %}
+<p class="small"><a href="/requests/{{ item.id }}">← {{ broker.name }}</a></p>
+<h1>Saisir la CNIL</h1>
+<p class="muted">{% if item.status.value == "refused" %}{{ broker.name }} a refusé votre demande.{% else %}{{ broker.name }} n'a pas répondu dans le délai légal.{% endif %} Vous pouvez porter plainte auprès de la CNIL (RGPD, article 77). C'est gratuit et se fait en ligne. Gomme a préparé le texte ; c'est vous qui le déposez.</p>
+
+{% if item.status.value == "refused" %}
+<div class="why">{{ m.icon("info") }}<p>La CNIL demande d'abord de <strong>contester le refus auprès de l'organisme</strong>. Si ce n'est pas fait, répondez au broker en rappelant que l'opposition à la prospection est un droit absolu (article 21), puis revenez ici s'il maintient son refus.</p></div>
+{% endif %}
+
+<section class="card">
+  <ol class="numbered">
+    <li><span>Relisez le brouillon et <strong>complétez les passages entre crochets</strong> (numéro SIREN du broker, pièces jointes…).</span></li>
+    <li><span>Rassemblez les copies de vos échanges : votre demande, les éventuelles réponses, la relance.</span></li>
+    <li><span>Déposez la plainte sur <a href="{{ cnil_url }}" target="_blank" rel="noreferrer noopener">{{ cnil_url }}</a>, en copiant le texte.</span></li>
+    <li><span>Revenez ici et cliquez sur « J'ai déposé la plainte ».</span></li>
+  </ol>
+  <div class="actions">
+    <a class="btn primary" href="{{ cnil_url }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} Ouvrir le site de la CNIL</a>
+    <a class="btn" href="/requests/{{ item.id }}/complaint.txt">{{ m.icon("download") }} Télécharger le brouillon</a>
+  </div>
+</section>
+
+<h2>Brouillon de plainte</h2>
+<pre class="letter">{{ text }}</pre>
+
+<section class="card soft" style="margin-top:16px">
+  <form method="post" action="/requests/{{ item.id }}/complaint">{{ m.csrf_field() }}<button class="btn primary">J'ai déposé la plainte</button></form>
+</section>
+{% endblock %}

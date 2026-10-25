@@ -63,21 +63,34 @@ from gomme.labels import (
     REGION_LABELS,
     STATUS_LABELS,
 )
+from gomme.legal.complaint import CNIL_COMPLAINT_URL, ComplaintError, compose_complaint
 from gomme.privacy import mask_email
 from gomme.profile import US_STATES
-from gomme.tracker.db import Tracker, TrackerError
+from gomme.tracker.db import RequestRecord, Tracker, TrackerError
 from gomme.tracker.state import Action, InvalidTransitionError, Status, allowed_actions
 from gomme.ui import forms
 from gomme.ui.sending import Jobs, PasswordStore, SendJob, explain_failure, in_background
-from gomme.ui.views import STATUS_TONES, board, countdown, french_date, plural, scope, selection
+from gomme.ui.views import (
+    STATUS_TONES,
+    board,
+    countdown,
+    field_reason,
+    french_date,
+    plural,
+    scope,
+    selection,
+    sent_items,
+)
 from gomme.workflow import (
     Prepared,
+    ReminderError,
     Report,
     default_selection,
     monitor,
     prepare_emails,
     queue_requests,
     send_emails,
+    send_reminder,
     smtp_quota,
     web_form_channel,
     write_letters,
@@ -183,6 +196,8 @@ _templates.globals |= {
     "field_keys": ProfileField,
     "action_send": Action.SEND,
     "is_gmail": forms.is_gmail,
+    "field_reason": field_reason,
+    "sent_items": sent_items,
     "sending_labels": {
         "smtp": "Envoi automatique",
         "gmail": "Une par une, dans Gmail",
@@ -503,6 +518,7 @@ def create_app(ctx: UiContext) -> Starlette:
             web_forms=web_forms,
             skipped=skipped.skipped,
             composer=config.email.composer,
+            profile=config.profile,
             smtp=config.email.smtp if config.email.mode is EmailMode.SMTP else None,
             password_known=bool(smtp and known_password(smtp)),
             keyring_available=ctx.passwords.available(),
@@ -732,6 +748,183 @@ def create_app(ctx: UiContext) -> Starlette:
             ctx.passwords.delete(config.email.smtp.username)
         return back("/profile", "Mot de passe retiré du trousseau.")
 
+    # --- reminders and complaints -----------------------------------------------------
+
+    def reminder_letter(request_id: int, slug: str) -> Path | None:
+        """The latest reminder letter written for this request, if any."""
+        letters = sorted(ctx.letters_dir.glob(f"{request_id}-{slug}-relance-*.pdf"))
+        return letters[-1] if letters else None
+
+    async def remind_page(request: Request) -> Response:
+        config = current_config(request)
+        if isinstance(config, Response):
+            return config
+        request_id = int(request.path_params["id"])
+        brokers = brokers_by_slug()
+        with ctx.open_tracker() as tracker:
+            try:
+                item = tracker.get(request_id)
+                report = send_reminder(
+                    tracker,
+                    brokers,
+                    config,
+                    ctx.clock,
+                    request_id,
+                    outbox=ctx.outbox,
+                    dry_run=True,
+                )
+            except (TrackerError, ReminderError) as exc:
+                return error(request, f"Pas de relance possible : {exc}")
+            reminders = sum(1 for e in tracker.events(request_id) if e.note.startswith("relance"))
+        broker = brokers[item.broker_slug]
+        smtp = config.email.smtp if config.email.mode is EmailMode.SMTP else None
+        link = None
+        if report.to:
+            if config.email.composer is Composer.GMAIL:
+                link = gmail_compose_link(report.text, report.to, account=config.profile.email)
+            else:
+                link = mailto_link(report.text, report.to)
+        return page(
+            request,
+            "remind.html.j2",
+            item=item,
+            broker=broker,
+            report=report,
+            link=link,
+            composer=config.email.composer,
+            smtp=smtp,
+            password_known=bool(smtp and known_password(smtp)),
+            reminders=reminders,
+            letter=reminder_letter(item.id, item.broker_slug),
+        )
+
+    async def remind_done(request: Request) -> Response:
+        """The user sent the reminder from their own mailbox: journal it."""
+        request_id = int(request.path_params["id"])
+        with ctx.open_tracker() as tracker:
+            try:
+                if tracker.get(request_id).status is not Status.OVERDUE:
+                    return back(f"/requests/{request_id}", "Cette demande n'est pas en retard.")
+                tracker.note(request_id, ctx.clock(), "relance envoyée depuis votre messagerie")
+            except TrackerError as exc:
+                return back("/", str(exc))
+        return back(f"/requests/{request_id}", "Relance notée. Le broker doit maintenant répondre.")
+
+    async def remind_send(request: Request) -> Response:
+        """Send the reminder: through SMTP for an email, or as a PDF letter to post."""
+        config = current_config(request)
+        if isinstance(config, Response):
+            return config
+        request_id = int(request.path_params["id"])
+        target = f"/requests/{request_id}/remind"
+        smtp = config.email.smtp if config.email.mode is EmailMode.SMTP else None
+        password = known_password(smtp) if smtp else None
+        brokers = brokers_by_slug()
+
+        def run() -> tuple[bool, str]:
+            def session() -> SmtpSender:
+                if smtp is None or password is None:  # checked before any email is sent
+                    raise SendError("envoi automatique non configuré")
+                return SmtpSender(smtp, password, factory=ctx.smtp_factory)
+
+            with ctx.open_tracker() as tracker:
+                to = send_reminder(
+                    tracker, brokers, config, ctx.clock, request_id, outbox=ctx.outbox, dry_run=True
+                ).to
+                if to is not None and (smtp is None or password is None):
+                    return False, "Envoi automatique non configuré : utilisez votre messagerie."
+                report = send_reminder(
+                    tracker,
+                    brokers,
+                    config,
+                    ctx.clock,
+                    request_id,
+                    outbox=ctx.outbox,
+                    dry_run=False,
+                    sender=session if to is not None else None,
+                )
+            if report.sent:
+                return True, "Relance envoyée. Une copie est dans votre boîte d'envoi."
+            return True, "Lettre de relance prête : imprimez-la et envoyez-la."
+
+        try:
+            ok, message = await run_in_threadpool(run)
+        except (TrackerError, ReminderError) as exc:
+            return back(target, f"Pas de relance possible : {exc}")
+        except SendError as exc:
+            return back(target, explain_failure(str(exc)))
+        return back(f"/requests/{request_id}" if ok else target, message)
+
+    async def reminder_download(request: Request) -> Response:
+        request_id = int(request.path_params["id"])
+        with ctx.open_tracker() as tracker:
+            try:
+                item = tracker.get(request_id)
+            except TrackerError:
+                return Response(status_code=404)
+        path = reminder_letter(item.id, item.broker_slug)
+        if path is None:
+            return Response(status_code=404)
+        return FileResponse(path, media_type="application/pdf", filename=path.name)
+
+    def complaint_text(config: Config, request_id: int) -> tuple[RequestRecord, Broker, str]:
+        with ctx.open_tracker() as tracker:
+            item = tracker.get(request_id)
+            events = tracker.events(request_id)
+        broker = brokers_by_slug().get(item.broker_slug)
+        if broker is None:
+            raise ComplaintError(f"fiche broker introuvable : {item.broker_slug}")
+        return item, broker, compose_complaint(broker, config.profile, item, events, today())
+
+    async def complaint_page(request: Request) -> Response:
+        config = current_config(request)
+        if isinstance(config, Response):
+            return config
+        try:
+            item, broker, text = complaint_text(config, int(request.path_params["id"]))
+        except (TrackerError, ComplaintError) as exc:
+            return error(request, f"Pas de plainte possible : {exc}")
+        return page(
+            request,
+            "complaint.html.j2",
+            item=item,
+            broker=broker,
+            text=text,
+            cnil_url=CNIL_COMPLAINT_URL,
+        )
+
+    async def complaint_download(request: Request) -> Response:
+        config = current_config(request)
+        if isinstance(config, Response):
+            return Response(status_code=404)
+        try:
+            item, broker, text = complaint_text(config, int(request.path_params["id"]))
+        except (TrackerError, ComplaintError):
+            return Response(status_code=404)
+        filename = f"plainte-cnil-{item.id}-{broker.slug}.txt"
+        return Response(
+            text,
+            media_type="text/plain",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+    async def complaint_filed(request: Request) -> Response:
+        request_id = int(request.path_params["id"])
+        with ctx.open_tracker() as tracker:
+            try:
+                tracker.apply(
+                    request_id,
+                    Action.ESCALATE,
+                    ctx.clock(),
+                    note="plainte déposée auprès de la CNIL",
+                )
+            except (InvalidTransitionError, TrackerError) as exc:
+                return back(f"/requests/{request_id}", str(exc))
+        return back(
+            f"/requests/{request_id}",
+            "Plainte notée. La CNIL vous répondra ; indiquez ici si le broker finit par supprimer.",
+        )
+
     async def run_monitor(request: Request) -> Response:
         config = current_config(request)
         if isinstance(config, Response):
@@ -761,6 +954,13 @@ def create_app(ctx: UiContext) -> Starlette:
         Route("/send", send_page),
         Route("/letters", make_letters, methods=["POST"]),
         Route("/send/auto", send_auto, methods=["POST"]),
+        Route("/requests/{id:int}/remind", remind_page),
+        Route("/requests/{id:int}/remind", remind_send, methods=["POST"]),
+        Route("/requests/{id:int}/reminded", remind_done, methods=["POST"]),
+        Route("/requests/{id:int}/reminder.pdf", reminder_download),
+        Route("/requests/{id:int}/complaint", complaint_page),
+        Route("/requests/{id:int}/complaint.txt", complaint_download),
+        Route("/requests/{id:int}/complaint", complaint_filed, methods=["POST"]),
         Route("/send/progress", send_progress),
         Route("/smtp/forget", forget_password, methods=["POST"]),
         Route("/queue", queue_default, methods=["POST"]),

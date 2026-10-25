@@ -62,6 +62,7 @@
     <dt>À</dt><dd>{{ item.to }}</dd>
     <dt>Objet</dt><dd>{{ item.text.subject }}</dd>
   </dl>
+  {{ m.receives(item.broker, profile) }}
   <details><summary>Lire le message</summary><pre class="letter">{{ item.text.body }}</pre></details>
   <div class="actions">
     <a class="btn primary" href="{{ link }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} {{ "Ouvrir dans Gmail" if composer.value == "gmail" else "Ouvrir dans ma messagerie" }}</a>
@@ -83,7 +84,7 @@
 {% for letter in letters %}{% set r = letter.request %}
 <article class="card">
   <h3>{{ letter.broker.name if letter.broker else r.broker_slug }}</h3>
-  {% if letter.broker %}<p class="small muted">{% for c in letter.broker.channels if c.type == "postal" %}{{ c.address }}{% endfor %}</p>{% endif %}
+  {% if letter.broker %}<p class="small muted">{% for c in letter.broker.channels if c.type == "postal" %}{{ c.address }}{% endfor %}</p>{{ m.receives(letter.broker, profile) }}{% endif %}
   <div class="actions">
     {% if letter.ready %}<a class="btn" href="/requests/{{ r.id }}/letter">{{ m.icon("download") }} Télécharger la lettre</a>{% endif %}
     {{ m.action_button(r.id, action_send, "/send", label="Je l'ai postée") }}
@@ -98,6 +99,7 @@
 {% for wf in web_forms %}{% set r = wf.request %}
 <article class="card">
   <h3>{{ wf.broker.name if wf.broker else r.broker_slug }}</h3>
+  {% if wf.broker %}{{ m.receives(wf.broker, profile) }}{% endif %}
   {% if wf.channel and wf.channel.steps %}<p class="small muted">Remplissage automatique possible en ligne de commande : <code>gomme submit --broker {{ r.broker_slug }}</code>.</p>{% endif %}
   <div class="actions">
     {% if wf.channel %}<a class="btn primary" href="{{ wf.channel.url }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} Ouvrir le formulaire</a>{% endif %}

@@ -1,0 +1,39 @@
+{% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Relancer {{ broker.name }}{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
+{% block content %}
+<p class="small"><a href="/requests/{{ item.id }}">← {{ broker.name }}</a></p>
+<h1>Relancer {{ broker.name }}</h1>
+<p class="muted">Le délai légal est dépassé. Une relance rappelle au broker ses obligations, et sera une pièce utile si vous saisissez ensuite la CNIL.{% if reminders %} Vous l'avez déjà relancé {{ reminders }} fois.{% endif %}</p>
+
+<section class="card">
+  {% if report.to %}
+  <dl class="mail-head"><dt>À</dt><dd>{{ report.to }}</dd><dt>Objet</dt><dd>{{ report.text.subject }}</dd></dl>
+  {% else %}
+  <p>Ce broker n'a pas d'adresse email : la relance part par <strong>courrier</strong>, de préférence en recommandé avec accusé de réception.</p>
+  {% endif %}
+  <details{% if not report.to %} open{% endif %}><summary>Lire la relance</summary><pre class="letter">{{ report.text.body }}</pre></details>
+
+  <div class="actions">
+  {% if report.to %}
+    {% if smtp and password_known %}
+    <form method="post" action="/requests/{{ item.id }}/remind">{{ m.csrf_field() }}<button class="btn primary">{{ m.icon("send") }} Envoyer la relance automatiquement</button></form>
+    {% endif %}
+    <a class="btn{% if not (smtp and password_known) %} primary{% endif %}" href="{{ link }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} {{ "Ouvrir dans Gmail" if composer.value == "gmail" else "Ouvrir dans ma messagerie" }}</a>
+  {% else %}
+    {% if letter %}<a class="btn primary" href="/requests/{{ item.id }}/reminder.pdf">{{ m.icon("download") }} Télécharger la lettre de relance</a>{% endif %}
+    <form method="post" action="/requests/{{ item.id }}/remind">{{ m.csrf_field() }}<button class="btn{% if not letter %} primary{% endif %}">{{ m.icon("printer") }} {{ "Préparer une nouvelle lettre" if letter else "Préparer la lettre (PDF)" }}</button></form>
+  {% endif %}
+  </div>
+</section>
+
+{% if report.to %}
+<section class="card soft">
+  <p style="margin-top:0">Envoyée depuis votre messagerie ? Signalez-le : Gomme le note dans l'historique de la demande.</p>
+  <form method="post" action="/requests/{{ item.id }}/reminded">{{ m.csrf_field() }}<button class="btn">J'ai envoyé la relance</button></form>
+</section>
+{% else %}
+<section class="card soft"><p style="margin:0">Une fois la lettre postée, gardez la preuve de dépôt : elle servira pour une éventuelle plainte.</p></section>
+{% endif %}
+{% endblock %}

@@ -218,6 +218,10 @@ legend { font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; padding: 0; }
 .check { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; cursor: pointer; }
 .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
 input[type=password] { width: 100%; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.receives { margin: 4px 0 12px; }
+.receives summary { font-weight: 500; font-size: .93rem; }
+.reasons { margin: 4px 0 8px; padding-left: 18px; font-size: .93rem; }
+.reasons li { margin-bottom: 6px; overflow-wrap: anywhere; }
 .why {
   display: flex; gap: 12px; background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
 }

@@ -8,10 +8,11 @@
 
 <div class="card">
   <dl class="facts">
-    <div><dt>Informations envoyées</dt><dd>{% for f in broker.required_fields %}{{ field_labels[f] }}{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
     <div><dt>Pièce d'identité</dt><dd>{{ "Exigée : à masquer en partie" if broker.requires_id else "Non demandée" }}</dd></div>
     <div><dt>Fiche vérifiée le</dt><dd>{{ broker.last_verified | fr_date }}</dd></div>
   </dl>
+  <h3 style="margin-top:20px">Informations envoyées, et pourquoi</h3>
+  <ul class="reasons">{% for f in broker.required_fields %}<li><strong>{{ field_labels[f] | capitalize }}</strong> : {{ field_reason(broker, f) }}</li>{% endfor %}</ul>
   <h3 style="margin-top:20px">Moyens de contact</h3>
   <ul>
     {% for c in broker.channels %}

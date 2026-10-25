@@ -38,11 +38,14 @@
     <p>Le broker attend quelque chose de vous, souvent une confirmation d'identité. Répondez-lui, puis cliquez sur « J'ai fourni l'information ». Le délai légal est suspendu en attendant.</p>
     <p class="small muted">S'il réclame une pièce d'identité : masquez tout ce qui n'est pas nécessaire (photo, numéro du document, date de délivrance…). N'envoyez jamais plus que ce qu'il faut.</p>
   {% elif s == "overdue" %}
-    <p>Le délai légal est dépassé sans réponse. Vous pouvez relancer le broker, puis, s'il ne répond toujours pas, saisir la CNIL.</p>
-    <p class="small muted">Pour l'instant, en ligne de commande : relance <code>gomme remind {{ item.id }}</code>, plainte <code>gomme escalate {{ item.id }}</code>.</p>
+    <p>Le délai légal est dépassé sans réponse. Relancez d'abord le broker ; s'il ne répond toujours pas, saisissez la CNIL.</p>
+    <div class="actions">
+      <a class="btn primary" href="/requests/{{ item.id }}/remind">{{ m.icon("send") }} Relancer le broker</a>
+      {% if item.jurisdiction.value == "gdpr" %}<a class="btn" href="/requests/{{ item.id }}/complaint">Saisir la CNIL</a>{% endif %}
+    </div>
   {% elif s == "refused" %}
     <p>Le broker a refusé. Pour la prospection commerciale, l'opposition est un droit absolu (RGPD, art. 21) : un refus est rarement justifié. Vous pouvez saisir la CNIL.</p>
-    <p class="small muted">Pour l'instant, en ligne de commande : <code>gomme escalate {{ item.id }}</code>.</p>
+    {% if item.jurisdiction.value == "gdpr" %}<div class="actions"><a class="btn primary" href="/requests/{{ item.id }}/complaint">Saisir la CNIL</a></div>{% endif %}
   {% elif s == "completed" %}
     <p>{{ m.icon("check") }} Le broker a confirmé la suppression. Gomme vous proposera de vérifier dans quelques semaines que vos données ne sont pas revenues.</p>
   {% elif s == "recheck_due" %}

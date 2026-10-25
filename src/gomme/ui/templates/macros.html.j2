@@ -25,6 +25,12 @@
 <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="9" width="26" height="14" rx="4" transform="rotate(-18 16 16)" fill="var(--accent)"/><rect x="3" y="9" width="10" height="14" rx="4" transform="rotate(-18 16 16)" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/></svg>
 {%- endmacro %}
 
+{% macro receives(broker, profile) -%}
+<details class="receives"><summary>Recevra : {{ sent_items(broker, profile) | join(", ") }}</summary>
+<ul class="reasons">{% for f in broker.required_fields %}<li><strong>{{ field_labels[f] | capitalize }}</strong> : {{ field_reason(broker, f) }}</li>{% endfor %}</ul>
+<p class="small muted">Rien d'autre n'est envoyé à ce broker.</p></details>
+{%- endmacro %}
+
 {% macro badge(status) -%}
 <span class="badge {{ status_tones[status] }}">{{ status_labels[status] }}</span>
 {%- endmacro %}
