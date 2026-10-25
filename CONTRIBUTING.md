@@ -33,6 +33,9 @@ channels:                         # au moins un, par ordre de préférence
     address: "DPO, 1 rue X, 75000 Paris"
 legal_basis: [gdpr_art17, gdpr_art21]   # gdpr_art15 | gdpr_art17 | gdpr_art19 | gdpr_art21 | ccpa_1798_105
 required_fields: [full_name, email]     # full_name | email | postal_address | birth_date | phone
+fields_why:                       # facultatif mais conseillé : pourquoi chaque champ est demandé
+  full_name: "Estimation : nécessaire pour toute demande."
+  email: "La page demande « votre adresse email » pour traiter la demande (https://exemple.fr/rgpd)."
 requires_id: false                # true seulement si le broker exige une pièce d'identité
 language: fr                      # code ISO 639-1 de la langue de la demande
 source: manual                    # manual | eraser | optout | badbool | optery
@@ -100,6 +103,7 @@ Il n'existe pas d'étape de résolution de CAPTCHA, et il n'y en aura pas : c'es
 - **Citer ses sources.** `source_ref` pointe vers la page où vous avez trouvé les coordonnées (politique de confidentialité, mentions légales…). N'inventez rien : en cas de doute, ajoutez un commentaire `# TODO(verify): …`.
 - **Dater la vérification.** `last_verified` est la date à laquelle vous avez vérifié la fiche vous-même.
 - **Minimisation.** Dans `required_fields`, ne listez que les champs dont le broker a réellement besoin pour vous identifier.
+- **Justifier.** `fields_why` explique chaque champ de `required_fields`, en une phrase affichée à l'utilisateur : soit une citation de la page du broker, entre « », suivie de son URL ; soit une phrase commençant par `Estimation :` quand la page ne dit rien. Jamais de citation inventée.
 - **Aucune donnée personnelle** dans les fiches, les exemples ou les commits.
 
 ### 5. Vérifier
