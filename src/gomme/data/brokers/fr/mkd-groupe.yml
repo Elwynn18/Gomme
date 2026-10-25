@@ -14,14 +14,12 @@ channels:
   - type: postal
     address: "MKD Groupe — Délégué à la protection des données, 35 rue de la Belle Image, 94700 Maisons-Alfort"
 legal_basis: [gdpr_art17, gdpr_art21]
-# TODO(verify): le formulaire exige un « Identifiant sollicité » : « L'adresse email, le numéro
-# de téléphone ou l'adresse postale qui a effectivement été contactée. C'est la clé de recherche
-# dans nos bases » (https://rgpd.mkdgroupe.dev/droits/nouvelle). Téléphone et adresse postale
-# (« Facultatifs ») manquent si la prospection a eu lieu par téléphone ou par courrier.
-required_fields: [full_name, email]
+# TODO(verify): le même identifiant peut être l'adresse postale (prospection par courrier), non envoyée ici.
+required_fields: [full_name, email, phone]
 fields_why:
   full_name: "Le formulaire demande le « Nom et prénom de la personne concernée » (https://rgpd.mkdgroupe.dev/droits/nouvelle)."
   email: "Le formulaire rend obligatoire l'« Adresse email de contact » : « C'est à cette adresse que notre réponse vous sera envoyée » (https://rgpd.mkdgroupe.dev/droits/nouvelle)."
+  phone: "Le formulaire cherche par l'« Identifiant sollicité » : « L'adresse email, le numéro de téléphone ou l'adresse postale qui a effectivement été contactée. C'est la clé de recherche dans nos bases » (https://rgpd.mkdgroupe.dev/droits/nouvelle)."
 requires_id: false
 language: fr
 source: manual

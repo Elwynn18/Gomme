@@ -16,12 +16,12 @@ channels:
   - type: postal
     address: "Consumer Advocate, Acxiom, P.O. Box 2000, Conway, AR 72033-9928, USA"
 legal_basis: [gdpr_art17, gdpr_art21, ccpa_1798_105]
-# TODO(verify): https://www.acxiom.com/optout/ demande, hors des États-Unis, « your complete name, country of residence, physical address, and telephone number » : téléphone (phone) absent de required_fields.
-required_fields: [full_name, email, postal_address]
+required_fields: [full_name, email, postal_address, phone]
 fields_why:
   full_name: "Pour les demandes hors des États-Unis, la page demande « your complete name » (votre nom complet) (https://www.acxiom.com/optout/)."
   email: "Estimation : pour écrire à AskPrivacy@acxiom.com et recevoir la réponse ; la page n'exige « a valid email address » que pour les demandes des États-Unis (https://www.acxiom.com/optout/)."
   postal_address: "Pour les demandes hors des États-Unis, la page demande le « country of residence » et la « physical address » (pays de résidence et adresse) (https://www.acxiom.com/optout/)."
+  phone: "Pour les demandes hors des États-Unis, la page demande le « telephone number » (numéro de téléphone) (https://www.acxiom.com/optout/)."
 requires_id: false
 language: en
 source: manual

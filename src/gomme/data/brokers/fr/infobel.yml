@@ -12,14 +12,12 @@ channels:
   - type: postal
     address: "DPO – INFOBEL SA, Avenue Louise 231, 1050 Bruxelles, Belgique"
 legal_basis: [gdpr_art17, gdpr_art21]
-# TODO(verify): le formulaire https://dpo.infobel.com/?languageCode=fr marque le téléphone comme obligatoire
-#   (`<input id="phone" type="tel" autocomplete="tel" required>`, relevé le 2026-10-25),
-#   or phone n'est pas dans required_fields. Il exige aussi l'URL de la fiche à modifier.
-required_fields: [full_name, email, postal_address]
+required_fields: [full_name, email, postal_address, phone]
 fields_why:
   full_name: "Pour les particuliers, l'annuaire traite les « Données d'identification personnelle (nom, prénom, adresse, numéro de téléphone, adresse email) » ; nom et prénom sont obligatoires dans le formulaire du DPO (https://www.infobel.com/fr/france/Landing/PersonalDataProtection)."
   email: "La demande passe par « le formulaire accessible sur la page dpo.infobel.com », où l'email est un champ obligatoire ; il sert aussi à recevoir la réponse (https://www.infobel.com/fr/france/Landing/PersonalDataProtection)."
   postal_address: "L'annuaire range les particuliers par « nom, prénom, adresse, numéro de téléphone » ; rue, code postal et ville sont obligatoires dans le formulaire du DPO (https://www.infobel.com/fr/france/Landing/PersonalDataProtection)."
+  phone: "Le téléphone est un champ obligatoire du formulaire du DPO, relevé le 2026-10-25 (https://dpo.infobel.com/?languageCode=fr) ; l'annuaire range les particuliers par « nom, prénom, adresse, numéro de téléphone »."
 requires_id: true
 language: fr
 source: manual

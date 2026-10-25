@@ -12,14 +12,13 @@ channels:
   - type: postal
     address: "Solocal Group, DPO, 204 rond-point du Pont de Sèvres, 92649 Boulogne-Billancourt Cedex"
 legal_basis: [gdpr_art17, gdpr_art21]
-# TODO(verify): la page liste comme données de contact de la base « Campagne SMS/RCS Numéro de
-# téléphone mobile Campagne emailing Email » (https://www.marketingconnect.fr/vie-privee) :
-# le téléphone manque, l'adresse postale n'est pas citée.
-required_fields: [full_name, email, postal_address]
+# TODO(verify): la page ne cite pas l'adresse postale parmi les données de contact de la base.
+required_fields: [full_name, email, postal_address, phone]
 fields_why:
   full_name: "La page cite « Nom et prénom » pour la « Gestion des demandes d'exercice des droits » (https://www.marketingconnect.fr/vie-privee)."
   email: "La page cite « E-mail » pour la gestion des demandes ; ses campagnes « emailing » utilisent l'email comme donnée de contact (https://www.marketingconnect.fr/vie-privee)."
   postal_address: "Estimation : la page ne cite pas l'adresse postale parmi les données de contact de sa base (SMS et email) ; utile pour une réponse par courrier ou pour distinguer des homonymes."
+  phone: "La page liste parmi les données de contact de la base « Campagne SMS/RCS Numéro de téléphone mobile » (https://www.marketingconnect.fr/vie-privee)."
 requires_id: false
 language: fr
 source: manual
