@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: captify-technologies
+name: Captify Technologies
+domain: captifytechnologies.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@captify.co.uk
+  - type: web_form
+    url: https://verve.com/data-subject-request-form/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L913
+notes: 'Notes d''Eraser : lorraine.pinter@captify.co.uk (DPO) originally replied that she''s left Captify
+  and pointed to Verve Group''s DSR form above. Found privacy@captify.co.uk as a team inbox (not tied
+  to her personally) 2026-08-20 - worth retrying by email now that a live address exists; keep the Verve
+  form as fallback.'

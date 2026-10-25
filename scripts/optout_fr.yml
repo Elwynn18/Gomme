@@ -1,0 +1,150 @@
+# French texts for the steps imported from OptOut, by broker slug then step id.
+# Read by scripts/import_optout.py; placeholders use Gomme's names (see CONTRIBUTING.md).
+# The English text comes from OptOut itself.
+
+beenverified:
+  open_optout_form:
+    label: Ouvrir le formulaire de recherche
+  fill_name:
+    label: Saisir le nom
+  open_state_dropdown:
+    label: Ouvrir la liste des États
+  wait_for_state_listbox:
+    label: Attendre la liste des États
+  select_state:
+    label: Choisir l'État
+  wait_for_turnstile:
+    label: Attendre le contrôle de sécurité
+    message: Contrôle de sécurité Cloudflare en cours…
+  search:
+    label: Rechercher la fiche
+  select_listing:
+    message: >-
+      BeenVerified affiche les résultats de recherche.
+      Cliquez sur VOTRE fiche dans la liste.
+      Un CAPTCHA va apparaître : résolvez-le.
+      Appuyez sur Entrée une fois le formulaire de suppression chargé.
+  wait_for_removal_form:
+    label: Attendre le formulaire de suppression
+  open_account_dropdown:
+    label: Ouvrir la liste « type de compte »
+  wait_for_account_listbox:
+    label: Attendre la liste des types de compte
+  select_no_account:
+    label: Choisir « No » (pas de compte)
+  fill_removal_form:
+    label: Remplir le formulaire de suppression
+  submit_removal:
+    label: Envoyer la demande de suppression
+  assert_submit_success:
+    label: Vérifier l'envoi de la demande
+  email_verify:
+    message: >-
+      BeenVerified a peut-être envoyé un email de confirmation à {email}.
+      Si c'est le cas, ouvrez-le et cliquez sur le lien de confirmation, puis appuyez sur Entrée.
+      Si un message de confirmation s'affiche déjà à l'écran, appuyez simplement sur Entrée.
+
+mylife:
+  open_privacyrequest:
+    label: Ouvrir le formulaire de demande de MyLife
+  wait_for_form:
+    label: Attendre le chargement du formulaire
+    message: Chargement du formulaire JotForm de MyLife…
+  fill_form:
+    label: Remplir le formulaire d'opposition
+  captcha_and_submit:
+    message: >-
+      Le formulaire d'opposition de MyLife est ouvert et prérempli dans le navigateur.
+      1. Cochez la case du reCAPTCHA.
+      2. Cliquez sur Submit.
+      Appuyez sur Entrée ici quand MyLife affiche un message de confirmation.
+  assert_submit_success:
+    label: Vérifier que la demande a été acceptée
+
+radaris:
+  open_optout_form:
+    label: Ouvrir le formulaire d'opposition de Radaris
+  click_next_to_reveal_form:
+    label: Afficher le formulaire de recherche
+  wait_for_form:
+    label: Attendre le formulaire de recherche
+  fill_name_city:
+    label: Saisir le nom et la ville
+  submit_search:
+    label: Lancer la recherche par nom
+  select_and_remove:
+    message: |-
+      Recherche envoyée. Dans la fenêtre du navigateur :
+        1. Dans la liste des fiches, trouvez VOTRE nom et cliquez dessus.
+        2. De retour sur la page de suppression, cliquez sur le bouton bleu
+           « Start Removing ».
+        3. La case de saisie de l'email apparaît.
+      Appuyez sur Entrée ici dès que la case de saisie de l'email est visible.
+  wait_for_email_panel:
+    label: Attendre la case de saisie de l'email
+    message: Attente de la case de saisie de l'email…
+  fill_email:
+    label: Saisir l'adresse email
+  submit:
+    label: Envoyer la demande d'opposition
+  assert_submit_success:
+    label: Vérifier que la demande a été acceptée
+  email_verify:
+    message: >-
+      Radaris a envoyé un email de confirmation à {email}.
+      Ouvrez-le MAINTENANT et cliquez sur le lien de confirmation, puis appuyez sur Entrée.
+
+spokeo:
+  find_listing:
+    label: Trouver votre fiche Spokeo
+  open_optout_form:
+    label: Ouvrir le formulaire d'opposition
+  wait_for_form:
+    label: Attendre le formulaire d'opposition
+  solve_captcha:
+    message: >-
+      Le formulaire d'opposition de Spokeo est ouvert dans le navigateur.
+      Cochez maintenant la case reCAPTCHA « I'm not a robot », puis appuyez sur Entrée.
+  fill_form:
+    label: Remplir le formulaire d'opposition
+  submit:
+    label: Envoyer la demande d'opposition
+  assert_submit_success:
+    label: Vérifier que la demande a été acceptée
+  email_verify:
+    message: >-
+      Spokeo a envoyé un email de vérification à {email}.
+      Ouvrez-le MAINTENANT et cliquez sur le lien de confirmation, puis appuyez sur Entrée.
+
+whitepages:
+  find_listing:
+    label: Trouver votre fiche Whitepages
+  open_optout_form:
+    label: Ouvrir le formulaire de suppression
+  fill_listing_url:
+    label: Saisir l'URL de la fiche
+  click_next_step1:
+    label: Passer à l'étape suivante
+  click_remove_me:
+    label: Cliquer sur « Remove Me »
+  select_reason:
+    label: Choisir le motif de suppression
+  wait_for_next_enabled:
+    label: Attendre que le formulaire soit actif
+  click_next_step3:
+    label: Passer à l'étape du téléphone
+  fill_phone:
+    label: Saisir le numéro de téléphone
+  check_consent:
+    label: Cocher la case de consentement
+  click_call_now:
+    label: Demander l'appel de vérification
+  assert_call_initiated:
+    label: Vérifier que l'appel de vérification a commencé
+  phone_verify:
+    message: |-
+      Whitepages vous appelle maintenant.
+        1. Répondez à l'appel automatique de Whitepages.
+        2. Suivez les instructions vocales pour confirmer la suppression.
+        3. Saisissez le code de vérification affiché sur la page de Whitepages.
+      Appuyez sur Entrée ici quand la page confirme que votre demande a été envoyée.

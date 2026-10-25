@@ -1,0 +1,29 @@
+slug: "118000"
+name: 118 000 (Pratique Media & Services)
+domain: 118000.fr
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « Par email : privacy@groupe-pratique.com – service.client@le118000.fr »
+  - type: email
+    address: privacy@groupe-pratique.com
+  # « Ces droits s'exercent par courrier à l'adresse suivante : … »
+  - type: postal
+    address: "Pratique Media & Services, 16 rue Auber, 75009 Paris"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.118000.fr/cgu.html
+last_verified: 2026-10-25
+notes: |-
+  Édite annuaire.118000.fr (particuliers) et annuaire-inverse.118000.fr (recherche par
+  numéro).
+  La page demande « les éléments nécessaires à votre identification (nom, prénom, email) ».
+  Le site propose aussi un chatbot pour « supprimer rapidement vos données personnelles »
+  (https://www.118000.fr/faq.html).
+  Votre opérateur peut demander à ne plus figurer sur les listes d'abonnés transmises aux
+  annuaires (art. L34 et R10-1 du CPCE), appliqué « dans les 24 heures » par le 118 000.
+  Relevé le 2026-10-25 (recherche assistée) ; mentions légales : https://www.118000.fr/legals.html

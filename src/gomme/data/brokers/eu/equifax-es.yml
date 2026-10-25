@@ -1,0 +1,26 @@
+slug: equifax-es
+name: Equifax Ibérica (Espagne)
+domain: equifax.es
+country: ES
+region: eu
+category: autre
+channels:
+  # « … para ello debe dirigirse a la dirección https://www2.equifax.es/consumidores/ »
+  - type: web_form
+    url: https://www2.equifax.es/consumidores/
+  # « El interesado podrá ejercer sus derechos contactando con EQUIFAX a través de la
+  # dirección … »
+  - type: postal
+    address: "Equifax Ibérica, Paseo de la Castellana 259D, planta 26 – Torre Emperador, 28046 Madrid, España"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: true
+language: es
+source: manual
+source_ref: https://soluciones.equifax.es/legal/
+last_verified: 2026-10-25
+notes: |-
+  Fichiers de crédit ASNEF. L'adresse dpo@equifax.es ne traite
+  PAS les demandes des particuliers : utiliser le portail ou le courrier. Justificatif
+  d'identité exigé (« acreditando su identidad ») : le caviarder.
+  Page de mai 2026 ; relevé le 2026-10-25 (recherche assistée).

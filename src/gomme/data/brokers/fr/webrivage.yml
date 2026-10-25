@@ -1,0 +1,26 @@
+slug: webrivage
+name: WebRivage (Bonjour Data)
+domain: webrivage.com
+country: FR
+region: fr
+category: marketing
+channels:
+  # « Par courrier électronique à l'adresse suivante : dpo@webrivage.com »
+  - type: email
+    address: dpo@webrivage.com
+  - type: postal
+    address: "DPO Consulting Sud-Est (DPO de WebRivage), 2 rue David Girin, 69002 Lyon"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: true
+language: fr
+source: manual
+source_ref: https://webrivage.com/policy/
+last_verified: 2026-10-25
+notes: |-
+  Sites de jeux-concours et base « Bonjour Data » de « 35 millions de points de contact »
+  (https://webrivage.com/data-marketing/).
+  La page exige une copie d'un titre d'identité « comportant votre signature » : la
+  caviarder. Des « frais raisonnables » ne sont prévus que pour une demande « manifestement
+  infondée ou excessive », comme l'art. 12.5 du RGPD le permet.
+  Relevé le 2026-10-25 (recherche assistée).

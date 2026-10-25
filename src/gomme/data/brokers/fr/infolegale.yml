@@ -1,0 +1,25 @@
+slug: infolegale
+name: Infolegale
+domain: infolegale.fr
+country: FR
+region: fr
+category: autre
+channels:
+  # « doivent être exercés auprès du délégué à la Protection des Données Personnelles via
+  # l'adresse mail suivante : dpo@infolegale.fr »
+  - type: email
+    address: dpo@infolegale.fr
+  - type: postal
+    address: "Infolegale, 20 bd Eugène Deruelle, CS 83755, 69432 Lyon Cedex 03"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.infolegale.fr/donnees-personnelles
+last_verified: 2026-10-25
+notes: |-
+  Informations légales et de risque sur les entreprises. Adresse postale : siège indiqué
+  dans les mentions légales (https://www.infolegale.fr/mentions-legales). La politique
+  complète n'est « accessible sur demande ».
+  Relevé le 2026-10-25 (recherche assistée).

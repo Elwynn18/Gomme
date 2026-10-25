@@ -1,0 +1,31 @@
+slug: acxiom
+name: Acxiom
+domain: acxiom.com
+country: US
+region: global
+category: marketing
+channels:
+  # « … restrict or object to the use of their data by writing to us at Consumer Advocate
+  # Acxiom … or by emailing us at AskPrivacy@acxiom.com » (page RGPD)
+  - type: email
+    address: AskPrivacy@acxiom.com
+  # « Si vous souhaitez vous désinscrire des produits de marketing d'Acxiom, cliquez ici. »
+  # (formulaire OneTrust, page française https://www.acxiom.com/privacy/fr/)
+  - type: web_form
+    url: https://omnicom-privacy.my.onetrust.com/webform/c0a325be-6f68-46be-a0de-e4a750890f7d/ad305df1-0f8d-47fc-9833-73a64286d7a2
+  - type: postal
+    address: "Consumer Advocate, Acxiom, P.O. Box 2000, Conway, AR 72033-9928, USA"
+legal_basis: [gdpr_art17, gdpr_art21, ccpa_1798_105]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: en
+source: manual
+source_ref: https://www.acxiom.com/privacy/gdpr/
+last_verified: 2026-10-25
+notes: |-
+  « Acxiom holds personal data such as names, addresses, ages, dates of birth, emails,
+  telephone numbers, transactional data, lifestyle and demographic data. »
+  Aucune entité française distincte : le responsable est Acxiom, LLC (Conway, Arkansas).
+  Remplace la fiche importée d'Eraser (consumeradvo@acxiom.com,
+  https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L127).
+  Relevé le 2026-10-25 (recherche assistée).

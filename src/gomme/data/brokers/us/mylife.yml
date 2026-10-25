@@ -1,0 +1,128 @@
+# Généré par scripts/import_optout.py depuis https://github.com/Blake104/OptOut
+# (commit 7a310242eca38517a483d75a6a3832bc9424c01b, licence AGPL-3.0-only).
+# Ne pas modifier à la main : corriger le script ou ses traductions, puis le relancer.
+slug: mylife
+name: MyLife
+domain: mylife.com
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://www.mylife.com/privacyrequest
+    steps:
+      - id: open_privacyrequest
+        type: navigate
+        label:
+          fr: Ouvrir le formulaire de demande de MyLife
+          en: Open MyLife privacy request form
+        url: https://www.mylife.com/privacyrequest
+      - id: wait_for_form
+        type: wait_for
+        label:
+          fr: Attendre le chargement du formulaire
+          en: Wait for form to load
+        selector: input[id='first_6']
+        timeout_ms: 30000
+        message:
+          fr: Chargement du formulaire JotForm de MyLife…
+          en: Waiting for MyLife JotForm to load…
+        frame: iframe[src*='jotform.com']
+      - id: fill_form
+        type: form_fill
+        label:
+          fr: Remplir le formulaire d'opposition
+          en: Fill opt-out form
+        frame: iframe[src*='jotform.com']
+        fields:
+          first_name:
+            selector: input[id='first_6']
+            value: '{first_name}'
+          last_name:
+            selector: input[id='last_6']
+            value: '{last_name}'
+          email:
+            selector: input[id='input_7']
+            value: '{email}'
+          birth_year:
+            selector: input[id='input_15']
+            value: '{birth_year}'
+          street:
+            selector: input[id='input_11_addr_line1']
+            value: '{street}'
+          city:
+            selector: input[id='input_11_city']
+            value: '{city}'
+          state_text:
+            selector: input[id='input_11_state']
+            value: '{state}'
+          zip:
+            selector: input[id='input_11_postal']
+            value: '{postal_code}'
+          state_dropdown:
+            selector: select[id='input_21']
+            value: '{state_name}'
+      - id: captcha_and_submit
+        type: prompt_user_if_present
+        selector: button[type='submit']
+        message:
+          fr: Le formulaire d'opposition de MyLife est ouvert et prérempli dans le navigateur. 1. Cochez
+            la case du reCAPTCHA. 2. Cliquez sur Submit. Appuyez sur Entrée ici quand MyLife affiche un
+            message de confirmation.
+          en: MyLife's opt-out form is open and pre-filled in the browser. 1. Solve the reCAPTCHA checkbox.
+            2. Click Submit. Press Enter here after you see a confirmation message from MyLife.
+        frame: iframe[src*='jotform.com']
+      - id: assert_submit_success
+        type: assert
+        label:
+          fr: Vérifier que la demande a été acceptée
+          en: Verify submission accepted
+        selector: .form-thank-you, .thank-you-message, .jotform-form
+        optional: true
+      - id: capture_confirmation
+        type: capture
+  - type: email
+    address: membersupport@mylife.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+  - postal_address
+  - birth_date
+requires_id: false
+language: en
+source: optout
+source_ref: https://github.com/Blake104/OptOut/blob/7a310242eca38517a483d75a6a3832bc9424c01b/src/optout/data/brokers/mylife.yml
+last_verified: 2026-05-10
+notes: |-
+  Selon OptOut, les fiches réapparaissent souvent sous 90 jours.
+
+  Eraser : aussi listé par Eraser, https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L75
+
+  Notes d'Eraser : Insightbridge LLC is MyLife.com's registered owner/operator (same entity for privacy-request purposes) - the separate insightbridge entry was merged into this one.
+
+  Notes d'OptOut :
+  Opt-out form at mylife.com/privacyrequest — a JotForm embed (mylife.jotform.com).
+  The /privacy-portal/ route has a broken form action; /optout/ redirects to a 410 Gone.
+
+  The form iframe is at mylife.jotform.com/260284407610047. Engine fills all text
+  fields automatically; user must solve the reCAPTCHA and click Submit manually.
+
+  The form includes a Google reCAPTCHA v2 — no way to automate that step.
+
+  Selectors verified 2026-05-10 (all inside iframe[src*='jotform.com']):
+    First name:  input[id='first_6']
+    Last name:   input[id='last_6']
+    Email:       input[id='input_7']
+    Birth year:  input[id='input_15']
+    Street:      input[id='input_11_addr_line1']
+    City:        input[id='input_11_city']
+    State text:  input[id='input_11_state']
+    ZIP:         input[id='input_11_postal']
+    State select:select[id='input_21']  (full state name, e.g. "Indiana")
+    Submit:      button[type='submit']
+
+  Profiles frequently reappear after 60–90 days.
+
+  Fall back to membersupport@mylife.com with full name, address, and DOB if
+  the web form fails.

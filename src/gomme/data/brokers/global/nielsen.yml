@@ -1,0 +1,24 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: nielsen
+name: Nielsen
+domain: nielsen.com
+region: global
+category: marketing
+channels:
+  - type: web_form
+    url: https://privacyportal-de.onetrust.com/webform/70b0083d-d519-4ad2-84ca-96b7c5f8e1a9/9810a8bc-e54d-4d70-bac0-5e4d781ef5b9
+legal_basis:
+  - gdpr_art17
+  - gdpr_art21
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L176
+notes: 'Notes d''Eraser : privacy.department@nielsen.com''s auto-reply pointed GDPR/CCPA rights requests
+  to this OneTrust webform, among several other product-specific opt-out links (reply received 2026-08-20).'

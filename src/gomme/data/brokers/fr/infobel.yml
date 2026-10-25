@@ -1,0 +1,29 @@
+slug: infobel
+name: Infobel (INFOBEL SA, ex-Kapitol)
+domain: infobel.com
+country: BE
+region: fr
+category: annuaire
+channels:
+  # « Vous pouvez exercer vos droits … en complétant le formulaire accessible sur la page
+  # dpo.infobel.com ». La page ne donne pas d'adresse email.
+  - type: web_form
+    url: https://dpo.infobel.com/?languageCode=fr
+  - type: postal
+    address: "DPO – INFOBEL SA, Avenue Louise 231, 1050 Bruxelles, Belgique"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: true
+language: fr
+source: manual
+source_ref: https://www.infobel.com/fr/france/Landing/PersonalDataProtection
+last_verified: 2026-10-25
+notes: |-
+  Société belge, rangée en région fr : elle publie l'annuaire français (infobel.com/fr/france).
+  Annuaire alimenté par les opérateurs téléphoniques ; Infobel vend aussi ces données
+  « à des fins de marketing ou marketing direct ».
+  La page exige une pièce d'identité avec toute demande (« doit être accompagné de la copie
+  d'une pièce justificative d'identité ») : la caviarder (garder nom, prénom et photo,
+  masquer numéro, date de naissance et signature). Une demande par une adresse non listée
+  dans la politique n'est pas traitée.
+  Politique mise à jour le 15 mars 2023 ; relevé le 2026-10-25 (recherche assistée).

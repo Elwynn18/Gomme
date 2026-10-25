@@ -1,0 +1,19 @@
+{#- GDPR reminder after the deadline. First line: the subject. -#}
+Reminder: request for erasure and objection of {{ sent_on }} left unanswered
+
+Dear Sir or Madam,
+
+On {{ sent_on }}, I sent you a request for the erasure of my personal data and an objection to its processing (Articles 17 and 21 GDPR).
+
+The period you had to respond (one month{% if extended %}, extended by two months as you told me{% endif %}, Article 12(3)) expired on {{ due }}{% if acknowledged %}, and so far I have received no final answer{% else %} without any answer from you{% endif %}.
+
+Please act on it without further delay and confirm in writing that my data has been erased and my objection recorded. Otherwise, I will lodge a complaint with {{ authority_en }} (Article 77 GDPR).
+
+To find me in your records:
+{%- for label, value in identity %}
+- {{ label }}: {{ value }}
+{%- endfor %}
+
+Yours faithfully,
+
+{{ full_name }}

@@ -1,0 +1,23 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: anexinet
+name: Anexinet Corp.
+domain: verinext.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: dpo@verinext.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L538
+notes: 'Notes d''Eraser : Anexinet merged into Verinext (2022); anexinet.com contact was dead. Updated
+  2026-08-20. Opt-out URL https://verinext.com/contact/ now redirects to https://verinext.com/contact-404/
+  (2026-10-04) - cleared, needs a current form.'

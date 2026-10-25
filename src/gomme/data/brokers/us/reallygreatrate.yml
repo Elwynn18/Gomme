@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: reallygreatrate
+name: Reallygreatrate, Inc.
+domain: rgrmarketing.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: ccpa@rgrmarketing.com
+  - type: web_form
+    url: https://privacyportal-eu-cdn.onetrust.com/dsarwebform/942fbf02-bbfe-4a5d-808d-080b06c5651c/3fdf8f1d-7ab3-4a99-bb4e-24965500290d.html
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3697

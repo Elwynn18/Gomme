@@ -1,0 +1,30 @@
+{% extends "base.html.j2" %}
+{% block title %}Demandes{% endblock %}
+{% block content %}
+<h1>Vos demandes</h1>
+<p class="actions">
+  <form method="post" action="/queue"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer les demandes de votre région</button></form>
+  <form method="post" action="/monitor"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Mettre à jour les retards</button></form>
+</p>
+{% if counts %}
+<p class="muted">{% for status, count in counts.most_common() %}{{ status_labels[status] }} : {{ count }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+{% endif %}
+{% if rows %}
+<div class="table-wrap"><table>
+  <tr><th>N°</th><th>Broker</th><th>Canal</th><th>Loi</th><th>État</th><th>Envoyée</th><th>Échéance</th></tr>
+  {% for row in rows %}{% set r = row.request %}
+  <tr>
+    <td><a href="/requests/{{ r.id }}">{{ r.id }}</a></td>
+    <td><a href="/brokers/{{ r.broker_slug }}">{{ r.broker_slug }}</a></td>
+    <td>{{ r.channel }}</td>
+    <td>{{ r.jurisdiction.value | upper }}</td>
+    <td>{{ status_labels[r.status] }}</td>
+    <td>{{ r.sent_on or "—" }}</td>
+    <td>{% if row.due %}<span class="{{ 'late' if row.days_left < 0 and r.status.value in ('sent', 'acknowledged', 'overdue') else '' }}">{{ row.due }} ({{ '%+d' % row.days_left }} j)</span>{% else %}—{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table></div>
+{% else %}
+<p>Aucune demande pour l'instant. Commencez par « Préparer les demandes de votre région », ou choisissez un broker dans la liste.</p>
+{% endif %}
+{% endblock %}

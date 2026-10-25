@@ -1,0 +1,28 @@
+slug: mkd-groupe
+name: MKD Groupe
+domain: mkdgroupe.com
+country: FR
+region: fr
+category: marketing
+channels:
+  # « Vous pouvez également écrire à dpo@mkdgroupe.com »
+  - type: email
+    address: dpo@mkdgroupe.com
+  # « Le moyen le plus rapide est notre formulaire d'exercice de droits »
+  - type: web_form
+    url: https://rgpd.mkdgroupe.dev/droits/nouvelle
+  - type: postal
+    address: "MKD Groupe — Délégué à la protection des données, 35 rue de la Belle Image, 94700 Maisons-Alfort"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://mkdgroupe.com/protection-des-donnees/
+last_verified: 2026-10-25
+notes: |-
+  Revendique « plus de 42 millions de profils BtoC ». Se dit le plus souvent sous-traitant
+  pour les données de ses partenaires.
+  « Aucune pièce d'identité ne vous est demandée au dépôt de votre demande. »
+  Le formulaire est bien sur le domaine mkdgroupe.dev (lien de la page officielle).
+  Relevé le 2026-10-25 (recherche assistée).

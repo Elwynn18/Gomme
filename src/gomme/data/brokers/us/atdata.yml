@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: atdata
+name: AtData, LLC
+domain: atdata.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@atdata.com
+  - type: web_form
+    url: https://instantdata.atdata.com/optout
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L639
+notes: 'Notes d''Eraser : TowerData and FreshAddress merged and rebranded as AtData in 2021; the obsolete
+  TowerData entry was merged here on 2026-09-12. Experian acquired AtData in 2026, but AtData still publishes
+  this privacy address and opt-out portal.'

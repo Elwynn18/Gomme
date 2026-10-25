@@ -1,0 +1,23 @@
+slug: edictalys
+name: Edictalys (OptinPlay)
+domain: optinplay.com
+country: FR
+region: fr
+category: marketing
+channels:
+  # « vous pouvez contacter le référent données d'EDICTALYS : Par e-mail : contact@edictalys.fr »
+  - type: email
+    address: contact@edictalys.fr
+  - type: postal
+    address: "EDICTALYS, 3 avenue des Platanes, 94340 Joinville-le-Pont"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.optinplay.com/confidentialite.html
+last_verified: 2026-10-25
+notes: |-
+  Location d'adresses email et de numéros de particuliers « optin » ; semble revendeur
+  plutôt que collecteur. Pièce d'identité seulement en cas de doute raisonnable.
+  Relevé le 2026-10-25 (recherche assistée).

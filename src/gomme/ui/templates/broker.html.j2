@@ -1,0 +1,24 @@
+{% extends "base.html.j2" %}
+{% block title %}{{ broker.name }}{% endblock %}
+{% block content %}
+<h1>{{ broker.name }}</h1>
+<table>
+  <tr><th>Domaine</th><td>{{ broker.domain }}</td></tr>
+  <tr><th>Pays / région</th><td>{{ broker.country or "—" }} / {{ broker.region }}</td></tr>
+  <tr><th>Catégorie</th><td>{{ broker.category }}</td></tr>
+  {% for c in broker.channels %}
+  <tr><th>{{ {"email": "Email", "web_form": "Formulaire", "postal": "Courrier"}[c.type] }}</th>
+      <td>{% if c.type == "email" %}{{ c.address }}{% elif c.type == "web_form" %}<a href="{{ c.url }}" rel="noreferrer">{{ c.url }}</a>{% if c.steps %} ({{ c.steps|length }} étapes automatisées){% endif %}{% else %}{{ c.address }}{% endif %}</td></tr>
+  {% endfor %}
+  <tr><th>Champs envoyés</th><td>{{ broker.required_fields | join(", ") }}</td></tr>
+  <tr><th>Pièce d'identité</th><td>{{ "exigée : la caviarder" if broker.requires_id else "non" }}</td></tr>
+  <tr><th>Source</th><td>{{ broker.source }} — {% if broker.source_ref.startswith("https://") %}<a href="{{ broker.source_ref }}" rel="noreferrer">{{ broker.source_ref }}</a>{% else %}{{ broker.source_ref }}{% endif %}</td></tr>
+  <tr><th>Vérifiée le</th><td>{{ broker.last_verified or "—" }}</td></tr>
+</table>
+{% if broker.notes %}<pre class="muted">{{ broker.notes }}</pre>{% endif %}
+{% if latest %}
+<p>Dernière demande : <a href="/requests/{{ latest.id }}">n° {{ latest.id }}</a> ({{ status_labels[latest.status] }}).</p>
+{% endif %}
+<form method="post" action="/brokers/{{ broker.slug }}/queue"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer une demande</button></form>
+{% if form and form.steps %}<p class="muted">Formulaire automatisé : à remplir avec <code>gomme submit --broker {{ broker.slug }}</code> (navigateur visible).</p>{% endif %}
+{% endblock %}

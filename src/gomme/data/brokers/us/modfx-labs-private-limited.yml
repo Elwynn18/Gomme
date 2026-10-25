@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: modfx-labs-private-limited
+name: Modfx Labs Private Limited
+domain: modfxlabs.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: opt.out@modfxlabs.com
+  - type: web_form
+    url: https://modfxlabs.com/privacy
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3047
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: CA-registered mobile-location data broker; on-file mandeep@modfxlabs.com
+  is an individual employee address, while the company publishes opt.out@modfxlabs.com as its dedicated
+  privacy opt-out contact. (source: https://oag.ca.gov/data-broker/registration/553004)'

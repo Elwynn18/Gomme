@@ -1,0 +1,26 @@
+slug: manageo
+name: Manageo (Altares – D&B)
+domain: manageo.fr
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « Vous pouvez contacter le référent pour la protection des données d'ALTARES - D&B à : [email] »
+  # (adresse masquée, décodée)
+  - type: email
+    address: data-gouvernance@altares.com
+  - type: postal
+    address: "ALTARES - D&B Data Protection Officer, 290 avenue Galilée, Parc Cézanne 2 Bât. J, 13594 Aix-en-Provence Cedex 3"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.manageo.fr/infos/politique-gestion-donnees.html
+last_verified: 2026-10-25
+notes: |-
+  Données d'entreprises (dont noms et dates de naissance des dirigeants), fichiers de
+  prospection B2B. Pôle « Sales Intelligence » d'Altares – D&B.
+  TODO(verify): page datée « © 2024 » ; contacts différents de ceux d'altares.com et de
+  verif.com.
+  Relevé le 2026-10-25 (recherche assistée).

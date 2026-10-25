@@ -1,0 +1,160 @@
+# Généré par scripts/import_optout.py depuis https://github.com/Blake104/OptOut
+# (commit 7a310242eca38517a483d75a6a3832bc9424c01b, licence AGPL-3.0-only).
+# Ne pas modifier à la main : corriger le script ou ses traductions, puis le relancer.
+slug: radaris
+name: Radaris
+domain: radaris.com
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://radaris.com/control-privacy
+    steps:
+      - id: open_optout_form
+        type: navigate
+        label:
+          fr: Ouvrir le formulaire d'opposition de Radaris
+          en: Open Radaris opt-out form
+        url: https://radaris.com/control-privacy
+      - id: click_next_to_reveal_form
+        type: click
+        label:
+          fr: Afficher le formulaire de recherche
+          en: Reveal search form
+        selector: div.js-funnel-next-btn
+      - id: wait_for_form
+        type: wait_for
+        label:
+          fr: Attendre le formulaire de recherche
+          en: Wait for search form
+        selector: input[id='topsearch']
+        timeout_ms: 10000
+      - id: fill_name_city
+        type: form_fill
+        label:
+          fr: Saisir le nom et la ville
+          en: Fill name and city
+        fields:
+          full_name:
+            selector: input[id='topsearch']
+            value: '{full_name}'
+          city_state:
+            selector: input[id='name_city_state']
+            value: '{city}, {state}'
+      - id: submit_search
+        type: click
+        label:
+          fr: Lancer la recherche par nom
+          en: Submit name search
+        selector: button.form-submitter
+      - id: select_and_remove
+        type: prompt_user
+        message:
+          fr: |-
+            Recherche envoyée. Dans la fenêtre du navigateur :
+              1. Dans la liste des fiches, trouvez VOTRE nom et cliquez dessus.
+              2. De retour sur la page de suppression, cliquez sur le bouton bleu
+                 « Start Removing ».
+              3. La case de saisie de l'email apparaît.
+            Appuyez sur Entrée ici dès que la case de saisie de l'email est visible.
+          en: |-
+            Search submitted. In the browser window, complete these steps:
+              1. On the profile list, find YOUR name and click it.
+              2. You'll land back on the removal page — click the blue
+                 "Start Removing" button.
+              3. The email entry box will appear.
+            Press Enter here once the email entry box is visible on screen.
+      - id: wait_for_email_panel
+        type: wait_for
+        label:
+          fr: Attendre la case de saisie de l'email
+          en: Wait for email entry box
+        selector: input[id='user_email']
+        timeout_ms: 60000
+        message:
+          fr: Attente de la case de saisie de l'email…
+          en: Waiting for the email entry box to be ready…
+      - id: fill_email
+        type: form_fill
+        label:
+          fr: Saisir l'adresse email
+          en: Fill email address
+        fields:
+          email:
+            selector: input[id='user_email']
+            value: '{email}'
+      - id: submit
+        type: click
+        label:
+          fr: Envoyer la demande d'opposition
+          en: Submit opt-out request
+        selector: button.btn-sbmt:not(.get-url-btn)
+      - id: assert_submit_success
+        type: assert
+        label:
+          fr: Vérifier que la demande a été acceptée
+          en: Verify submission accepted
+        selector: .confirmation, .success-message, [class*='success'], [class*='confirm'], [class*='funnel'],
+          input[id='user_email']
+        optional: true
+      - id: email_verify
+        type: prompt_user
+        message:
+          fr: Radaris a envoyé un email de confirmation à {email}. Ouvrez-le MAINTENANT et cliquez sur
+            le lien de confirmation, puis appuyez sur Entrée.
+          en: Radaris has sent a confirmation email to {email}. Please open that email and click the confirmation
+            link NOW, then press Enter.
+      - id: capture_confirmation
+        type: capture
+  - type: email
+    address: removals@radaris.com
+legal_basis:
+  - ccpa_1798_105
+  - gdpr_art17
+  - gdpr_art21
+required_fields:
+  - full_name
+  - email
+  - postal_address
+requires_id: false
+language: en
+source: optout
+source_ref: https://github.com/Blake104/OptOut/blob/7a310242eca38517a483d75a6a3832bc9424c01b/src/optout/data/brokers/radaris.yml
+last_verified: 2026-05-10
+notes: |-
+  Confirmation requise : le broker envoie un lien par email.
+
+  Selon OptOut, les fiches réapparaissent souvent sous 60 jours.
+
+  Notes d'OptOut :
+  Multi-step funnel at radaris.com/control-privacy (hyphen, not slash — the
+  old /control/privacy URL does not exist).
+
+  Flow (verified 2026-05-12):
+    1. Page loads with all inputs hidden — only div.js-funnel-next-btn is visible.
+    2. Automation clicks div.js-funnel-next-btn to reveal name/city inputs.
+    3. Automation fills name + city/state and clicks the search button.
+    4. User clicks their profile from the results list.
+    5. Page returns to removal view — user clicks "Start Removing".
+    6. Email entry box appears — automation fills it and submits.
+    7. Radaris emails a confirmation link — MUST click it to complete removal.
+
+  NOTE: "Start Removing" (div.funnel-button.c-white) is always hidden in the
+  DOM until a profile is selected via the SPA — it cannot be clicked
+  programmatically. The select_and_remove step asks the user to complete
+  steps 4-5 manually before pressing Enter.
+
+  Selectors verified 2026-05-12:
+    Reveal form: div.js-funnel-next-btn
+    Name:        input[id='topsearch']
+    City/state:  input[id='name_city_state']
+    Search btn:  button.form-submitter
+    Email:       input[id='user_email']
+    Submit:      button.btn-sbmt:not(.get-url-btn)
+                 (two btn-sbmt buttons exist; the first has class get-url-btn — exclude it)
+
+  Radaris operates across multiple TLDs (radaris.com, radaris.eu, etc.).
+  A single submission typically removes you from all properties.
+
+  Data may reappear within ~60 days. Use `optout monitor` to catch this.
+  Fall back to removals@radaris.com if the web form fails.

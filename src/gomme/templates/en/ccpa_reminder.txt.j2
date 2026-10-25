@@ -1,0 +1,17 @@
+{#- CCPA reminder after the 45-day period. First line: the subject. -#}
+Reminder: request to delete personal information of {{ sent_on }}
+
+To whom it may concern,
+
+On {{ sent_on }}, I asked you to delete the personal information you hold about me and not to sell or share it. {% if california_resident %}The period to respond under the CCPA (45 days{% if extended %}, extended to 90{% endif %}, 11 CCR §7021) ended on {{ due }}{% if acknowledged %}, and I have received no final answer{% else %} without any answer from you{% endif %}.{% else %}I have not received a final answer since.{% endif %}
+
+Please act on this request without further delay and confirm in writing once my information has been deleted.
+
+To find me in your records:
+{%- for label, value in identity %}
+- {{ label }}: {{ value }}
+{%- endfor %}
+
+Sincerely,
+
+{{ full_name }}

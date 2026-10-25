@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: open-dealer-exchange
+name: Open Dealer Exchange, LLC
+domain: 700credit.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: mshannon@opendealerexchange.com
+  - type: web_form
+    url: https://www.700credit.com/privacy-policy/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L304
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Confirmed as a Privacy Rights Clearinghouse-listed, Vermont-registered
+  data broker (700Credit brand: credit reports/prescreen data for auto dealers). On-file opt_out_url is
+  empty and the email is one employee''s personal address; the company''s own privacy policy page is the
+  better general contact point. (source: https://privacyrights.org/data-brokers/open-dealer-exchange-llc-dba-700-credit-llc)'

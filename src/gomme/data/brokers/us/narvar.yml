@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: narvar
+name: Narvar, Inc.
+domain: corp.narvar.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://narvar.my.onetrust.com/webform/04b3731f-2a9a-42ce-bd6b-106d4b4ec3bf/a7c944bf-3cec-4f00-9dc5-dea5bf2b6f4f
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L575
+notes: 'Notes d''Eraser : legal@narvar.com auto-replied that email requests are not processed and will
+  be deleted; use the DSAR tool above or call 866-528-0244 (reply received 2026-09-28).'

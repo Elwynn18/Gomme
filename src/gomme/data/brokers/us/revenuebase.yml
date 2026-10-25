@@ -1,0 +1,21 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: revenuebase
+name: Revenuebase Inc
+domain: revenuebase.ai
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://forms.gle/5Cab6bJcRtqVzAJS8
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3831
+notes: 'Notes d''Eraser : Reply points to this Google Form for removal requests (2026-08-21).'

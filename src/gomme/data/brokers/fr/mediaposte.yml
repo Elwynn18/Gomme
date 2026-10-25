@@ -1,0 +1,32 @@
+slug: mediaposte
+name: Mediaposte (groupe La Poste)
+domain: mediaposte.fr
+country: FR
+region: fr
+category: marketing
+channels:
+  # « Ces droits peuvent être exercés via le formulaire ou en écrivant à l'adresse
+  # exercicedesdroits@mediaposte.fr , en précisant votre nom, prénom et adresse. »
+  - type: email
+    address: exercicedesdroits@mediaposte.fr
+  # « Ce formulaire vous permet d'exercer vos droits à la suite de la réception d'une
+  # opération de sollicitation commerciale »
+  - type: web_form
+    url: https://donneespersonnelles.mdpe.fr/
+  - type: postal
+    address: "MEDIAPOSTE, Monsieur le DPO Délégué, 111 boulevard Brune, Case postale D432, 75618 Paris Cedex 14"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.mediaposte.fr/charte-dinformation/
+last_verified: 2026-10-25
+notes: |-
+  Location de données « à des fins de prospection commerciale » ; cite des « Partenaires
+  Courtiers en données » parmi ses sources. Pour la location, se présente comme
+  sous-traitant et peut renvoyer vers « l'organisme source ».
+  Justificatif d'identité seulement « en cas de besoin » (page du formulaire). TODO(verify) :
+  l'adresse du DPO affichée (dpo-delegue@mediaposte.fr) diffère du lien de la page
+  (contact.dpo-delegue@mediaposte.fr) ; utiliser l'adresse d'exercice des droits ci-dessus.
+  Charte du 18/05/2026 ; relevé le 2026-10-25 (recherche assistée).

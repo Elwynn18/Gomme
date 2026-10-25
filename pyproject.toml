@@ -1,0 +1,94 @@
+[project]
+name = "gomme"
+version = "0.1.0.dev0"
+description = "Demandes de suppression RGPD/CCPA auprès des courtiers en données, auto-hébergé."
+readme = "README.md"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.27",
+    "rich>=15",
+    "pydantic>=2.14,<3",
+    "pyyaml>=6.0.3",
+    "platformdirs>=4.13",
+    "jinja2>=3.1.6",
+]
+
+[project.optional-dependencies]
+# Web forms only: the browser engine is large and email-only users do not need it.
+# Then: uv run playwright install chromium
+web = ["playwright>=1.60"]
+# Local web interface (gomme ui), for people who prefer it to the command line.
+# Starlette rather than FastAPI: recent FastAPI releases bundle OpenTelemetry hooks, and
+# Gomme promises no telemetry at all; Starlette (FastAPI's base) is all the UI needs.
+ui = ["starlette>=1.0", "uvicorn>=0.50"]
+
+[project.scripts]
+gomme = "gomme.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1",
+    "ruff>=0.17",
+    "mypy>=2.4",
+    "types-PyYAML>=6.0.12",
+    "playwright>=1.60", # type-checks channels/browser.py; tests never start a browser
+    "starlette>=1.0",
+    "uvicorn>=0.50",
+    "httpx2>=2.0",      # Starlette's TestClient
+]
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+    "C4",  # flake8-comprehensions
+    "PTH", # flake8-use-pathlib
+    "PT",  # flake8-pytest-style
+    "RUF", # ruff-specific rules
+    "S",   # flake8-bandit (security)
+    "N",   # pep8-naming
+]
+# "›" separates file and field in registry error messages.
+allowed-confusables = ["›"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"] # pytest asserts; fictional passwords
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "scripts"]
+plugins = ["pydantic.mypy"]
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# fakes.py and the import scripts are importable from the tests.
+pythonpath = ["tests", "scripts"]
+addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
+xfail_strict = true
+filterwarnings = ["error"]

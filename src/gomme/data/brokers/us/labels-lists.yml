@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: labels-lists
+name: LABELS & LISTS Inc
+domain: l2-data.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@l2political.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2563
+notes: 'Notes d''Eraser : Opt-out URL https://l2political.com/california-privacy-rights-for-california-residents-only/
+  returns 404 (2026-10-04) - cleared, needs a current form.'

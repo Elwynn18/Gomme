@@ -1,0 +1,30 @@
+slug: dtm-deutsche-tele-medien
+name: Das Telefonbuch / Das Örtliche (DTM Deutsche Tele Medien)
+domain: dtme.de
+country: DE
+region: eu
+category: annuaire
+channels:
+  # Formulaire DSGVO (les deux annuaires y renvoient pour modifier ou supprimer une
+  # inscription).
+  - type: web_form
+    url: https://www.dtme.de/ihr-eintrag/dsgvo-anfrage/
+  - type: email
+    address: datenschutz@dtme.de
+  - type: postal
+    address: "DTM Deutsche Tele Medien GmbH, Wiesenhüttenstraße 18, 60329 Frankfurt am Main, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.dastelefonbuch.de/Datenschutz
+last_verified: 2026-10-25
+notes: |-
+  Gère les inscriptions de Das Telefonbuch et Das Örtliche (formulaires liés depuis
+  https://www.dtme.de/ihr-eintrag/ihr-privater-eintrag/). Suppression d'une inscription
+  privée : https://www.dtme.de/ihr-eintrag/privat-eintrag-loeschen/. L'inscription vient
+  de votre opérateur téléphonique : demandez-lui aussi de ne plus vous inscrire.
+  Une copie de pièce d'identité peut être demandée. Délégués : Das Örtliche
+  datenschutz@dasoertliche-marketing.de (https://www.dasoertliche.de/datenschutz).
+  Relevé le 2026-10-25 (recherche assistée).

@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: ihs-markit
+name: IHS Markit
+domain: ipreo.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: bruce.noll@ihsmarkit.com
+  - type: web_form
+    url: https://www.spglobal.com/en/privacy/california-consumer-privacy-act
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2373
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: IHS Markit no longer exists as a standalone company - it completed
+  its merger into S&P Global in March 2022 - so the legacy bruce.noll@ihsmarkit.com/ipreo.com contact
+  is likely stale; S&P Global now centrally handles CCPA opt-out and DSAR requests. (source: https://www.spglobal.com/en/privacy/california-consumer-privacy-act)'

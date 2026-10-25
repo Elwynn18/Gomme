@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: kyber-health-data
+name: Kyber Health Data LLC
+domain: cowen.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: kyberccpa@cowen.com
+  - type: web_form
+    url: https://forian.com/privacy-consumer-requests/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2555
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Kyber Data Science was acquired by Forian Inc. in November
+  2024 and is no longer a Cowen unit; Forian''s own ''Do Not Sell/Share Data'' page is the current privacy-rights
+  channel, making the on-file cowen.com email/site stale. (source: https://forian.com/privacy-consumer-requests/)'

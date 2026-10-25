@@ -1,0 +1,24 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: leadsmarketcom
+name: Leadsmarket.Com LLC
+domain: leadsmarket.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: legal@leadsmarket.com
+  - type: web_form
+    url: https://www.leadsmarket.com/privacy-policy
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2621
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Leadsmarket.com is a lead-gen/marketing data broker (financial
+  services leads); on-file opt_out_url has a stray trailing period making it a broken link. (source: https://www.leadsmarket.com/)'

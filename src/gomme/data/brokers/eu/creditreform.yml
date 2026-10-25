@@ -1,0 +1,25 @@
+slug: creditreform
+name: Creditreform (Verband der Vereine Creditreform e.V.)
+domain: creditreform.de
+country: DE
+region: eu
+category: autre
+channels:
+  # « Unseren Datenschutzbeauftragten erreichen Sie unter … E-Mail:
+  # Datenschutz@verband.creditreform.de »
+  - type: email
+    address: Datenschutz@verband.creditreform.de
+  - type: postal
+    address: "Verband der Vereine Creditreform e.V., Hammfelddamm 13, 41460 Neuss, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.creditreform.de/datenschutz
+last_verified: 2026-10-25
+notes: |-
+  Informations de solvabilité et marketing direct (« Datenverarbeitung für Direktwerbung und
+  Marketing »). L'opposition au marketing est possible « jederzeit ». Chaque bureau local
+  Creditreform est une société distincte : cette fiche vise la fédération.
+  Relevé le 2026-10-25 (recherche assistée).

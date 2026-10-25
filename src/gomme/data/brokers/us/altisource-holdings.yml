@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: altisource-holdings
+name: Altisource Holdings, LLC
+domain: altisource.com
+region: us
+category: autre
+channels:
+  - type: email
+    address: privacy@altisource.com
+  - type: web_form
+    url: https://www.altisource.com/us-consumer-privacy-notice
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: true
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L501
+notes: |-
+  Selon Eraser, ce broker exige une pièce d'identité. Ne l'envoyez jamais sans l'avoir caviardée.
+
+  Notes d'Eraser : Reply (2026-08-26) requires identity verification via a government-issued ID document (or confirming a password-protected account email) before they'll act on the request - this tool does not supply ID documents on your behalf.

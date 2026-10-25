@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: zeotap-gmbh
+name: Zeotap GmbH
+domain: zeotap.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: team.legal@zeotap.com
+  - type: web_form
+    url: https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L4901

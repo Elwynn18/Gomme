@@ -1,0 +1,29 @@
+slug: societe-com
+name: Societe.com (SOCIETE SAS)
+domain: societe.com
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « Vous pouvez contacter le DPO par courriel à l'adresse dpo@societe.com »
+  - type: email
+    address: dpo@societe.com
+  # « Pour exercer vos droits RGPD, vous pouvez formuler vos demandes ici : Formulaires de contact. »
+  - type: web_form
+    url: https://www.societe.com/ia?contact
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: true
+language: fr
+source: manual
+source_ref: https://www.societe.com/pages/politique-de-protection-des-donnees-personnelles.html
+last_verified: 2026-10-25
+notes: |-
+  Publie les données des dirigeants et entrepreneurs issues des registres publics.
+  La page exige une pièce d'identité (« Toute demande devra être accompagnée d'un
+  justificatif d'identité ») et dit la supprimer sous 24 h : la caviarder.
+  L'effacement ne vaut que pour le site (« effacera seulement de son Site les Données
+  Personnelles visée par votre demande »). Pour les données issues de SIRENE, Societe.com
+  renvoie à l'opposition auprès de l'INSEE (art. R123-232-1 du Code de commerce), qu'il
+  répercute sous 24 h.
+  Relevé le 2026-10-25 (recherche assistée). Adresse du siège : mentions légales.

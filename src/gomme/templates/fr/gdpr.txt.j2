@@ -1,0 +1,32 @@
+{#- Demande RGPD : effacement (art. 17) et opposition (art. 21), toujours ensemble.
+    Première ligne : l'objet du message. Puis une ligne vide, puis le corps. -#}
+Demande d'effacement et d'opposition (articles 17 et 21 du RGPD)
+
+Madame, Monsieur,
+
+Je m'oppose, en application de l'article 21 du règlement (UE) 2016/679 (RGPD), au traitement de toutes les données personnelles me concernant que détient {{ broker_name }}, et en particulier à leur utilisation à des fins de prospection. Pour la prospection, cette opposition s'impose à vous sans condition (article 21, paragraphes 2 et 3). Si un traitement repose sur un consentement que j'aurais donné, je retire ce consentement (article 7, paragraphe 3).
+
+Je vous demande en conséquence d'effacer ces données dans les meilleurs délais, en application de l'article 17, paragraphe 1, point c), du RGPD, ainsi que de tout autre motif applicable.
+{%- if access %}
+
+Avant l'effacement, je vous demande, en application de l'article 15 du RGPD, de m'indiquer quelles données vous déteniez à mon sujet, les finalités du traitement, et toute information disponible sur leur source.
+{%- endif %}
+{%- if notify_recipients %}
+
+En application de l'article 19 du RGPD, je vous demande de notifier cet effacement et mon opposition à chaque destinataire à qui ces données ont été communiquées, et de m'indiquer qui sont ces destinataires.
+{%- endif %}
+
+Pour me retrouver dans vos fichiers :
+{%- for label, value in identity %}
+- {{ label }} : {{ value }}
+{%- endfor %}
+
+Ces informations ne doivent servir qu'au traitement de la présente demande. Elles suffisent à m'identifier : je ne joins pas de pièce d'identité. En cas de doute raisonnable sur mon identité, l'article 12, paragraphe 6, vous permet de me demander des informations complémentaires, limitées à ce qui est nécessaire.
+
+Vous disposez d'un mois à compter de la réception de cette demande pour y répondre (article 12, paragraphe 3). Cette demande est gratuite (article 12, paragraphe 5). À défaut de réponse dans ce délai, ou en cas de refus injustifié, je me réserve la possibilité d'introduire une réclamation auprès {{ authority_fr }} (article 77).
+
+Je vous remercie de me confirmer par écrit l'effacement de mes données et la prise en compte de mon opposition.
+
+Cordialement,
+
+{{ full_name }}

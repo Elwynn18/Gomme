@@ -1,0 +1,26 @@
+slug: experian-es
+name: Experian Bureau de Crédito (Espagne)
+domain: experian.es
+country: ES
+region: eu
+category: autre
+channels:
+  # « Para ejercer cualquiera de tus derechos escribe a este correo electrónico:
+  # dpospain@experian.com »
+  - type: email
+    address: dpospain@experian.com
+  - type: postal
+    address: "Experian Bureau de Crédito, S.A., Apartado de Correos 1188, 28108 Alcobendas (Madrid), España"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: true
+language: es
+source: manual
+source_ref: https://www.experian.es/politica-de-privacidad
+last_verified: 2026-10-25
+notes: |-
+  Gère le fichier de crédit BADEXCUG. Identité à justifier d'après la page de ce fichier
+  (« deberá acreditar previamente su identidad »). Pour ce fichier : portail
+  https://portaldelconsumidor.experian.es (inscription et identification requises) ou
+  courrier à l'Apartado 1188 (https://www.experian.es/legal/salir-fichero).
+  Relevé le 2026-10-25 (recherche assistée).

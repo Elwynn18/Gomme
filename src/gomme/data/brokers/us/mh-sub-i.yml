@@ -1,0 +1,27 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: mh-sub-i
+name: MH Sub I, LLC
+domain: internetbrands.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@internetbrands.com
+  - type: web_form
+    url: https://www.internetbrands.com/privacy
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2996
+notes: 'Notes d''Eraser : Reply (2026-09-02) will not proceed until you specify which Internet Brands
+  website the erasure request concerns - MH Sub I, LLC runs many separate consumer sites (WebMD, Nolo,
+  Martindale-Hubbell, CarsDirect, Fodor''s, etc.). Excluded from bulk send; needs a manual reply that
+  either names the specific site(s) used or asserts the Art. 17 request covers all personal data MH Sub
+  I, LLC holds as controller.'

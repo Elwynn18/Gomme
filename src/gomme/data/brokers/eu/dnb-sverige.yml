@@ -1,0 +1,28 @@
+slug: dnb-sverige
+name: Dun & Bradstreet Sverige AB (ex-Bisnode)
+domain: dnb.com
+country: SE
+region: eu
+category: marketing
+channels:
+  # « Du är välkommen att kontakta oss genom epost till dininfo.se@dnb.com »
+  - type: email
+    address: dininfo.se@dnb.com
+  # Adresse : https://www.dnb.com/sv-se/varfor-dnb/dataskydd/personuppgifter/personuppgifter-ecp.html
+  - type: postal
+    address: "Dun & Bradstreet Sverige AB, 169 93 Solna, Sverige"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: sv
+source: manual
+source_ref: https://www.dnb.com/sv-se/varfor-dnb/dataskydd.html
+last_verified: 2026-10-25
+notes: |-
+  Sélection d'adresses pour le marketing ; base de décideurs EuroContactPool et base couvrant
+  une grande partie de la population suédoise
+  (https://www.dnb.com/sv-se/varfor-dnb/dataskydd/personuppgifter/behandlingar-i-sverige.html).
+  La loi suédoise limite les droits : pas d'effacement ni d'opposition pour le crédit (KUL),
+  pas d'effacement pour les bases sous licence de publication (YGL). L'opposition au
+  marketing reste possible. DPO : dpo.se@dnb.com.
+  Relevé le 2026-10-25 (recherche assistée).

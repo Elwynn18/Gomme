@@ -1,0 +1,26 @@
+slug: idaia
+name: IDAIA (Cartégie)
+domain: idaia.group
+country: FR
+region: fr
+category: marketing
+channels:
+  # « … ou par email à l'adresse suivante : dpo@idaia.group »
+  - type: email
+    address: dpo@idaia.group
+  - type: postal
+    address: "IDAIA – DPO, 3 rue Christian Franceries, Parc Chavailles 2, BP 80011, 33522 Bruges"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.idaia.group/fr/donnees-personnelles
+last_verified: 2026-10-25
+notes: |-
+  Marque Cartégie (cartegie.com, même politique) : fichiers de particuliers, dont « un
+  annuaire seniors riche de 19 millions » de plus de 50 ans
+  (https://www.cartegie.com/data/bases-btoc/fichier-des-seniors).
+  Pièce d'identité demandée pour les demandes par courrier ; pour l'email, la phrase est
+  ambiguë. IDAIA dit informer « systématiquement le partenaire ayant fourni les données ».
+  Relevé le 2026-10-25 (recherche assistée).

@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: nymblr
+name: Nymblr, Inc.
+domain: nymblr.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@nymblr.com
+  - type: web_form
+    url: https://www.nymblr.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3228
+notes: 'Notes d''Eraser : Email support@nimbler.com hard-bounced (2026-08-21) - address/domain invalid.
+  SWEEP 2026-09-12: Registered CA data broker (d/b/a Nimbler); the on-file support@nimbler.com hard-bounced
+  (wrong domain/subsidiary brand), while Nymblr''s own CA registration lists privacy@nymblr.com as its
+  contact and the on-file opt-out URL already matches their footer opt-out flow. (source: https://oag.ca.gov/data-broker/registration/575475)'

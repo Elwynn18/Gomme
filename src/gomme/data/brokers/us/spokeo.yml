@@ -1,0 +1,113 @@
+# Généré par scripts/import_optout.py depuis https://github.com/Blake104/OptOut
+# (commit 7a310242eca38517a483d75a6a3832bc9424c01b, licence AGPL-3.0-only).
+# Ne pas modifier à la main : corriger le script ou ses traductions, puis le relancer.
+slug: spokeo
+name: Spokeo
+domain: spokeo.com
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://www.spokeo.com/optout
+    steps:
+      - id: find_listing
+        type: search
+        label:
+          fr: Trouver votre fiche Spokeo
+          en: Find your Spokeo listing
+        url: https://www.spokeo.com/{name_title_slug}/{state_slug}
+        result_selector: '[data-testid=''person-list'']'
+      - id: open_optout_form
+        type: navigate
+        label:
+          fr: Ouvrir le formulaire d'opposition
+          en: Open opt-out form
+        url: https://www.spokeo.com/optout
+      - id: wait_for_form
+        type: wait_for
+        label:
+          fr: Attendre le formulaire d'opposition
+          en: Wait for opt-out form
+        selector: input[name='url']
+        timeout_ms: 15000
+      - id: solve_captcha
+        type: prompt_user
+        message:
+          fr: Le formulaire d'opposition de Spokeo est ouvert dans le navigateur. Cochez maintenant la
+            case reCAPTCHA « I'm not a robot », puis appuyez sur Entrée.
+          en: The Spokeo opt-out form is open in the browser. Please check the "I'm not a robot" reCAPTCHA
+            checkbox now, then press Enter.
+      - id: fill_form
+        type: form_fill
+        label:
+          fr: Remplir le formulaire d'opposition
+          en: Fill opt-out form
+        fields:
+          listing_url:
+            selector: input[name='url']
+            value: '{listing_url}'
+            input: js
+          email:
+            selector: input[name='email']
+            value: '{email}'
+            input: js
+      - id: submit
+        type: click
+        label:
+          fr: Envoyer la demande d'opposition
+          en: Submit opt-out request
+        selector: button.responsive-button
+      - id: assert_submit_success
+        type: assert
+        label:
+          fr: Vérifier que la demande a été acceptée
+          en: Verify submission accepted
+        selector: .confirmation, .success-message, .optout-success
+        optional: true
+      - id: email_verify
+        type: prompt_user
+        message:
+          fr: Spokeo a envoyé un email de vérification à {email}. Ouvrez-le MAINTENANT et cliquez sur
+            le lien de confirmation, puis appuyez sur Entrée.
+          en: Spokeo has sent a verification email to {email}. Please open that email and click the confirmation
+            link NOW, then press Enter.
+      - id: capture_confirmation
+        type: capture
+  - type: email
+    address: privacy@spokeo.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+  - postal_address
+requires_id: false
+language: en
+source: optout
+source_ref: https://github.com/Blake104/OptOut/blob/7a310242eca38517a483d75a6a3832bc9424c01b/src/optout/data/brokers/spokeo.yml
+last_verified: 2026-05-10
+notes: |-
+  Confirmation requise : le broker envoie un lien par email.
+
+  Selon OptOut, les fiches réapparaissent souvent sous 30 jours.
+
+  Eraser : adresse email reprise d'Eraser, https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2
+
+  Notes d'OptOut :
+  Spokeo's opt-out requires:
+  1. The full URL of your Spokeo listing (e.g. https://www.spokeo.com/Jane-Public/TX/Austin/...)
+  2. An email address to receive a verification link.
+
+  After submitting the form, Spokeo sends an email with a confirmation link.
+  You MUST click that link to complete the removal. The `email_verify` step
+  below pauses and prompts you to do this.
+
+  Email verification links expire quickly (usually within 24 hours).
+  Spokeo removes listings within 24–72 hours of confirmed verification.
+
+  Spokeo uses reCAPTCHA v3 (invisible) and occasionally shows a challenge.
+  Run in headed mode so you can intervene if a visible challenge appears.
+
+  Selectors verified against spokeo.com as of 2026-04-15. The opt-out form
+  is a single-page React app; if the selector for the URL input changes,
+  update `fill_form.fields.listing_url.selector` below.

@@ -1,0 +1,24 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: truepeoplesearch
+name: TruePeopleSearch
+domain: truepeoplesearch.com
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://www.truepeoplesearch.com/removal
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+  - postal_address
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L32
+notes: 'Notes d''Eraser : Email bounced on 2026-08-20; use the opt_out_url web form instead - no working
+  email found for this broker. FREE DATA SERVICES LLC (support@truepeoplesearch.com, same website) is
+  the legal entity behind TruePeopleSearch - merged into this entry on 2026-09-12.'

@@ -1,0 +1,25 @@
+slug: crif-de
+name: CRIF GmbH (Allemagne)
+domain: crif.de
+country: DE
+region: eu
+category: autre
+channels:
+  # « … oder per E-Mail unter datenschutz.de@crif.com, erreichbar. »
+  - type: email
+    address: datenschutz.de@crif.com
+  # « Der Widerspruch kann formfrei erfolgen und ist zu richten an … »
+  - type: postal
+    address: "CRIF GmbH, Victor-Gollancz-Str. 5, 76137 Karlsruhe, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.crif.de/datenschutz/
+last_verified: 2026-10-25
+notes: |-
+  Bureau de crédit, finalités incluant le « Direktmarketing ». Pièce d'identité et
+  certificat de domicile « in Einzelfällen » (caviarder ce qui n'est pas nécessaire),
+  d'après https://www.crif.de/fuer-privatpersonen/selbstauskunft-fuer-privatpersonen/.
+  Relevé le 2026-10-25 (recherche assistée).

@@ -1,0 +1,8 @@
+{% extends "base.html.j2" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<h1>Votre profil</h1>
+<table>{% for label, value in summary.items() %}<tr><th>{{ label }}</th><td>{{ value }}</td></tr>{% endfor %}
+<tr><th>envoi</th><td>{{ mode.value }}</td></tr></table>
+<p class="muted">Valeurs masquées. Pour modifier le profil : <code>gomme init --force</code>.</p>
+{% endblock %}

@@ -1,0 +1,25 @@
+slug: infoscore-consumer-data
+name: infoscore Consumer Data GmbH (groupe Experian)
+domain: experian.de
+country: DE
+region: eu
+category: autre
+channels:
+  # « Der betriebliche Datenschutzbeauftragte der ICD ist … per E-Mail unter:
+  # ICD-Datenschutz@experian.com erreichbar. »
+  - type: email
+    address: ICD-Datenschutz@experian.com
+  - type: postal
+    address: "infoscore Consumer Data GmbH, Abteilung Datenschutz, Rheinstraße 99, 76532 Baden-Baden, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.experian.de/icd-infoblatt
+last_verified: 2026-10-25
+notes: |-
+  Bureau de crédit allemand (ex-arvato infoscore), groupe Experian, qui reprend aussi
+  Boniversum. Une copie de pièce d'identité est facultative (« auf freiwilliger Basis »).
+  Mêmes limites que les autres bureaux de crédit pour l'effacement et l'opposition.
+  Fiche « Stand vom August 2026 » ; relevé le 2026-10-25 (recherche assistée).

@@ -1,0 +1,28 @@
+slug: solocal-marketing-services
+name: Solocal Marketing Services (Marketing Connect)
+domain: marketingconnect.fr
+country: FR
+region: fr
+category: marketing
+channels:
+  # « par email en écrivant au Data Protection Officer de Solocal à l'adresse suivante :
+  # dpo.soms@solocal.com »
+  - type: email
+    address: dpo.soms@solocal.com
+  - type: postal
+    address: "Solocal Group, DPO, 204 rond-point du Pont de Sèvres, 92649 Boulogne-Billancourt Cedex"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.marketingconnect.fr/vie-privee
+last_verified: 2026-10-25
+notes: |-
+  Sanctionnée par la CNIL (900 000 €, 15/05/2025) : « acquiert des données de prospects
+  principalement auprès de courtiers en données »
+  (https://www.cnil.fr/fr/sanction-de-900-000-euros-societe-solocal-marketing-services).
+  Données : nom, date de naissance, enfants, centres d'intérêt, CSP. Les contacts opposés
+  sont gardés dans une « base repoussoir » pour ne plus être sollicités.
+  Distincte de PagesJaunes (fiche pagesjaunes), même groupe Solocal.
+  Relevé le 2026-10-25 (recherche assistée).

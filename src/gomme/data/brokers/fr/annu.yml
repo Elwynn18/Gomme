@@ -1,0 +1,24 @@
+slug: annu
+name: Annu.com (groupe Iliad)
+domain: annu.com
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « par E-mail à l'adresse suivante : contact@annu.com »
+  - type: email
+    address: contact@annu.com
+  - type: postal
+    address: "Annu - Philippe, 16 rue de la ville l'évêque, 75008 Paris"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.annu.com/html/mentions.html
+last_verified: 2026-10-25
+notes: |-
+  Annuaire inversé (recherche par numéro, nom ou adresse), marque du groupe Iliad.
+  La page demande « vos nom, prénom, adresse et si possible votre numéro de client ».
+  Site peu entretenu en 2026 (« © 2023 », ne cite que la loi de 1978) : activité incertaine.
+  Relevé le 2026-10-25 (recherche assistée).

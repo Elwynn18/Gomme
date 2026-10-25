@@ -1,0 +1,32 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: cross-pixel-media
+name: Cross Pixel Media, Inc.
+domain: crosspixel.net
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@crosspixel.net
+  - type: web_form
+    url: https://privacy.crsspxl.com/optout
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L1233
+notes: 'Notes d''Eraser : Use the role address, not a person. apearlstein@crosspixel.net replied that
+  Alan had left and forwarded us to Stephanie McCabe at Knower Tech, the successor company (2026-08-20);
+  that forwarding address was stephanie.mccabe@knowertech.ca, and knowertech.ca is now NXDOMAIN with no
+  MX, so it was dropped on 2026-09-07. privacy@crosspixel.net replaced it: Cross Pixel''s own privacy
+  policy (effective 2025-12-08) names it for exercising data rights -- "You can exercise these rights
+  at any time by visiting our Privacy Portal or by emailing us at privacy@crosspixel.net" -- and crosspixel.net
+  has live Google Workspace MX. A departing employee does not invalidate a published role address. Knower
+  Tech is real (knowertech.com lists McCabe as President and references Cross Pixel) but publishes no
+  contact address at all; its contact and privacy pages still carry unfilled theme placeholders, so there
+  was nothing verifiable to use there.'

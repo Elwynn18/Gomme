@@ -1,0 +1,21 @@
+{% extends "base.html.j2" %}
+{% block title %}Envoi{% endblock %}
+{% block content %}
+<h1>Emails en attente</h1>
+{% if previews %}
+<table>
+  <tr><th>N°</th><th>Broker</th><th>Destinataire</th><th>Objet</th></tr>
+  {% for p in previews %}<tr><td><a href="/requests/{{ p.request.id }}">{{ p.request.id }}</a></td><td>{{ p.broker.name }}</td><td>{{ p.to }}</td><td>{{ p.text.subject }}</td></tr>{% endfor %}
+</table>
+{% if limit_reached %}<p class="muted">Limite quotidienne atteinte : la suite partira demain.</p>{% endif %}
+{% if manual %}
+<form method="post" action="/send"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer les fichiers .eml</button></form>
+<p class="muted">Gomme écrit un fichier par demande ; ouvrez-le dans votre messagerie, envoyez-le, puis notez l'envoi sur la page de la demande.</p>
+{% else %}
+<p>Mode smtp : l'envoi se fait en ligne de commande, avec confirmation : <code>gomme send</code>.</p>
+{% endif %}
+{% else %}
+<p>Aucun email en attente.</p>
+{% endif %}
+{% if skipped %}<h2>Écartées</h2><ul>{% for slug, reason in skipped %}<li>{{ slug }} : {{ reason }}</li>{% endfor %}</ul>{% endif %}
+{% endblock %}

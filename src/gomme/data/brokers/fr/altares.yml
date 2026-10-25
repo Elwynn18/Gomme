@@ -1,0 +1,25 @@
+slug: altares
+name: Altares – D&B
+domain: altares.com
+country: FR
+region: fr
+category: autre
+channels:
+  # « Ces droits s'exercent par courrier électronique à l'adresse [email] sur présentation
+  # d'un justificatif d'identité » (adresse masquée, décodée)
+  - type: email
+    address: dpo@altares.com
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: true
+language: fr
+source: manual
+source_ref: https://www.altares.com/fr/mentions-legales-cgu-altares/donnees-personnelles/
+last_verified: 2026-10-25
+notes: |-
+  Risque client et données « Sales & Marketing » ; concerne les « représentants légaux » et
+  « entrepreneurs individuels » (registres publics, RNCS, BODACC). Partage avec
+  Dun & Bradstreet, Inc. (États-Unis), responsable distinct.
+  Justificatif d'identité exigé : le caviarder. Pour les cartes de visite, la suppression
+  place les données sur une « liste de suppression ».
+  Politique de décembre 2025 ; relevé le 2026-10-25 (recherche assistée).

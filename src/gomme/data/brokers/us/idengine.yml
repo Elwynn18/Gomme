@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: idengine
+name: Idengine LLC
+domain: idengine.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://idengine.com/dnsmpi/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2157
+notes: 'Notes d''Eraser : Email chad@idengine.ai hard-bounced (2026-08-23) - domain has no working mail
+  server (DNS MX lookup failed).'

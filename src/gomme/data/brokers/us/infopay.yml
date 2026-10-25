@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: infopay
+name: INFOPAY Inc
+domain: infopay.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: compliance@infopay.com
+  - type: web_form
+    url: https://www.infopay.com/privacy
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2251
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: InfoPay is a people/property/vehicle-records data broker (10.5B+
+  records, registered in multiple states, DPPA/FCRA/GLBA compliant); the on-file record has no email or
+  opt-out URL, but infopay.com publishes a privacy/DSAR contact page and phone number for opt-out requests.
+  (source: https://www.infopay.com/privacy)'

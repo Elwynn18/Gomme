@@ -1,0 +1,21 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: searchbug
+name: Searchbug
+domain: searchbug.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://www.searchbug.com/ccpa.aspx#DoNoSell
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L4036
+notes: 'Notes d''Eraser : Reply says to submit an opt-out via this form (2026-08-21); may require ID verification.'

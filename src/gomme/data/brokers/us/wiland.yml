@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: wiland
+name: Wiland Inc
+domain: wiland.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://wiland.com/privacy-choices/#how-to-submit-privacy-choices
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L4807
+notes: 'Notes d''Eraser : Reply says privacy requests must go through their web portal, not email (2026-08-21);
+  also says they don''t process non-U.S. data subjects, so may have no matching info regardless.'

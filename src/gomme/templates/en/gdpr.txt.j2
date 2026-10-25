@@ -1,0 +1,32 @@
+{#- GDPR request: erasure (art. 17) and objection (art. 21), always together.
+    First line: the subject. Then a blank line, then the body. -#}
+Request for erasure and objection (Articles 17 and 21 GDPR)
+
+Dear Sir or Madam,
+
+Under Article 21 of Regulation (EU) 2016/679 (GDPR), I object to the processing of all personal data concerning me held by {{ broker_name }}, and in particular to its use for direct marketing. For direct marketing, this objection is binding on you without exception (Article 21(2) and (3)). Where any processing is based on consent I may have given, I withdraw that consent (Article 7(3)).
+
+I therefore request that you erase this data without undue delay, under Article 17(1)(c) GDPR and any other applicable ground.
+{%- if access %}
+
+Before erasing it, I request under Article 15 GDPR that you tell me which data you held about me, the purposes of the processing, and any available information as to its source.
+{%- endif %}
+{%- if notify_recipients %}
+
+Under Article 19 GDPR, I request that you communicate this erasure and my objection to each recipient to whom the data has been disclosed, and that you tell me who these recipients are.
+{%- endif %}
+
+To find me in your records:
+{%- for label, value in identity %}
+- {{ label }}: {{ value }}
+{%- endfor %}
+
+This information may only be used to handle this request. It is sufficient to identify me: I am not enclosing any identity document. Should you have reasonable doubts about my identity, Article 12(6) allows you to request additional information limited to what is necessary.
+
+You must respond within one month of receiving this request (Article 12(3)). This request is free of charge (Article 12(5)). If I receive no answer within this period, or an unjustified refusal, I reserve the right to lodge a complaint with {{ authority_en }} (Article 77).
+
+Please confirm in writing that my data has been erased and that my objection has been recorded.
+
+Yours faithfully,
+
+{{ full_name }}

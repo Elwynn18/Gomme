@@ -1,0 +1,45 @@
+{#- Brouillon de plainte à la CNIL (RGPD, art. 77). Gomme ne l'envoie jamais :
+    l'utilisateur le relit, le complète et le dépose lui-même. -#}
+BROUILLON DE PLAINTE À LA CNIL — à relire et compléter avant dépôt
+Dépôt en ligne (compte requis) : https://www.cnil.fr/fr/adresser-une-plainte
+
+Objet : {{ subject }}
+
+1. L'organisme mis en cause
+- Nom : {{ broker.name }}
+- Site : {{ broker.domain }}
+{%- for line in contacts %}
+- {{ line }}
+{%- endfor %}
+- Numéro SIREN : [à compléter, par exemple sur https://annuaire-entreprises.data.gouv.fr]
+
+2. Plaignant
+- Nom : {{ profile.full_name }}
+- Adresse email : {{ profile.email }}
+
+3. Les faits
+Le {{ sent_on }}, j'ai adressé à {{ broker.name }}, {{ channel_label }}, une demande fondée sur les articles 17 (droit à l'effacement) et 21 (droit d'opposition) du RGPD, lui demandant d'effacer les données personnelles me concernant et de cesser de les traiter, notamment à des fins de prospection.
+{% if refused %}
+{{ broker.name }} a refusé de donner suite à cette demande{% if refused_on %} le {{ refused_on }}{% endif %}. J'estime ce refus injustifié : pour la prospection, l'opposition prévue à l'article 21, paragraphes 2 et 3, s'impose sans condition. [Préciser ici les motifs du refus, et indiquer si vous l'avez contesté auprès de l'organisme : la CNIL demande de le faire d'abord.]
+{%- else %}
+L'organisme disposait d'un mois pour répondre (article 12, paragraphe 3){% if extended %}, délai prolongé de deux mois qu'il m'a annoncé{% endif %}, soit jusqu'au {{ due }}. À la date du {{ today }}, je n'ai reçu {% if acknowledged %}aucune réponse définitive, malgré un accusé de réception{% else %}aucune réponse{% endif %}.
+{%- endif %}
+
+4. Ce que je demande
+Je vous demande d'intervenir auprès de {{ broker.name }} pour qu'il fasse droit à ma demande d'effacement et d'opposition, et qu'il me le confirme.
+
+5. Chronologie
+{%- for event in events %}
+- {{ event.date }} : {{ event.label }}{% if event.note %} ({{ event.note }}){% endif %}
+{%- endfor %}
+
+6. Pièces à joindre
+{%- if artifact %}
+- Copie de ma demande : {{ artifact }}
+{%- else %}
+- Copie de ma demande [à joindre : capture ou copie du message envoyé]
+{%- endif %}
+- Toute réponse de l'organisme [à joindre]
+- Preuve de l'envoi et de sa date [à joindre si la copie ne la montre pas]
+
+{{ profile.full_name }}

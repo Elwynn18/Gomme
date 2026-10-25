@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: meltwater-news-us
+name: Meltwater News US Inc
+domain: meltwater.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@meltwater.com
+  - type: web_form
+    url: https://www.meltwater.com/en/privacy
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2972
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Registered CA data broker (media/sales-intelligence profiles);
+  the generic legal@meltwater.com is on file, but Meltwater''s own CCPA flow routes through a DO NOT SELL
+  form/privacy@meltwater.com on their privacy page. (source: https://www.meltwater.com/en/privacy)'

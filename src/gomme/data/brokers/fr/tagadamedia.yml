@@ -1,0 +1,26 @@
+slug: tagadamedia
+name: Tagadamedia
+domain: tagadamedia.com
+country: FR
+region: fr
+category: marketing
+channels:
+  # « Contact par voie électronique : dpo@tagadamedia.com »
+  - type: email
+    address: dpo@tagadamedia.com
+  - type: postal
+    address: "DPO Tagadamedia, Société Tagadamedia, 55 rue Legendre, 75017 Paris"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.tagadamedia.com/fr/politique-de-protection-des-donnees-et-cookies/
+last_verified: 2026-10-25
+notes: |-
+  Courtier en données sanctionné par la CNIL (29/12/2023) : sites de jeux-concours et de
+  tests de produits dont les données sont transmises à des partenaires
+  (https://www.cnil.fr/fr/courtiers-en-donnees-sanction-de-75-000-euros-lencontre-de-la-societe-tagadamedia).
+  Si vous avez participé à un jeu-concours, la demande retire aussi votre consentement.
+  Autre adresse indiquée en pied de page : 135 avenue Victor Hugo, 75116 Paris.
+  Relevé le 2026-10-25 (recherche assistée).

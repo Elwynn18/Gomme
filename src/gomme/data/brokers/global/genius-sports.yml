@@ -1,0 +1,24 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: genius-sports
+name: Genius Sports Group
+domain: geniussports.com
+region: global
+category: marketing
+channels:
+  - type: email
+    address: privacy@geniussports.com
+legal_basis:
+  - gdpr_art17
+  - gdpr_art21
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L4961
+notes: 'Notes d''Eraser : Added 2026-08-20 from their privacy policy contact section. Not previously in
+  the campaign.'

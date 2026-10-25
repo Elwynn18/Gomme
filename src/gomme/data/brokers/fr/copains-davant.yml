@@ -1,0 +1,25 @@
+slug: copains-davant
+name: Copains d'avant (CCM Benchmark Group)
+domain: linternaute.com
+country: FR
+region: fr
+category: people-search
+channels:
+  # Page d'aide indiquée « par mail pour un traitement rapide » ; pas d'adresse email publiée.
+  - type: web_form
+    url: http://copainsdavant-faq.linternaute.com/hc/fr
+  - type: postal
+    address: "CCM Benchmark Group - « Données personnelles » Copains d'avant, 21 rue Chauchat, CS 61209, 75440 Paris Cedex 09"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: true
+language: fr
+source: manual
+source_ref: https://www.ccmbenchmark.com/donnees-personnelles?origin=copainsdavant.linternaute.com
+last_verified: 2026-10-25
+notes: |-
+  Réseau de « retrouvailles » (photos de classe) sur copainsdavant.linternaute.com : utile
+  surtout pour supprimer un ancien compte ou des mentions de votre nom.
+  La page exige une pièce d'identité (« obligatoirement accompagnée d'une photocopie d'une
+  pièce d'identité ») : la caviarder avant envoi.
+  Politique de mars 2023 ; relevé le 2026-10-25 (recherche assistée).

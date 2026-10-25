@@ -1,0 +1,26 @@
+slug: verif-com
+name: Verif.com (Altares – D&B)
+domain: verif.com
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « vous pouvez contacter le délégué à la protection des données (DPO) via : CE FORMULAIRE »
+  # Formulaire protégé par Cloudflare Turnstile : à remplir à la main.
+  - type: web_form
+    url: https://www.verif.com/gdpr_request/
+  - type: postal
+    address: "ALTARES – D&B, À l'attention du délégué à la protection des données (DPO), Tour Landscape, 6 place des Degrés, 92800 Puteaux"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.verif.com/data_privacy/
+last_verified: 2026-10-25
+notes: |-
+  Données d'entreprises et de dirigeants (SIRENE, RNCS, BODACC). Même groupe qu'Altares et
+  Manageo, avec des contacts différents selon le site.
+  Par courrier, une pièce d'identité est demandée « sauf si les éléments communiqués dans
+  votre demande permettent de vous identifier de façon certaine ».
+  Politique version V1.0_092022 ; relevé le 2026-10-25 (recherche assistée).

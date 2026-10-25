@@ -1,0 +1,26 @@
+slug: infonet
+name: Infonet (Infonet Web Group SL)
+domain: infonet.fr
+country: ES
+region: fr
+category: annuaire
+channels:
+  # « Via ce formulaire » ; propose un motif « Je suis dirigeant d'une entreprise et je
+  # souhaite que mes données personnelles ne soient plus visibles… »
+  - type: web_form
+    url: https://infonet.fr/exercice-des-droits-sur-les-donnees-personnelles/
+  - type: postal
+    address: "Infonet Web Group SL, Avinguda Diagonal 598, 2-2, 08021 Barcelone, Espagne"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://infonet.fr/politique-de-confidentialite/
+last_verified: 2026-10-25
+notes: |-
+  Société espagnole qui publie en France les données d'entreprises et de dirigeants (RNE,
+  Infogreffe, SIRENE). Pièce d'identité seulement en cas de doute (un justificatif France
+  Identité est accepté). Les données peuvent rester archivées jusqu'à 5 ans après leur
+  retrait du site.
+  Relevé le 2026-10-25 (recherche assistée).

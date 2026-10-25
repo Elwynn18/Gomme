@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: purecars-technologies
+name: Purecars Technologies, LLC
+domain: purecars.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://docs.google.com/forms/d/e/1FAIpQLSdXAQsI4b0angLCONbwT4B4YSFiPyVMMLzizCuBSnPZmsTp_g/viewform
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3617
+notes: 'Notes d''Eraser : Reply says this email "is no longer part of our data subject request process
+  and it is not being monitored" (2026-08-21) - use the form, or call (877)860-0086.'

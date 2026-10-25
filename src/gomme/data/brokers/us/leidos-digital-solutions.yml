@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: leidos-digital-solutions
+name: Leidos Digital Solutions, Inc.
+domain: leidos.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: IQDataRequest@leidos.com
+  - type: web_form
+    url: https://leidosiq.com/privacy-statement/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2636
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Leidos Digital Solutions (LeidosIQ) is registered as a data
+  broker with CA DOJ; found a general opt-out mailbox (IQDataRequest@leidos.com) rather than the individual
+  employee address currently on file. (source: https://oag.ca.gov/data-broker/registration/540882)'

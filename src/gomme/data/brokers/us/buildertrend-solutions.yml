@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: buildertrend-solutions
+name: Buildertrend Solutions, Inc.
+domain: buildertrend.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://buildertrend.com/privacy-notice/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L870
+notes: 'Notes d''Eraser : privacy@buildertrend.com replied that our request wasn''t submitted through
+  their designated method - see Section X of this privacy notice for the actual form (reply received 2026-08-20).'

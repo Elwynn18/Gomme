@@ -1,0 +1,34 @@
+slug: pagesjaunes
+name: PagesJaunes / PagesBlanches (Solocal)
+domain: pagesjaunes.fr
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « cette boite email est destinée exclusivement à l'exercice des droits relatifs à vos
+  # données personnelles » (adresse masquée par Cloudflare sur la page, décodée et vérifiée).
+  - type: email
+    address: dpo@solocal.com
+  # « Particuliers : formulaire de mise à jour de vos coordonnées sur PagesBlanches »
+  - type: web_form
+    url: https://www.pagesjaunes.fr/plusdeservices/nouscontacter/mescoordonnees
+  - type: postal
+    address: "Solocal Group, DPO, 204 rond-point du Pont de Sèvres, 92649 Boulogne-Billancourt Cedex"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.pagesjaunes.fr/infoslegales/vieprivee-protection/
+last_verified: 2026-10-25
+notes: |-
+  Solocal édite aussi le 118 712 (118712.fr), dont les données « proviennent du site
+  pagesjaunes.fr » (https://www.118712.fr/politique-cookies) : une seule demande couvre les deux.
+  La page demande de « préciser votre besoin ainsi que le support (pagesjaunes) ».
+  Solocal peut demander « un justificatif simple tel une facture à votre nom ».
+  Suppression effective sous 48 à 72 h ; en cas de refus de parution, les données sont
+  conservées « afin d'éviter toute nouvelle parution ».
+  Seul votre opérateur gère vos choix de parution (liste rouge, anti-prospection) :
+  voir docs/opposition-fr.md.
+  Relevé le 2026-10-25 (recherche assistée) sur la page source_ref, les mentions légales
+  et https://www.pagesjaunes.fr/infoslegales/toutsurvosdonnees/.

@@ -1,0 +1,30 @@
+{#- CCPA request to delete (Cal. Civ. Code §1798.105). Never claims California residency
+    the profile does not support. First line: the subject. -#}
+Request to delete personal information (CCPA §1798.105)
+
+To whom it may concern,
+
+{% if california_resident -%}
+I am a California resident. Under the California Consumer Privacy Act (Cal. Civ. Code §1798.105), I request that {{ broker_name }} delete all personal information it has collected about me, and direct its service providers and contractors to do the same.
+{%- else -%}
+I request that {{ broker_name }} delete all personal information it holds about me, and direct its service providers and contractors to do the same. The California Consumer Privacy Act (Cal. Civ. Code §1798.105) grants this right to California residents; I ask you to honour it for me as well, as many businesses do for all consumers.
+{%- endif %}
+
+I also direct you not to sell or share my personal information (Cal. Civ. Code §1798.120).
+
+To find me in your records:
+{%- for label, value in identity %}
+- {{ label }}: {{ value }}
+{%- endfor %}
+
+This information may only be used to handle this request. I am not enclosing any identity document; please let me know if you need anything else to verify this request.
+{%- if california_resident %}
+
+Under the CCPA regulations (11 CCR §7021), you must respond within 45 calendar days of receiving this request.
+{%- endif %}
+
+Please confirm in writing once my information has been deleted.
+
+Sincerely,
+
+{{ full_name }}

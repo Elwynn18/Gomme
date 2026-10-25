@@ -1,0 +1,25 @@
+slug: ellisphere
+name: Ellisphere
+domain: ellisphere.com
+country: FR
+region: fr
+category: autre
+channels:
+  # « veuillez contacter notre service relation client par e-mail à l'adresse hotline@ellisphere.com »
+  - type: email
+    address: hotline@ellisphere.com
+  - type: postal
+    address: "ELLISPHERE – Relation Client, Immeuble Alpierre, 74 rue Gorge de Loup, 69009 Lyon"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.ellisphere.com/uploads/documents/rgpd/Politique_RGPD_Ellisphere.pdf
+last_verified: 2026-10-25
+notes: |-
+  Informations financières et de solvabilité sur les entreprises ; note aussi les
+  entrepreneurs individuels (« pourrait être analysée comme du profilage »). Données des
+  dirigeants issues de « Sources publiques ». La politique prévient qu'Ellisphere « ne sera
+  pas toujours légalement tenue de répondre favorablement ».
+  DPO : dpo@ellisphere.com. Politique réf. DFJC/R.7.13/06.2026 ; relevé le 2026-10-25 (recherche assistée).

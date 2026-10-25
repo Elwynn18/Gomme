@@ -1,0 +1,26 @@
+slug: az-direct
+name: AZ Direct GmbH
+domain: az-direct.com
+country: DE
+region: eu
+category: marketing
+channels:
+  # « The easiest and quickest way to exercise your rights as a data subject is to send us
+  # an email to datenschutz(at)az-direct.com »
+  - type: email
+    address: datenschutz@az-direct.com
+  # Adresse : https://www.az-direct.com/site/en/links/data-protection-dialog-marketing
+  - type: postal
+    address: "AZ Direct GmbH, Data Protection Officer, Carl-Bertelsmann-Str. 161s, 33311 Gütersloh, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.az-direct.com/site/en/links/data-protection-faq
+last_verified: 2026-10-25
+notes: |-
+  Adresses pour la publicité postale (groupe Bertelsmann). Demande
+  l'adresse postale complète pour vous identifier ; répond par courrier. Autriche et
+  Suisse : entités distinctes.
+  Relevé le 2026-10-25 (recherche assistée).

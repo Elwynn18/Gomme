@@ -1,0 +1,52 @@
+# --- Python, environments and tool caches ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Local configuration (anchored to the repo root so broker YAML files stay tracked) ---
+/config.*
+/gomme.toml
+/gomme.yml
+/gomme.yaml
+
+# --- Local SQLite database ---
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# --- Playwright browser profile ---
+browser-profile/
+.browser-profile/
+.playwright/
+
+# --- Screenshots and proofs (may contain personal data) ---
+screenshots/
+captures/
+
+# --- Generated outputs (may contain personal data) ---
+*.eml
+letters/
+output/
+
+# --- Editors and OS ---
+.idea/
+.vscode/
+.DS_Store

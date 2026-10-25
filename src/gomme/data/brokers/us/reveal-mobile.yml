@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: reveal-mobile
+name: Reveal Mobile Inc
+domain: revealmobile.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: info@revealmobile.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3817
+notes: 'Notes d''Eraser : Privacy policy says mobile in-app data can only be located via IDFA/Android
+  Advertiser ID ("we don''t collect any email addresses, names, or phone numbers from mobile apps") -
+  but website-collected data can still be requested via name/email, so NOT recategorized as device-id-only.
+  Email kept. Opt-out URL https://revealmobile.com/ccpa/ returns 404 (2026-10-04) - cleared, needs a current
+  form.'

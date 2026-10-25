@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: autoweb
+name: Autoweb, Inc.
+domain: autoweb.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: autolegal@autoweb.com
+  - type: web_form
+    url: https://privacyportal.onetrust.com/webform/27aa5d67-8136-4a08-ae4b-9860992e2375/f84362ef-6901-4a8c-9a52-e7b06dbb4e6b
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L689

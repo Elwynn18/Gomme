@@ -1,0 +1,44 @@
+# FAKE: test fixture. This broker does not exist.
+slug: fake-people-search
+name: Fake People Search (TEST FIXTURE)
+domain: example.org
+country: US
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://example.org/fake-people-search/opt-out
+    steps:
+      - id: open_form
+        type: navigate
+      - id: fill_form
+        type: form_fill
+        fields:
+          name:
+            selector: "input[name='name']"
+            value: "{first_name} {last_name}"
+          email:
+            selector: "input[name='email']"
+            value: "{email}"
+            input: type
+      - id: solve_captcha
+        type: prompt_user_if_present
+        selector: ".captcha"
+        message:
+          fr: Résolvez le CAPTCHA dans le navigateur, puis appuyez sur Entrée.
+          en: Solve the CAPTCHA in the browser, then press Enter.
+      - id: submit
+        type: click
+        selector: "button[type='submit']"
+      - id: confirmation
+        type: capture
+  - type: email
+    address: privacy@example.org
+legal_basis: [ccpa_1798_105]
+required_fields: [full_name, email]
+requires_id: false
+language: en
+source: manual
+source_ref: https://example.org/fixture-de-test
+last_verified: 2026-10-24
+notes: "FAKE: test fixture, not a real broker."

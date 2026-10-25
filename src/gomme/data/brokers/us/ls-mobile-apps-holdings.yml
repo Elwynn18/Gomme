@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: ls-mobile-apps-holdings
+name: L.S Mobile Apps Holdings Ltd
+domain: lsmapps.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@lsmapps.com
+  - type: web_form
+    url: https://lsmapps.com/onetrust-opt-out
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2776

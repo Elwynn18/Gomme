@@ -1,0 +1,19 @@
+{#- Relance RGPD après l'échéance. Première ligne : l'objet. -#}
+Relance : demande d'effacement et d'opposition du {{ sent_on }} restée sans réponse
+
+Madame, Monsieur,
+
+Le {{ sent_on }}, je vous ai adressé une demande d'effacement de mes données personnelles et d'opposition à leur traitement (articles 17 et 21 du RGPD).
+
+Le délai dont vous disposiez pour y répondre (un mois, {% if extended %}prolongé de deux mois comme vous me l'avez indiqué, {% endif %}article 12, paragraphe 3) a expiré le {{ due }}{% if acknowledged %}, et je n'ai reçu à ce jour aucune réponse définitive{% else %} sans réponse de votre part{% endif %}.
+
+Je vous demande d'y donner suite sans délai et de me confirmer par écrit l'effacement de mes données et la prise en compte de mon opposition. À défaut, j'introduirai une réclamation auprès {{ authority_fr }} (article 77 du RGPD).
+
+Pour me retrouver dans vos fichiers :
+{%- for label, value in identity %}
+- {{ label }} : {{ value }}
+{%- endfor %}
+
+Cordialement,
+
+{{ full_name }}

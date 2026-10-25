@@ -1,0 +1,28 @@
+slug: schufa
+name: SCHUFA Holding AG
+domain: schufa.de
+country: DE
+region: eu
+category: autre
+channels:
+  # « … oder per E-Mail unter datenschutz@schufa.de erreichbar. »
+  - type: email
+    address: datenschutz@schufa.de
+  # « Der Widerspruch kann formfrei erfolgen und z.B. an … gerichtet werden. »
+  - type: postal
+    address: "SCHUFA Holding AG, Privatkunden ServiceCenter, Postfach 10 34 41, 50474 Köln, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.schufa.de/global/datenschutz-dsgvo/
+last_verified: 2026-10-25
+notes: |-
+  Bureau de crédit allemand (solvabilité, fraude, vérification d'identité). L'effacement se
+  limite en pratique aux données inexactes ou périmées, et l'opposition à l'art. 21.1
+  (motifs propres à votre situation, à expliquer). Utile si vous avez vécu ou eu un
+  contrat en Allemagne.
+  Copie des données (accès) : https://www.meineschufa.de/service/datenkopie.
+  Pièce d'identité : non précisée. Page « Stand: Dezember 2023 » ; relevé le 2026-10-25
+  (recherche assistée).

@@ -1,0 +1,20 @@
+# FICTIF : fixture de test. Ce courtier n'existe pas.
+slug: courtier-fictif
+name: Courtier Fictif (FIXTURE DE TEST)
+domain: example.org
+country: FR
+region: fr
+category: marketing
+channels:
+  - type: email
+    address: dpo@example.org
+  - type: postal
+    address: "Courtier Fictif, Service DPO, 1 rue de l'Exemple, 00000 Nulle-Part"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://example.org/fixture-de-test
+last_verified: 2026-10-24
+notes: "FICTIF : fixture de test, ne correspond à aucun courtier réel."

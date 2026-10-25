@@ -1,0 +1,22 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: infutor-data-solutions
+name: Infutor Data Solutions LLC
+domain: ruf.com
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://infutor.com/privacy-center/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2272
+notes: 'Notes d''Eraser : security@infutor.com replied that this mailbox can''t process DSRs at all; use
+  the form or call 1-866-207-1399 (reply received 2026-08-20).'

@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: intelius
+name: Intelius
+domain: intelius.com
+region: us
+category: people-search
+channels:
+  - type: email
+    address: privacy@intelius.com
+  - type: web_form
+    url: https://app.intelius.com/privacy-center/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+  - postal_address
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L24
+notes: 'Notes d''Eraser : Second INTELIUS LLC entry (mailer-unsubscribe variant) merged into this one
+  on 2026-09-12. Intelius LLC also owns/operates ZabaSearch and US Search - requests via the Intelius
+  Privacy Center cover those brands.'

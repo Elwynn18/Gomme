@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% block title %}Brokers{% endblock %}
+{% block content %}
+<h1>Brokers</h1>
+<form method="get" action="/brokers">
+  <input name="q" value="{{ query }}" placeholder="Nom ou slug">
+  <select name="region"><option value="">toutes les régions</option>{% for r in regions %}<option value="{{ r }}"{% if r == region %} selected{% endif %}>{{ r }}</option>{% endfor %}</select>
+  <button>Filtrer</button>
+</form>
+<p class="muted">{{ total }} fiche(s){% if total > brokers|length %}, {{ brokers|length }} affichées : affinez la recherche{% endif %}.</p>
+<div class="table-wrap"><table>
+  <tr><th>Nom</th><th>Région</th><th>Catégorie</th><th>Canaux</th><th>Vérifiée</th></tr>
+  {% for b in brokers %}
+  <tr>
+    <td><a href="/brokers/{{ b.slug }}">{{ b.name }}</a></td>
+    <td>{{ b.region }}</td>
+    <td>{{ b.category }}</td>
+    <td>{% for c in b.channels %}{{ c.type }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+    <td>{{ b.last_verified or "—" }}</td>
+  </tr>
+  {% endfor %}
+</table></div>
+{% endblock %}

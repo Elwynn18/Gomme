@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: kbm-group
+name: KBM GROUP LLC
+domain: kbmg.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: DoNotMail@wundermanthompson.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2481
+notes: 'Notes d''Eraser : john.petrillo@wundermandata.com bounced - Gmail''s own delivery failure confirmed
+  wundermandata.com can''t be found, even though kbmg.com (their actual site) is live. Per their CA data
+  broker registration (oag.ca.gov), current contacts are DoNotMail@wundermanthompson.com and Rachel.glasser@wundermanthompson.com,
+  phone 866-275-4526; opt-out form also on the CCPA privacy policy page above. Updated 2026-08-20. Opt-out
+  URL https://www.kbmg.com/about-us/ccpa-privacy-policy/#optout domain no longer resolves (2026-10-04)
+  - cleared, needs a current form.'

@@ -1,0 +1,28 @@
+slug: kompass
+name: Kompass (KOMPASS INTERNATIONAL)
+domain: kompass.com
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « … ou par mail : dpo@kompass.com »
+  - type: email
+    address: dpo@kompass.com
+  # « Vous pouvez exercer vos droits par courrier adressé à l'adresse suivante : … »
+  - type: postal
+    address: "Kompass, service DPO, 6-10 rue Troyon, 92310 Sèvres"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+# TODO(verify): la contre-vérification du 2026-10-25 a été bloquée par une protection
+# anti-robot (DataDome) ; contacts relevés une première fois le même jour.
+source_ref: https://fr.kompass.com/l/general%20data%20use%20policy
+last_verified: 2026-10-25
+notes: |-
+  Annuaire B2B et fichiers marketing. Sources : INSEE, INPI, BODACC, sites web et réseaux
+  sociaux, et des algorithmes qui « déduire des adresses emails ».
+  Pièce d'identité seulement pour l'accès, la portabilité et les droits des héritiers,
+  pas pour l'effacement ni l'opposition.
+  Relevé le 2026-10-25 (recherche assistée).

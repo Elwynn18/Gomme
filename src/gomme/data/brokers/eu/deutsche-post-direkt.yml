@@ -1,0 +1,27 @@
+slug: deutsche-post-direkt
+name: Deutsche Post Direkt GmbH
+domain: postdirekt.de
+country: DE
+region: eu
+category: marketing
+channels:
+  # « … über die E-Mail-Adresse datenschutz@postdirekt.de erreichen Sie auch unseren
+  # Datenschutzbeauftragten. »
+  - type: email
+    address: datenschutz@postdirekt.de
+  - type: postal
+    address: "Deutsche Post Direkt GmbH, Junkersring 57, 53844 Troisdorf, Deutschland"
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email, postal_address]
+requires_id: false
+language: de
+source: manual
+source_ref: https://www.deutschepost.de/dam/jcr:d2c20ba5-1b40-45c3-ab68-5ab2373b4119/dp-ddp-informationen-zur-dv-fuer-av-und-adressabgleich.pdf
+last_verified: 2026-10-25
+notes: |-
+  Adresses pour courriers publicitaires (sources : annuaires, internet, autres fournisseurs).
+  Attention : « Werbewiderspruch und Löschung schließen sich gegenseitig aus » — l'opposition
+  garde votre adresse sur une liste de blocage ; un effacement complet permet qu'elle
+  revienne par une nouvelle source. Pour ne plus recevoir de publicité, préciser que
+  l'opposition prime sur l'effacement.
+  Document du 06/12/2021 ; relevé le 2026-10-25 (recherche assistée).

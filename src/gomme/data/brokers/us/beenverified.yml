@@ -1,0 +1,216 @@
+# Généré par scripts/import_optout.py depuis https://github.com/Blake104/OptOut
+# (commit 7a310242eca38517a483d75a6a3832bc9424c01b, licence AGPL-3.0-only).
+# Ne pas modifier à la main : corriger le script ou ses traductions, puis le relancer.
+slug: beenverified
+name: BeenVerified
+domain: beenverified.com
+region: us
+category: people-search
+channels:
+  - type: web_form
+    url: https://www.beenverified.com/svc/optout/search/
+    steps:
+      - id: open_optout_form
+        type: navigate
+        label:
+          fr: Ouvrir le formulaire de recherche
+          en: Open opt-out search form
+        url: https://www.beenverified.com/svc/optout/search/
+      - id: fill_name
+        type: form_fill
+        label:
+          fr: Saisir le nom
+          en: Fill name
+        fields:
+          first_name:
+            selector: input[name='fname']
+            value: '{first_name}'
+          last_name:
+            selector: input[name='ln']
+            value: '{last_name}'
+      - id: open_state_dropdown
+        type: click
+        label:
+          fr: Ouvrir la liste des États
+          en: Open state selector
+        selector: div.MuiSelect-select
+      - id: wait_for_state_listbox
+        type: wait_for
+        label:
+          fr: Attendre la liste des États
+          en: Wait for state list
+        selector: '[role=''listbox'']'
+        timeout_ms: 5000
+      - id: select_state
+        type: click
+        label:
+          fr: Choisir l'État
+          en: Select state
+        selector: '[role=''listbox''] li:has-text("{state}")'
+      - id: wait_for_turnstile
+        type: wait_for
+        label:
+          fr: Attendre le contrôle de sécurité
+          en: Wait for security check
+        js_condition: () => { const inp = document.querySelector('input[name="cf-turnstile-response"]');
+          return !!(inp && inp.value && inp.value.length > 0); }
+        timeout_ms: 30000
+        message:
+          fr: Contrôle de sécurité Cloudflare en cours…
+          en: Waiting for Cloudflare security check…
+      - id: search
+        type: click
+        label:
+          fr: Rechercher la fiche
+          en: Search for listing
+        selector: button[aria-label='search-optout-button']
+      - id: select_listing
+        type: prompt_user_if_present
+        selector: button[aria-label='search-optout-button']
+        message:
+          fr: 'BeenVerified affiche les résultats de recherche. Cliquez sur VOTRE fiche dans la liste.
+            Un CAPTCHA va apparaître : résolvez-le. Appuyez sur Entrée une fois le formulaire de suppression
+            chargé.'
+          en: BeenVerified is showing search results. Click YOUR profile in the list. A CAPTCHA will appear
+            — solve it. Press Enter once the removal form has loaded.
+      - id: wait_for_removal_form
+        type: wait_for
+        label:
+          fr: Attendre le formulaire de suppression
+          en: Wait for removal form
+        selector: input[id='requestor_email']
+        timeout_ms: 120000
+      - id: open_account_dropdown
+        type: click
+        label:
+          fr: Ouvrir la liste « type de compte »
+          en: Open account type selector
+        selector: div[aria-labelledby='account_type']
+      - id: wait_for_account_listbox
+        type: wait_for
+        label:
+          fr: Attendre la liste des types de compte
+          en: Wait for account list
+        selector: '[role=''listbox'']'
+        timeout_ms: 5000
+      - id: select_no_account
+        type: click
+        label:
+          fr: Choisir « No » (pas de compte)
+          en: Select 'No account'
+        selector: '[role=''listbox''] li:has-text("No")'
+      - id: fill_removal_form
+        type: form_fill
+        label:
+          fr: Remplir le formulaire de suppression
+          en: Fill removal form
+        fields:
+          first_name:
+            selector: input[id='fname']
+            value: '{first_name}'
+            input: type
+          last_name:
+            selector: input[id='ln']
+            value: '{last_name}'
+            input: type
+          email:
+            selector: input[id='requestor_email']
+            value: '{email}'
+            input: type
+          age:
+            selector: input[id='age']
+            value: '{age}'
+            input: type
+          street:
+            selector: input[id='street']
+            value: '{street}'
+            input: type
+          city:
+            selector: input[id='city']
+            value: '{city}'
+            input: type
+          zip:
+            selector: input[id='zip']
+            value: '{postal_code}'
+            input: type
+      - id: submit_removal
+        type: click
+        label:
+          fr: Envoyer la demande de suppression
+          en: Submit removal request
+        selector: button[aria-label='continue-button']
+      - id: assert_submit_success
+        type: assert
+        label:
+          fr: Vérifier l'envoi de la demande
+          en: Verify removal request submitted
+        selector: .confirmation, [class*='success'], [class*='confirm'], input[id='requestor_email']
+        optional: true
+      - id: email_verify
+        type: prompt_user_if_present
+        selector: input[id='requestor_email'], .confirmation, [class*='success'], [class*='confirm']
+        message:
+          fr: BeenVerified a peut-être envoyé un email de confirmation à {email}. Si c'est le cas, ouvrez-le
+            et cliquez sur le lien de confirmation, puis appuyez sur Entrée. Si un message de confirmation
+            s'affiche déjà à l'écran, appuyez simplement sur Entrée.
+          en: BeenVerified may have sent a confirmation email to {email}. If so, open it and click the
+            confirmation link, then press Enter. If you see a confirmation message on screen already,
+            just press Enter.
+      - id: capture_confirmation
+        type: capture
+  - type: email
+    address: privacy@beenverified.com
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+  - postal_address
+  - birth_date
+requires_id: false
+language: en
+source: optout
+source_ref: https://github.com/Blake104/OptOut/blob/7a310242eca38517a483d75a6a3832bc9424c01b/src/optout/data/brokers/beenverified.yml
+last_verified: 2026-05-10
+notes: |-
+  Confirmation requise : le broker envoie un lien par email.
+
+  Selon OptOut, les fiches réapparaissent souvent sous 60 jours.
+
+  Eraser : aussi listé par Eraser, https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L9
+
+  Notes d'OptOut :
+  Opt-out form at beenverified.com/svc/optout/search/ (redirected from
+  /app/optout/search). Cloudflare passes automatically with a warmed
+  persistent browser profile.
+
+  State field is a Material UI Select (div-based combobox), not a standard
+  HTML select. Open it by clicking div.MuiSelect-select, then pick the
+  state from li[role='option'].
+
+  Flow (verified 2026-05-10):
+    1. Search results appear → user clicks their profile.
+    2. CAPTCHA appears → user solves it → removal form loads.
+    3. Engine selects "No" for account dropdown, fills all fields, clicks Continue.
+    4. BeenVerified sends a confirmation email — user clicks the link.
+
+  Removal form URL: /svc/optout/search/comprehensive_optouts
+  All text fields are MUI inputs (need use_type: true).
+
+  Selectors verified 2026-05-10:
+    Search first name:  input[name='fname']
+    Search last name:   input[name='ln']
+    Search state:       div.MuiSelect-select (MUI combobox)
+    Search button:      button[aria-label='search-optout-button']
+    Turnstile wait:     input[name='cf-turnstile-response'] value non-empty
+    Account dropdown:   div[aria-labelledby='account_type'] → li[role='option']:text-is("No")
+    Removal first name: input[id='fname']   (use_type: true)
+    Removal last name:  input[id='ln']      (use_type: true)
+    Removal email:      input[id='requestor_email']  (use_type: true)
+    Removal age:        input[id='age']     (use_type: true)
+    Removal street:     input[id='street']  (use_type: true)
+    Removal city:       input[id='city']    (use_type: true)
+    Removal zip:        input[id='zip']     (use_type: true)
+    Continue button:    button[aria-label='continue-button']
+
+  Fall back to privacy@beenverified.com if the web form fails.

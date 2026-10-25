@@ -1,0 +1,27 @@
+slug: kaspr
+name: Kaspr
+domain: kaspr.io
+country: FR
+region: fr
+category: people-search
+channels:
+  # « If you wish to exercise your rights, please write to us at: privacy@kaspr.io »
+  - type: email
+    address: privacy@kaspr.io
+  # « You can opt-out at any time from our sharing your personal data with our customers by
+  # completing this form » (formulaire hébergé par Saymine)
+  - type: web_form
+    url: https://kaspr.privacy.saymine.io/kaspr
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+source_ref: https://www.kaspr.io/privacy-policy
+last_verified: 2026-10-25
+notes: |-
+  Extension Chrome qui fournit les coordonnées professionnelles des personnes dont on
+  visite le profil LinkedIn ; sanctionnée par la CNIL (240 000 €, 5/12/2024)
+  (https://www.cnil.fr/fr/aspiration-de-donnees-sanction-de-240-000-euros-lencontre-de-la-societe-kaspr).
+  Politique rédigée en anglais. Utile si vous avez un profil LinkedIn.
+  Relevé le 2026-10-25 (recherche assistée).

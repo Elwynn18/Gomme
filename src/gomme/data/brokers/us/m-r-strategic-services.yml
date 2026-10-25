@@ -1,0 +1,25 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: m-r-strategic-services
+name: M&R Strategic Services
+domain: mrss.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@mrss.com
+  - type: web_form
+    url: https://www.mrss.com/my-personal-information/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3085
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Confirmed data broker (donor/political data compiled and compared
+  across clients, treated as a ''sale'' under some state laws); on-file opt-out is a generic Google Form
+  while M+R''s own site now hosts a dedicated privacy opt-out page. (source: https://www.mrss.com/my-personal-information/)'

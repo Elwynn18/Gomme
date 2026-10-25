@@ -1,0 +1,36 @@
+{% extends "base.html.j2" %}
+{% block title %}Demande n° {{ item.id }}{% endblock %}
+{% block content %}
+<h1>Demande n° {{ item.id }} — {{ broker.name if broker else item.broker_slug }}</h1>
+<table>
+  <tr><th>État</th><td>{{ status_labels[item.status] }}</td></tr>
+  <tr><th>Canal / loi</th><td>{{ item.channel }} / {{ item.jurisdiction.value | upper }}</td></tr>
+  <tr><th>Envoyée</th><td>{{ item.sent_on or "—" }}{% if item.received_on %} (reçue le {{ item.received_on }}){% endif %}</td></tr>
+  <tr><th>Échéance légale</th><td>{% if deadline %}{{ deadline.due }}{% if deadline.extended %} (prolongée){% endif %}{% if item.suspended_days %} (suspendue {{ item.suspended_days }} j){% endif %}{% else %}—{% endif %}</td></tr>
+</table>
+{% if has_eml %}<p><a href="/requests/{{ item.id }}/eml">Télécharger l'email (.eml)</a> à ouvrir dans votre messagerie.</p>{% endif %}
+{% if actions %}
+<h2>Noter une étape</h2>
+<form method="post" action="/requests/{{ item.id }}/mark">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <select name="action">{% for a in actions %}<option value="{{ a.value }}">{{ action_labels[a] }}</option>{% endfor %}</select>
+  <input name="note" placeholder="Note (facultative)" maxlength="500">
+  <button>Enregistrer</button>
+</form>
+{% endif %}
+{% if item.status.value in ("sent", "acknowledged", "needs_action", "overdue") %}
+<form method="post" action="/requests/{{ item.id }}/received">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Reçue par le broker le <input type="date" name="received_on" value="{{ item.received_on or '' }}"></label>
+  <button>Noter la réception</button>
+  <span class="muted">(accusé de réception d'un courrier : le délai légal en part)</span>
+</form>
+{% endif %}
+{% if item.status.value in ("overdue", "refused") %}<p class="muted">Relance : <code>gomme remind {{ item.id }}</code> · plainte CNIL : <code>gomme escalate {{ item.id }}</code></p>{% endif %}
+<h2>Journal</h2>
+<table>
+  {% for e in events %}
+  <tr><td>{{ e.at.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ e.action }}</td><td>{{ status_labels[e.to_status] }}</td><td class="muted">{{ e.note }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

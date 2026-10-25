@@ -1,0 +1,23 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: minerva-bi
+name: MINERVA BI Inc
+domain: realtors.minervadata.xyz
+region: us
+category: marketing
+channels:
+  - type: web_form
+    url: https://preferences.minerva.io
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L3018
+notes: 'Notes d''Eraser : Reply says privacy@minervadata.xyz is being deprecated in favor of privacy@minerva.io,
+  but that privacy requests by email "will not be processed" regardless - only the webform or +1 (234)
+  595-3394 are accepted (2026-08-21).'

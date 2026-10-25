@@ -1,0 +1,24 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: list-service-direct
+name: List Service Direct Inc.
+domain: listservicedirect.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: dataremoval@listservicedirect.com
+  - type: web_form
+    url: https://listservicedirect.com/opt-out/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L2699
+notes: 'Notes d''Eraser : dataremoval@listservicedirect.com bounced with "mailbox full" (reply received
+  2026-08-20) - likely transient, safe to retry; opt_out_url is also on file as a fallback.'

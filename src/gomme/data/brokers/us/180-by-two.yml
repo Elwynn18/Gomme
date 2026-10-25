@@ -1,0 +1,26 @@
+# Généré par scripts/import_eraser.py depuis https://github.com/drumandbytes/eraser
+# (commit 6c3099a9a4abf40ee26fb67708b3c01593aa1b92, licence MIT, voir LICENSES/eraser-MIT.txt).
+# Ne pas modifier à la main : corriger le script, puis le relancer.
+slug: 180-by-two
+name: 180 By Two, LLC
+domain: 180bytwo.com
+region: us
+category: marketing
+channels:
+  - type: email
+    address: privacy@180bytwo.com
+  - type: web_form
+    url: https://180bytwo.com/privacycaliforniaresidents/
+legal_basis:
+  - ccpa_1798_105
+required_fields:
+  - full_name
+  - email
+requires_id: false
+language: en
+source: eraser
+source_ref: https://github.com/drumandbytes/eraser/blob/6c3099a9a4abf40ee26fb67708b3c01593aa1b92/data/brokers.yaml#L261
+notes: 'Notes d''Eraser : SWEEP 2026-09-12: Confirmed as a registered CA data broker (B2B/account-based
+  marketing data). The on-file email is an individual''s personal address; the company''s own privacy
+  policy publishes privacy@180bytwo.com and a dedicated CA-residents rights page as the current channels.
+  (source: https://oag.ca.gov/data-broker/registration/186738)'

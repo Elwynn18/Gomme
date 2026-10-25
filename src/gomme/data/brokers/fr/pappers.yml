@@ -1,0 +1,30 @@
+slug: pappers
+name: Pappers
+domain: pappers.fr
+country: FR
+region: fr
+category: annuaire
+channels:
+  # « Vous pouvez exercer Vos droits en complétant ce formulaire. »
+  - type: web_form
+    url: https://www.pappers.fr/reclamation
+  # « Alternativement, vous pouvez écrire à [email] » (adresse masquée, décodée)
+  - type: email
+    address: contact@pappers.fr
+legal_basis: [gdpr_art17, gdpr_art21]
+required_fields: [full_name, email]
+requires_id: false
+language: fr
+source: manual
+# TODO(verify): la page en ligne répondait « Erreur 503 » le 2026-10-25 ; relevé sur la copie
+# archivée du 19/09/2026 de https://www.pappers.fr/protection-des-donnees.
+source_ref: https://web.archive.org/web/20260919221048/https://www.pappers.fr/protection-des-donnees
+last_verified: 2026-10-25
+notes: |-
+  Publie les données des entreprises et de leurs dirigeants (Registre national des
+  entreprises). Pappers écrit qu'il n'est « pas juridiquement et légalement habilité à
+  répondre positivement à l'exercice de vos droits » pour ces données, sauf motifs
+  légitimes propres à votre situation (opposition, CE 18 mars 2019, n° 406313) : expliquer
+  ces motifs dans la demande.
+  Les mentions légales demandent d'utiliser le formulaire pour les réclamations.
+  Pièce d'identité : non mentionnée.
