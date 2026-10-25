@@ -1,30 +1,98 @@
 {% extends "base.html.j2" %}
-{% block title %}Demandes{% endblock %}
-{% block content %}
-<h1>Vos demandes</h1>
-<p class="actions">
-  <form method="post" action="/queue"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer les demandes de votre région</button></form>
-  <form method="post" action="/monitor"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Mettre à jour les retards</button></form>
-</p>
-{% if counts %}
-<p class="muted">{% for status, count in counts.most_common() %}{{ status_labels[status] }} : {{ count }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
-{% endif %}
-{% if rows %}
-<div class="table-wrap"><table>
-  <tr><th>N°</th><th>Broker</th><th>Canal</th><th>Loi</th><th>État</th><th>Envoyée</th><th>Échéance</th></tr>
-  {% for row in rows %}{% set r = row.request %}
-  <tr>
-    <td><a href="/requests/{{ r.id }}">{{ r.id }}</a></td>
-    <td><a href="/brokers/{{ r.broker_slug }}">{{ r.broker_slug }}</a></td>
-    <td>{{ r.channel }}</td>
-    <td>{{ r.jurisdiction.value | upper }}</td>
-    <td>{{ status_labels[r.status] }}</td>
-    <td>{{ r.sent_on or "—" }}</td>
-    <td>{% if row.due %}<span class="{{ 'late' if row.days_left < 0 and r.status.value in ('sent', 'acknowledged', 'overdue') else '' }}">{{ row.due }} ({{ '%+d' % row.days_left }} j)</span>{% else %}—{% endif %}</td>
-  </tr>
+{% import "macros.html.j2" as m with context %}
+{% block title %}Accueil{% endblock %}
+
+{% macro rows(items, show="deadline") -%}
+<ul class="list">
+  {% for row in items %}{% set r = row.request %}
+  <li><a class="item" href="/requests/{{ r.id }}">
+    <div class="main">
+      <div class="title">{{ row.name }}</div>
+      <div class="meta">{{ channel_labels.get(r.channel, r.channel) | capitalize }}{% if r.sent_on %} · envoyée le {{ r.sent_on | fr_date }}{% endif %}</div>
+    </div>
+    {% if show == "deadline" and row.days_left is not none %}
+      <div class="side{% if row.days_left < 0 %} late{% endif %}">{{ row.days_left | countdown }}<br><span class="small">avant le {{ row.deadline.due | fr_date }}</span></div>
+    {% endif %}
+    {{ m.badge(r.status) }}
+    <span class="chevron">{{ m.icon("chevron") }}</span>
+  </a></li>
   {% endfor %}
-</table></div>
+</ul>
+{%- endmacro %}
+
+{% macro blocked_note() -%}
+{% if selection.blocked %}
+<div class="card soft">
+  <h3>Des brokers attendent une information</h3>
+  <p>Pour vous retrouver, certains brokers ont besoin d'une information absente de votre profil :
+  {% for field, count in selection.blocked.items() %}<strong>{{ field_labels[field] }}</strong> ({{ count }} broker{{ "s" if count > 1 else "" }}){% if not loop.last %}, {% endif %}{% endfor %}.
+  Sans elle, Gomme ne leur écrit pas.</p>
+  <a class="btn small" href="/profile/edit">Compléter mon profil</a>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% block content %}
+{% if board.total == 0 %}
+<section class="card hero">
+  <h1>Bonjour {{ first_name }} !</h1>
+  <p class="lead">Gomme a repéré <strong>{{ selection.total }} brokers</strong> susceptibles d'avoir des données sur vous : ceux qui opèrent {{ scope }}.</p>
+  <ol class="numbered">
+    <li>Gomme rédige une demande d'effacement par broker, appuyée sur le RGPD.</li>
+    <li>Vous l'envoyez depuis votre boîte mail, en un clic.</li>
+    <li>Gomme compte le délai légal d'un mois et vous dit quand relancer.</li>
+  </ol>
+  {% if selection.ready %}
+  <form method="post" action="/queue" class="actions">{{ m.csrf_field() }}
+    <button class="btn primary big">{% if selection.ready == 1 %}Préparer ma demande{% else %}Préparer mes {{ selection.ready }} demandes{% endif %} {{ m.icon("chevron") }}</button>
+  </form>
+  <p class="small muted" style="margin-top:12px">Rien n'est envoyé à cette étape : vous relirez chaque demande avant de l'envoyer.</p>
+  {% endif %}
+</section>
+{{ blocked_note() }}
 {% else %}
-<p>Aucune demande pour l'instant. Commencez par « Préparer les demandes de votre région », ou choisissez un broker dans la liste.</p>
+
+<h1>Bonjour {{ first_name }}</h1>
+<p class="muted">{{ board.done | length }} demande{{ "s" if board.done | length > 1 else "" }} terminée{{ "s" if board.done | length > 1 else "" }} sur {{ board.total }}.</p>
+<div class="progress" role="progressbar" aria-valuenow="{{ board.progress }}" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement"><span style="width: {{ board.progress }}%"></span></div>
+
+<div class="grid" style="margin-top:20px">
+  <div class="stat todo"><div class="value">{{ board.to_send | length }}</div><div class="label">à envoyer</div></div>
+  <div class="stat wait"><div class="value">{{ board.waiting | length }}</div><div class="label">en attente de réponse</div></div>
+  <div class="stat alert"><div class="value">{{ (board.needs_you | length) + (board.problems | length) }}</div><div class="label">à traiter</div></div>
+  <div class="stat ok"><div class="value">{{ board.done | length }}</div><div class="label">terminées</div></div>
+</div>
+
+{% if board.to_send %}
+<div class="card accent">
+  <h2 style="margin-top:0">{{ m.icon("send") }} {{ board.to_send | length }} demande{{ "s" if board.to_send | length > 1 else "" }} à envoyer</h2>
+  <p class="muted">Chacune s'envoie en deux clics : ouvrir le message prêt, puis le signaler comme envoyé.</p>
+  <a class="btn primary" href="/send">Envoyer mes demandes {{ m.icon("chevron") }}</a>
+</div>
+{% endif %}
+
+{% if board.needs_you or board.problems %}
+<div class="section-title"><h2>À traiter</h2></div>
+{{ rows(board.needs_you + board.problems) }}
+{% endif %}
+
+{% if board.waiting %}
+<div class="section-title"><h2>En attente de réponse</h2><span class="small muted">Le broker a un mois pour répondre.</span></div>
+{{ rows(board.waiting) }}
+{% endif %}
+
+{% if board.done %}
+<div class="section-title"><h2>Terminées</h2></div>
+{{ rows(board.done, show="none") }}
+{% endif %}
+
+{{ blocked_note() }}
+
+<div class="actions" style="margin-top:24px">
+  {% if selection.ready %}
+  <form method="post" action="/queue">{{ m.csrf_field() }}<button class="btn">Préparer {{ selection.ready }} nouvelle{{ "s" if selection.ready > 1 else "" }} demande{{ "s" if selection.ready > 1 else "" }}</button></form>
+  {% endif %}
+  <form method="post" action="/monitor">{{ m.csrf_field() }}<button class="btn ghost">{{ m.icon("clock") }} Vérifier les délais</button></form>
+</div>
 {% endif %}
 {% endblock %}

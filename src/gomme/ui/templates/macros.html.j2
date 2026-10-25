@@ -1,0 +1,113 @@
+{# Small reusable pieces. Icons are inline SVG: no external resource, no JavaScript. #}
+
+{% macro icon(name) -%}
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if name == "lock" -%}<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+{%- elif name == "mail" -%}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>
+{%- elif name == "check" -%}<path d="M20 6 9 17l-5-5"/>
+{%- elif name == "info" -%}<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>
+{%- elif name == "send" -%}<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/>
+{%- elif name == "hand" -%}<path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-3a2 2 0 0 0-4 0"/>
+{%- elif name == "shield" -%}<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"/><path d="m9 12 2 2 4-4"/>
+{%- elif name == "chevron" -%}<path d="m9 6 6 6-6 6"/>
+{%- elif name == "download" -%}<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>
+{%- elif name == "external" -%}<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>
+{%- elif name == "printer" -%}<path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/>
+{%- elif name == "form" -%}<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>
+{%- elif name == "clock" -%}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+{%- elif name == "alert" -%}<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>
+{%- elif name == "user" -%}<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+{% macro logo() -%}
+<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="9" width="26" height="14" rx="4" transform="rotate(-18 16 16)" fill="var(--accent)"/><rect x="3" y="9" width="10" height="14" rx="4" transform="rotate(-18 16 16)" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/></svg>
+{%- endmacro %}
+
+{% macro badge(status) -%}
+<span class="badge {{ status_tones[status] }}">{{ status_labels[status] }}</span>
+{%- endmacro %}
+
+{% macro csrf_field() -%}<input type="hidden" name="csrf" value="{{ csrf }}">{%- endmacro %}
+
+{% macro action_button(request_id, action, next, label=None) -%}
+<form method="post" action="/requests/{{ request_id }}/mark" class="inline">
+  {{ csrf_field() }}<input type="hidden" name="action" value="{{ action.value }}"><input type="hidden" name="next" value="{{ next }}">
+  <button class="btn {{ action_styles.get(action, '') }}">{{ label or action_buttons[action] }}</button>
+</form>
+{%- endmacro %}
+
+{% macro text_field(name, label, values, errors, type="text", optional=False, help=None, autocomplete=None, extra="") -%}
+<div class="field{% if errors.get(name) %} has-error{% endif %} {{ extra }}">
+  <label for="f-{{ name }}">{{ label }}{% if optional %} <span class="optional">(facultatif)</span>{% endif %}</label>
+  {% if help %}<p class="help" id="h-{{ name }}">{{ help }}</p>{% endif %}
+  <input type="{{ type }}" id="f-{{ name }}" name="{{ name }}" value="{{ values.get(name, '') }}"{% if autocomplete %} autocomplete="{{ autocomplete }}"{% endif %}{% if not optional %} required{% endif %}{% if help %} aria-describedby="h-{{ name }}"{% endif %}{% if errors.get(name) %} aria-invalid="true"{% endif %}>
+  {% if errors.get(name) %}<p class="error">{{ errors[name] }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro country_field(values, errors) -%}
+<div class="field{% if errors.get('country') %} has-error{% endif %}">
+  <label for="f-country">Pays où vous habitez</label>
+  <p class="help" id="h-country">Il décide de la loi qui vous protège : le RGPD en Europe.</p>
+  <select id="f-country" name="country" aria-describedby="h-country">
+    {% for code, name in countries.items() %}<option value="{{ code }}"{% if values.get('country') == code %} selected{% endif %}>{{ name }}</option>{% endfor %}
+  </select>
+  {% if errors.get('country') %}<p class="error">{{ errors['country'] }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro identity_fields(values, errors) -%}
+<div class="row">
+  {{ text_field("first_name", "Prénom", values, errors, autocomplete="given-name") }}
+  {{ text_field("last_name", "Nom", values, errors, autocomplete="family-name") }}
+</div>
+{{ text_field("email", "Votre adresse email", values, errors, type="email", autocomplete="email", help="Celle depuis laquelle vous enverrez les demandes. Les brokers vous répondront à cette adresse.") }}
+{{ country_field(values, errors) }}
+{%- endmacro %}
+
+{% macro need(count) -%}
+{% if count %}<span class="need">utile à {{ count }} broker{{ "s" if count > 1 else "" }}</span>{% endif %}
+{%- endmacro %}
+
+{% macro details_fields(values, errors, needs, us_states) -%}
+<div class="why">{{ icon("info") }}<p>Pour effacer vos données, un broker doit d'abord <strong>retrouver votre fiche</strong> dans ses fichiers, sans la confondre avec celle d'un homonyme. Ces informations servent uniquement à cela, et <strong>chacune n'est envoyée qu'aux brokers qui en ont besoin</strong>. S'ils ont une fiche sur vous, ils les connaissent déjà.</p></div>
+<fieldset>
+  <legend>Adresse postale {{ need(needs[field_keys.POSTAL_ADDRESS]) }}</legend>
+  <p class="help muted">Facultative, mais les annuaires et fichiers marketing français s'en servent presque tous pour vous identifier. Sans elle, ces brokers sont laissés de côté.</p>
+  {{ text_field("street", "Numéro et rue", values, errors, optional=True, autocomplete="street-address") }}
+  <div class="row city">
+    {{ text_field("postal_code", "Code postal", values, errors, optional=True, autocomplete="postal-code") }}
+    {{ text_field("city", "Ville", values, errors, optional=True, autocomplete="address-level2") }}
+  </div>
+  {% if values.get("country") == "US" %}
+  <div class="field{% if errors.get('state') %} has-error{% endif %}">
+    <label for="f-state">État</label>
+    <select id="f-state" name="state"><option value="">—</option>{% for code, name in us_states.items() %}<option value="{{ code }}"{% if values.get('state') == code %} selected{% endif %}>{{ name }}</option>{% endfor %}</select>
+    {% if errors.get('state') %}<p class="error">{{ errors['state'] }}</p>{% endif %}
+  </div>
+  {% endif %}
+</fieldset>
+<div class="row">
+  <div>
+    {{ text_field("birth_date", "Date de naissance", values, errors, type="date", optional=True, help="Pour vous distinguer d'un homonyme.") }}
+    {% if needs[field_keys.BIRTH_DATE] %}<p class="small muted">{{ need(needs[field_keys.BIRTH_DATE]) }}</p>{% endif %}
+  </div>
+  <div>
+    {{ text_field("phone", "Téléphone", values, errors, type="tel", optional=True, autocomplete="tel", help="Pour les brokers qui vous ont enregistré par ce numéro.") }}
+    {% if needs[field_keys.PHONE] %}<p class="small muted">{{ need(needs[field_keys.PHONE]) }}</p>{% endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro composer_fields(values, errors) -%}
+<div class="choices" role="radiogroup" aria-label="Façon d'envoyer vos emails">
+  <label class="choice"><input type="radio" name="composer" value="gmail"{% if values.get('composer') == 'gmail' %} checked{% endif %}>
+    <div><strong>Gmail, dans mon navigateur</strong><span>Un clic ouvre un nouveau message Gmail déjà rempli : destinataire, objet et texte. Vous le relisez et cliquez sur Envoyer.</span></div></label>
+  <label class="choice"><input type="radio" name="composer" value="mail_app"{% if values.get('composer') == 'mail_app' %} checked{% endif %}>
+    <div><strong>Mon logiciel de messagerie</strong><span>Thunderbird, Outlook, Mail… Un clic ouvre le message prêt à partir dans ce logiciel.</span></div></label>
+</div>
+{% if errors.get('composer') %}<p class="error">{{ errors['composer'] }}</p>{% endif %}
+<p class="small muted">Dans les deux cas, les emails partent de <strong>votre</strong> boîte mail : Gomme ne connaît jamais votre mot de passe.</p>
+{%- endmacro %}

@@ -1,21 +1,84 @@
 {% extends "base.html.j2" %}
-{% block title %}Envoi{% endblock %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}À envoyer{% endblock %}
 {% block content %}
-<h1>Emails en attente</h1>
-{% if previews %}
-<table>
-  <tr><th>N°</th><th>Broker</th><th>Destinataire</th><th>Objet</th></tr>
-  {% for p in previews %}<tr><td><a href="/requests/{{ p.request.id }}">{{ p.request.id }}</a></td><td>{{ p.broker.name }}</td><td>{{ p.to }}</td><td>{{ p.text.subject }}</td></tr>{% endfor %}
-</table>
-{% if limit_reached %}<p class="muted">Limite quotidienne atteinte : la suite partira demain.</p>{% endif %}
-{% if manual %}
-<form method="post" action="/send"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer les fichiers .eml</button></form>
-<p class="muted">Gomme écrit un fichier par demande ; ouvrez-le dans votre messagerie, envoyez-le, puis notez l'envoi sur la page de la demande.</p>
-{% else %}
-<p>Mode smtp : l'envoi se fait en ligne de commande, avec confirmation : <code>gomme send</code>.</p>
+<h1>À envoyer</h1>
+
+{% if not emails and not letters and not web_forms %}
+<div class="card hero">
+  <h2 style="margin-top:0">{{ m.icon("check") }} Rien à envoyer pour l'instant</h2>
+  <p class="muted">Toutes vos demandes sont parties. Gomme suit les délais depuis l'accueil.</p>
+  <a class="btn" href="/">Retour à l'accueil</a>
+</div>
 {% endif %}
-{% else %}
-<p>Aucun email en attente.</p>
+
+{% if emails %}
+<div class="section-title"><h2>{{ m.icon("mail") }} Emails ({{ emails | length }})</h2></div>
+<div class="card soft">
+  <ol class="numbered">
+    <li>Cliquez sur « {{ "Ouvrir dans Gmail" if composer.value == "gmail" else "Ouvrir dans ma messagerie" }} » : le message s'ouvre, déjà rempli.</li>
+    <li>Relisez-le et envoyez-le depuis votre boîte mail.</li>
+    <li>Revenez ici et cliquez sur « C'est envoyé » : le délai légal d'un mois commence.</li>
+  </ol>
+  {% if smtp %}<p class="small muted">Votre configuration permet aussi l'envoi automatique, en ligne de commande : <code>gomme send</code>.</p>{% endif %}
+</div>
+{% for item, link in emails %}
+<article class="card" id="r{{ item.request.id }}">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <h3 style="margin:0">{{ item.broker.name }}</h3>
+    <span class="small muted">{{ category_labels.get(item.broker.category, "") }}</span>
+  </div>
+  <dl class="mail-head" style="margin-top:10px">
+    <dt>À</dt><dd>{{ item.to }}</dd>
+    <dt>Objet</dt><dd>{{ item.text.subject }}</dd>
+  </dl>
+  <details><summary>Lire le message</summary><pre class="letter">{{ item.text.body }}</pre></details>
+  <div class="actions">
+    <a class="btn primary" href="{{ link }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} {{ "Ouvrir dans Gmail" if composer.value == "gmail" else "Ouvrir dans ma messagerie" }}</a>
+    {{ m.action_button(item.request.id, action_send, "/send", label="C'est envoyé") }}
+    <a class="btn ghost small" href="/requests/{{ item.request.id }}/eml">{{ m.icon("download") }} Fichier .eml</a>
+  </div>
+</article>
+{% endfor %}
 {% endif %}
-{% if skipped %}<h2>Écartées</h2><ul>{% for slug, reason in skipped %}<li>{{ slug }} : {{ reason }}</li>{% endfor %}</ul>{% endif %}
+
+{% if letters %}
+<div class="section-title"><h2>{{ m.icon("printer") }} Courriers ({{ letters | length }})</h2></div>
+<div class="card soft">
+  <p>Ces brokers n'acceptent que le courrier postal. Imprimez chaque lettre, signez-la et envoyez-la, de préférence en <strong>recommandé avec accusé de réception</strong> : le délai légal part de la date de réception.</p>
+  {% if letters | rejectattr("ready") | list %}
+  <form method="post" action="/letters">{{ m.csrf_field() }}<button class="btn primary">Préparer les courriers (PDF)</button></form>
+  {% endif %}
+</div>
+{% for letter in letters %}{% set r = letter.request %}
+<article class="card">
+  <h3>{{ letter.broker.name if letter.broker else r.broker_slug }}</h3>
+  {% if letter.broker %}<p class="small muted">{% for c in letter.broker.channels if c.type == "postal" %}{{ c.address }}{% endfor %}</p>{% endif %}
+  <div class="actions">
+    {% if letter.ready %}<a class="btn" href="/requests/{{ r.id }}/letter">{{ m.icon("download") }} Télécharger la lettre</a>{% endif %}
+    {{ m.action_button(r.id, action_send, "/send", label="Je l'ai postée") }}
+  </div>
+</article>
+{% endfor %}
+{% endif %}
+
+{% if web_forms %}
+<div class="section-title"><h2>{{ m.icon("form") }} Formulaires en ligne ({{ web_forms | length }})</h2></div>
+<div class="card soft"><p>Ces brokers demandent de passer par leur site. Ouvrez le formulaire, remplissez-le avec vos informations, puis revenez le signaler.</p></div>
+{% for wf in web_forms %}{% set r = wf.request %}
+<article class="card">
+  <h3>{{ wf.broker.name if wf.broker else r.broker_slug }}</h3>
+  {% if wf.channel and wf.channel.steps %}<p class="small muted">Remplissage automatique possible en ligne de commande : <code>gomme submit --broker {{ r.broker_slug }}</code>.</p>{% endif %}
+  <div class="actions">
+    {% if wf.channel %}<a class="btn primary" href="{{ wf.channel.url }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} Ouvrir le formulaire</a>{% endif %}
+    {{ m.action_button(r.id, action_send, "/send", label="C'est fait") }}
+  </div>
+</article>
+{% endfor %}
+{% endif %}
+
+{% if skipped %}
+<details><summary>{{ skipped | length }} demande(s) impossible(s) à préparer</summary>
+<ul>{% for slug, reason in skipped %}<li>{{ slug }} : {{ reason }}</li>{% endfor %}</ul></details>
+{% endif %}
 {% endblock %}

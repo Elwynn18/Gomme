@@ -1,36 +1,91 @@
 {% extends "base.html.j2" %}
-{% block title %}Demande n° {{ item.id }}{% endblock %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}{{ name }}{% endblock %}
 {% block content %}
-<h1>Demande n° {{ item.id }} — {{ broker.name if broker else item.broker_slug }}</h1>
-<table>
-  <tr><th>État</th><td>{{ status_labels[item.status] }}</td></tr>
-  <tr><th>Canal / loi</th><td>{{ item.channel }} / {{ item.jurisdiction.value | upper }}</td></tr>
-  <tr><th>Envoyée</th><td>{{ item.sent_on or "—" }}{% if item.received_on %} (reçue le {{ item.received_on }}){% endif %}</td></tr>
-  <tr><th>Échéance légale</th><td>{% if deadline %}{{ deadline.due }}{% if deadline.extended %} (prolongée){% endif %}{% if item.suspended_days %} (suspendue {{ item.suspended_days }} j){% endif %}{% else %}—{% endif %}</td></tr>
-</table>
-{% if has_eml %}<p><a href="/requests/{{ item.id }}/eml">Télécharger l'email (.eml)</a> à ouvrir dans votre messagerie.</p>{% endif %}
-{% if actions %}
-<h2>Noter une étape</h2>
-<form method="post" action="/requests/{{ item.id }}/mark">
-  <input type="hidden" name="csrf" value="{{ csrf }}">
-  <select name="action">{% for a in actions %}<option value="{{ a.value }}">{{ action_labels[a] }}</option>{% endfor %}</select>
-  <input name="note" placeholder="Note (facultative)" maxlength="500">
-  <button>Enregistrer</button>
-</form>
-{% endif %}
+<p class="small"><a href="/">← Accueil</a></p>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+  <h1 style="margin:0">{{ name }}</h1>{{ m.badge(item.status) }}
+</div>
+
+<dl class="facts">
+  <div><dt>Envoi</dt><dd>{{ channel_labels.get(item.channel, item.channel) | capitalize }}</dd></div>
+  <div><dt>Loi appliquée</dt><dd>{{ jurisdiction_labels[item.jurisdiction] }}</dd></div>
+  <div><dt>Envoyée le</dt><dd>{{ item.sent_on | fr_date }}{% if item.received_on %}<br><span class="small muted">reçue le {{ item.received_on | fr_date }}</span>{% endif %}</dd></div>
+  <div><dt>Réponse attendue avant le</dt><dd>{% if deadline %}{{ deadline.due | fr_date }}<br><span class="small {{ 'late' if days_left < 0 else 'muted' }}">{{ days_left | countdown }}{% if deadline.extended %} · délai prolongé{% endif %}{% if item.suspended_days %} · suspendu {{ item.suspended_days }} j{% endif %}</span>{% else %}—{% endif %}</dd></div>
+</dl>
+
+{# What to do now, in plain words. #}
+<section class="card accent" style="margin-top:20px">
+  <h2 style="margin-top:0">Prochaine étape</h2>
+  {% set s = item.status.value %}
+  {% if s == "queued" and email %}
+    <p>Envoyez cette demande depuis votre boîte mail, puis signalez-le ici.</p>
+    <dl class="mail-head"><dt>À</dt><dd>{{ email.to }}</dd><dt>Objet</dt><dd>{{ email.text.subject }}</dd></dl>
+    <details><summary>Lire le message</summary><pre class="letter">{{ email.text.body }}</pre></details>
+    <div class="actions">
+      <a class="btn primary" href="{{ link }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} {{ "Ouvrir dans Gmail" if composer.value == "gmail" else "Ouvrir dans ma messagerie" }}</a>
+      <a class="btn ghost small" href="/requests/{{ item.id }}/eml">{{ m.icon("download") }} Fichier .eml</a>
+    </div>
+  {% elif s == "queued" and item.channel == "postal" %}
+    <p>Imprimez la lettre, signez-la et envoyez-la, de préférence en recommandé avec accusé de réception.</p>
+    <div class="actions">{% if has_letter %}<a class="btn primary" href="/requests/{{ item.id }}/letter">{{ m.icon("download") }} Télécharger la lettre</a>{% else %}<a class="btn primary" href="/send">Préparer la lettre</a>{% endif %}</div>
+  {% elif s == "queued" and item.channel == "web_form" %}
+    <p>Ce broker demande de passer par son site : ouvrez le formulaire et remplissez-le, puis signalez-le ici.</p>
+    {% if form_url %}<div class="actions"><a class="btn primary" href="{{ form_url }}" target="_blank" rel="noreferrer noopener">{{ m.icon("external") }} Ouvrir le formulaire</a></div>{% endif %}
+  {% elif s in ("sent", "acknowledged") %}
+    <p>La balle est dans le camp du broker. Quand il vous répond, indiquez-le ci-dessous : Gomme ajuste le suivi.</p>
+  {% elif s == "needs_action" %}
+    <p>Le broker attend quelque chose de vous, souvent une confirmation d'identité. Répondez-lui, puis cliquez sur « J'ai fourni l'information ». Le délai légal est suspendu en attendant.</p>
+    <p class="small muted">S'il réclame une pièce d'identité : masquez tout ce qui n'est pas nécessaire (photo, numéro du document, date de délivrance…). N'envoyez jamais plus que ce qu'il faut.</p>
+  {% elif s == "overdue" %}
+    <p>Le délai légal est dépassé sans réponse. Vous pouvez relancer le broker, puis, s'il ne répond toujours pas, saisir la CNIL.</p>
+    <p class="small muted">Pour l'instant, en ligne de commande : relance <code>gomme remind {{ item.id }}</code>, plainte <code>gomme escalate {{ item.id }}</code>.</p>
+  {% elif s == "refused" %}
+    <p>Le broker a refusé. Pour la prospection commerciale, l'opposition est un droit absolu (RGPD, art. 21) : un refus est rarement justifié. Vous pouvez saisir la CNIL.</p>
+    <p class="small muted">Pour l'instant, en ligne de commande : <code>gomme escalate {{ item.id }}</code>.</p>
+  {% elif s == "completed" %}
+    <p>{{ m.icon("check") }} Le broker a confirmé la suppression. Gomme vous proposera de vérifier dans quelques semaines que vos données ne sont pas revenues.</p>
+  {% elif s == "recheck_due" %}
+    <p>Il est temps de vérifier que vos données n'ont pas réapparu chez ce broker.</p>
+  {% elif s == "escalated" %}
+    <p>Une plainte a été préparée. Si le broker finit par supprimer vos données, indiquez-le ci-dessous.</p>
+  {% else %}
+    <p>Cette demande n'est pas dans la file d'envoi.</p>
+  {% endif %}
+
+  {% if actions %}
+  <form method="post" action="/requests/{{ item.id }}/mark" style="margin-top:16px">
+    {{ m.csrf_field() }}<input type="hidden" name="next" value="/requests/{{ item.id }}">
+    <div class="field" style="margin-bottom:12px">
+      <label for="f-note">Note <span class="optional">(facultative, pour vous)</span></label>
+      <input type="text" id="f-note" name="note" maxlength="500" placeholder="Ex. : réponse reçue par email, référence 12345">
+    </div>
+    <div class="actions">
+      {% for a in actions %}<button class="btn {{ action_styles.get(a, '') }}" name="action" value="{{ a.value }}">{{ action_buttons[a] }}</button>{% endfor %}
+    </div>
+  </form>
+  {% endif %}
+</section>
+
 {% if item.status.value in ("sent", "acknowledged", "needs_action", "overdue") %}
-<form method="post" action="/requests/{{ item.id }}/received">
-  <input type="hidden" name="csrf" value="{{ csrf }}">
-  <label>Reçue par le broker le <input type="date" name="received_on" value="{{ item.received_on or '' }}"></label>
-  <button>Noter la réception</button>
-  <span class="muted">(accusé de réception d'un courrier : le délai légal en part)</span>
-</form>
+<details>
+  <summary>Envoyée par courrier recommandé ? Indiquer la date de réception</summary>
+  <form method="post" action="/requests/{{ item.id }}/received" class="actions">
+    {{ m.csrf_field() }}
+    <label class="visually-hidden" for="f-received">Date de réception</label>
+    <input type="date" id="f-received" name="received_on" value="{{ item.received_on or '' }}" style="width:auto">
+    <button class="btn small">Enregistrer</button>
+  </form>
+  <p class="small muted">Le délai légal court à partir de la réception par le broker (date de l'accusé de réception).</p>
+</details>
 {% endif %}
-{% if item.status.value in ("overdue", "refused") %}<p class="muted">Relance : <code>gomme remind {{ item.id }}</code> · plainte CNIL : <code>gomme escalate {{ item.id }}</code></p>{% endif %}
-<h2>Journal</h2>
-<table>
+
+<h2>Historique</h2>
+<ol class="timeline">
   {% for e in events %}
-  <tr><td>{{ e.at.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ e.action }}</td><td>{{ status_labels[e.to_status] }}</td><td class="muted">{{ e.note }}</td></tr>
+  {% set at = e.at.astimezone() %}<li><time datetime="{{ e.at.isoformat() }}">{{ at.date() | fr_date }} à {{ at.strftime("%H:%M") }}</time>
+    <strong>{{ e.action | event_label | capitalize }}</strong>{% if e.note %} <span class="muted">— {{ e.note }}</span>{% endif %}</li>
   {% endfor %}
-</table>
+</ol>
+{% if broker %}<p class="small" style="margin-top:20px"><a href="/brokers/{{ broker.slug }}">Voir la fiche du broker</a></p>{% endif %}
 {% endblock %}

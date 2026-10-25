@@ -75,7 +75,11 @@ def default_selection(brokers: Iterable[Broker], profile: Profile) -> tuple[str,
     Writing to a broker that never had your data would hand it your name and address:
     by default, only brokers of the user's own market are selected, plus worldwide ones.
     """
-    country = profile.country
+    return selection_for_country(brokers, profile.country)
+
+
+def selection_for_country(brokers: Iterable[Broker], country: str) -> tuple[str, list[Broker]]:
+    """`default_selection` for a country of residence, before any profile exists."""
     if country == "FR":
         description = "fiches France (fr) et internationales (global)"
         chosen = [b for b in brokers if b.region in (Region.FR, Region.GLOBAL)]

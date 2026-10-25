@@ -1,0 +1,72 @@
+{% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Bienvenue{% endblock %}
+{% block nav %}<span class="nav"></span>{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
+{% block content %}
+{% if step.name != "welcome" %}
+<ol class="steps" aria-label="Étapes">
+  {% for s in steps[1:] %}
+  <li class="{{ 'current' if s.name == step.name else ('done' if loop.index < step_index else '') }}"{% if s.name == step.name %} aria-current="step"{% endif %}>{{ s.title }}</li>
+  {% endfor %}
+</ol>
+{% endif %}
+
+<form method="post" action="/setup" class="card{% if step.name == 'welcome' %} hero{% endif %}" novalidate>
+  {{ m.csrf_field() }}
+  <input type="hidden" name="step" value="{{ step.name }}">
+  {% for name, value in hidden.items() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+
+  {% if step.name == "welcome" %}
+    <h1>Reprenez la main sur vos données</h1>
+    <p class="lead">Des centaines d'entreprises, les <em>data brokers</em>, achètent et revendent vos coordonnées. La loi vous permet d'exiger qu'elles les effacent. Gomme écrit ces demandes pour vous, vérifie que les délais légaux sont respectés, et vous aide à relancer.</p>
+    <ul class="promise">
+      <li>{{ m.icon("lock") }}<div><strong>Vos données restent sur cet ordinateur.</strong><span class="muted">Pas de compte, pas de serveur, pas de suivi.</span></div></li>
+      <li>{{ m.icon("hand") }}<div><strong>Rien ne part sans vous.</strong><span class="muted">Chaque demande s'envoie depuis votre propre boîte mail, après relecture.</span></div></li>
+      <li>{{ m.icon("shield") }}<div><strong>Le strict nécessaire.</strong><span class="muted">Chaque broker ne reçoit que ce qu'il lui faut pour vous retrouver.</span></div></li>
+    </ul>
+    <p class="muted">Pour commencer, trois questions sur vous : deux minutes environ.</p>
+    <div class="actions"><button class="btn primary big" name="go" value="next">Commencer {{ m.icon("chevron") }}</button></div>
+
+  {% elif step.name == "identity" %}
+    <h1>Qui êtes-vous ?</h1>
+    <p class="muted">Les demandes sont faites en votre nom : Gomme agit uniquement pour vous.</p>
+    {{ m.identity_fields(values, errors) }}
+
+  {% elif step.name == "details" %}
+    <h1>Aider les brokers à vous retrouver</h1>
+    {{ m.details_fields(values, errors, needs, us_states) }}
+
+  {% elif step.name == "sending" %}
+    <h1>Comment envoyez-vous vos emails ?</h1>
+    <p class="muted">Gomme prépare chaque demande ; c'est vous qui l'envoyez, en un clic.</p>
+    {{ m.composer_fields(values, errors) }}
+
+  {% elif step.name == "review" %}
+    <h1>Tout est prêt</h1>
+    <p class="muted">Vérifiez vos informations. Vous pourrez les modifier à tout moment dans « Mon profil ».</p>
+    <dl class="facts">
+      <div><dt>Nom</dt><dd>{{ values.first_name }} {{ values.last_name }}</dd></div>
+      <div><dt>Email</dt><dd>{{ values.email }}</dd></div>
+      <div><dt>Pays</dt><dd>{{ countries.get(values.country, values.country) }}</dd></div>
+      <div><dt>Adresse postale</dt><dd>{% if values.street %}{{ values.street }}, {{ values.postal_code }} {{ values.city }}{% else %}<span class="muted">non renseignée</span>{% endif %}</dd></div>
+      <div><dt>Date de naissance</dt><dd>{{ values.birth_date or "non renseignée" }}</dd></div>
+      <div><dt>Téléphone</dt><dd>{{ values.phone or "non renseigné" }}</dd></div>
+      <div><dt>Envoi</dt><dd>{{ "Gmail, dans le navigateur" if values.composer == "gmail" else "Logiciel de messagerie" }}</dd></div>
+    </dl>
+    <p class="small muted" style="margin-top:16px">{{ m.icon("lock") }} Enregistré dans un fichier lisible par vous seul, sur cet ordinateur.</p>
+  {% endif %}
+
+  {% if step.name != "welcome" %}
+  {# The main button comes first, so that pressing Enter goes forward, not back. #}
+  <div class="wizard-nav">
+    {% if step.name == "review" %}
+      <button class="btn primary big" name="go" value="save">Enregistrer et commencer</button>
+    {% else %}
+      <button class="btn primary big" name="go" value="next">Continuer {{ m.icon("chevron") }}</button>
+    {% endif %}
+    <button class="btn ghost" name="go" value="back" formnovalidate>Retour</button>
+  </div>
+  {% endif %}
+</form>
+{% endblock %}

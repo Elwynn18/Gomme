@@ -1,24 +1,32 @@
 {% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
 {% block title %}{{ broker.name }}{% endblock %}
 {% block content %}
+<p class="small"><a href="/brokers">← Brokers</a></p>
 <h1>{{ broker.name }}</h1>
-<table>
-  <tr><th>Domaine</th><td>{{ broker.domain }}</td></tr>
-  <tr><th>Pays / région</th><td>{{ broker.country or "—" }} / {{ broker.region }}</td></tr>
-  <tr><th>Catégorie</th><td>{{ broker.category }}</td></tr>
-  {% for c in broker.channels %}
-  <tr><th>{{ {"email": "Email", "web_form": "Formulaire", "postal": "Courrier"}[c.type] }}</th>
-      <td>{% if c.type == "email" %}{{ c.address }}{% elif c.type == "web_form" %}<a href="{{ c.url }}" rel="noreferrer">{{ c.url }}</a>{% if c.steps %} ({{ c.steps|length }} étapes automatisées){% endif %}{% else %}{{ c.address }}{% endif %}</td></tr>
-  {% endfor %}
-  <tr><th>Champs envoyés</th><td>{{ broker.required_fields | join(", ") }}</td></tr>
-  <tr><th>Pièce d'identité</th><td>{{ "exigée : la caviarder" if broker.requires_id else "non" }}</td></tr>
-  <tr><th>Source</th><td>{{ broker.source }} — {% if broker.source_ref.startswith("https://") %}<a href="{{ broker.source_ref }}" rel="noreferrer">{{ broker.source_ref }}</a>{% else %}{{ broker.source_ref }}{% endif %}</td></tr>
-  <tr><th>Vérifiée le</th><td>{{ broker.last_verified or "—" }}</td></tr>
-</table>
-{% if broker.notes %}<pre class="muted">{{ broker.notes }}</pre>{% endif %}
+<p class="muted">{{ broker.domain }} · {{ region_labels[broker.region] }}{% if broker.country %} ({{ countries.get(broker.country, broker.country) }}){% endif %} · {{ category_labels[broker.category] }}</p>
+
+<div class="card">
+  <dl class="facts">
+    <div><dt>Informations envoyées</dt><dd>{% for f in broker.required_fields %}{{ field_labels[f] }}{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
+    <div><dt>Pièce d'identité</dt><dd>{{ "Exigée : à masquer en partie" if broker.requires_id else "Non demandée" }}</dd></div>
+    <div><dt>Fiche vérifiée le</dt><dd>{{ broker.last_verified | fr_date }}</dd></div>
+  </dl>
+  <h3 style="margin-top:20px">Moyens de contact</h3>
+  <ul>
+    {% for c in broker.channels %}
+    <li><strong>{{ channel_labels.get(c.type, c.type) | capitalize }}</strong> :
+      {% if c.type == "web_form" %}<a href="{{ c.url }}" rel="noreferrer noopener" target="_blank">{{ c.url }}</a>{% if c.steps %} <span class="muted">({{ c.steps | length }} étapes automatisées)</span>{% endif %}{% else %}{{ c.address }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% if broker.notes %}<details><summary>Notes</summary><p class="small" style="white-space:pre-wrap">{{ broker.notes }}</p></details>{% endif %}
+  <p class="small muted">Source : {{ broker.source }}{% if broker.source_ref %} — {% if broker.source_ref.startswith("https://") %}<a href="{{ broker.source_ref }}" rel="noreferrer noopener" target="_blank">{{ broker.source_ref }}</a>{% else %}{{ broker.source_ref }}{% endif %}{% endif %}</p>
+</div>
+
 {% if latest %}
-<p>Dernière demande : <a href="/requests/{{ latest.id }}">n° {{ latest.id }}</a> ({{ status_labels[latest.status] }}).</p>
+<div class="card soft"><p>Votre demande : {{ m.badge(latest.status) }} <a href="/requests/{{ latest.id }}">voir le suivi</a></p></div>
+{% else %}
+<form method="post" action="/brokers/{{ broker.slug }}/queue">{{ m.csrf_field() }}<button class="btn primary">Préparer une demande pour ce broker</button></form>
 {% endif %}
-<form method="post" action="/brokers/{{ broker.slug }}/queue"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Préparer une demande</button></form>
-{% if form and form.steps %}<p class="muted">Formulaire automatisé : à remplir avec <code>gomme submit --broker {{ broker.slug }}</code> (navigateur visible).</p>{% endif %}
+{% if form and form.steps %}<p class="small muted" style="margin-top:12px">Formulaire automatisé : <code>gomme submit --broker {{ broker.slug }}</code> le remplit dans un navigateur visible.</p>{% endif %}
 {% endblock %}

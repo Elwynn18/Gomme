@@ -1,0 +1,19 @@
+{% extends "base.html.j2" %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Modifier mon profil{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
+{% block content %}
+<p class="small"><a href="/profile">← Mon profil</a></p>
+<h1>Modifier mon profil</h1>
+{% if errors %}<div class="flash" role="alert" style="background:var(--alert-soft);border-color:var(--alert)">{{ m.icon("alert") }}<div>Quelques informations sont à corriger, signalées ci-dessous.</div></div>{% endif %}
+<form method="post" action="/profile" novalidate>
+  {{ m.csrf_field() }}
+  <section class="card"><h2 style="margin-top:0">Vous</h2>{{ m.identity_fields(values, errors) }}</section>
+  <section class="card"><h2 style="margin-top:0">Vous retrouver</h2>{{ m.details_fields(values, errors, needs, us_states) }}</section>
+  <section class="card"><h2 style="margin-top:0">Envoi des emails</h2>{{ m.composer_fields(values, errors) }}</section>
+  <div class="actions">
+    <button class="btn primary big">Enregistrer</button>
+    <a class="btn ghost" href="/profile">Annuler</a>
+  </div>
+</form>
+{% endblock %}

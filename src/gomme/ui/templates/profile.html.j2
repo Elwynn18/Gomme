@@ -1,8 +1,15 @@
 {% extends "base.html.j2" %}
-{% block title %}Profil{% endblock %}
+{% import "macros.html.j2" as m with context %}
+{% block title %}Mon profil{% endblock %}
+{% block main_class %} class="narrow"{% endblock %}
 {% block content %}
-<h1>Votre profil</h1>
-<table>{% for label, value in summary.items() %}<tr><th>{{ label }}</th><td>{{ value }}</td></tr>{% endfor %}
-<tr><th>envoi</th><td>{{ mode.value }}</td></tr></table>
-<p class="muted">Valeurs masquées. Pour modifier le profil : <code>gomme init --force</code>.</p>
+<h1>Mon profil</h1>
+<div class="card">
+  <dl class="facts">
+    {% for label, value in summary.items() %}<div><dt>{{ label | capitalize }}</dt><dd>{{ value }}</dd></div>{% endfor %}
+    <div><dt>Envoi des emails</dt><dd>{{ "Gmail, dans le navigateur" if email.composer.value == "gmail" else "Logiciel de messagerie" }}{% if email.mode.value == "smtp" %}<br><span class="small muted">+ envoi automatique en ligne de commande</span>{% endif %}</dd></div>
+  </dl>
+  <p class="small muted" style="margin-top:14px">{{ m.icon("lock") }} Valeurs masquées à l'affichage. Elles sont enregistrées sur cet ordinateur, dans un fichier lisible par vous seul.</p>
+  <div class="actions"><a class="btn primary" href="/profile/edit">Modifier mon profil</a></div>
+</div>
 {% endblock %}

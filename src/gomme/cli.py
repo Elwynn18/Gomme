@@ -901,15 +901,18 @@ def ui(
         from gomme.ui.app import UiContext, create_app, new_token
     except ImportError:
         raise _fail("l'interface web demande : uv sync --extra ui") from None
-    _config()  # fail early, with the usual message, when there is no configuration
+    # No configuration yet is fine: the interface opens on its first-run wizard.
     registry = _registry(brokers_dir)
     token = new_token()
     context = UiContext(
         load_config=load_config,
+        save_config=save_config,
+        config_exists=lambda: config_path().exists(),
         load_brokers=lambda: registry,
         open_tracker=_tracker,
         clock=now,
         outbox=data_dir() / "outbox",
+        letters_dir=data_dir() / "letters",
         token=token,
         port=port,
     )

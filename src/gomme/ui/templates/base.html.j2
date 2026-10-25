@@ -1,43 +1,32 @@
+{% import "macros.html.j2" as m with context -%}
 <!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Gomme{% endblock %} — Gomme</title>
+<meta name="color-scheme" content="light dark">
+<title>{% block title %}Accueil{% endblock %} · Gomme</title>
 <style>
-  :root { --fg: #1d1d1f; --muted: #6b6b70; --line: #dcdce0; --bg: #fafafa; --accent: #2a5bd7; --bad: #b42318; --ok: #157347; }
-  @media (prefers-color-scheme: dark) { :root { --fg: #ececf0; --muted: #a0a0a8; --line: #3a3a40; --bg: #18181b; --accent: #7aa2ff; --bad: #ff8a80; --ok: #6fdc9b; } }
-  body { font: 15px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); margin: 0; }
-  header { border-bottom: 1px solid var(--line); padding: 12px 20px; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; }
-  header strong { font-size: 18px; }
-  nav a { margin-right: 14px; }
-  main { padding: 20px; max-width: 1100px; }
-  a { color: var(--accent); }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-weight: 600; color: var(--muted); }
-  .muted { color: var(--muted); }
-  .late { color: var(--bad); font-weight: 600; }
-  .message { border: 1px solid var(--line); padding: 8px 12px; margin-bottom: 16px; }
-  .actions form { display: inline; }
-  button { font: inherit; padding: 4px 10px; cursor: pointer; }
-  pre { white-space: pre-wrap; }
-  .table-wrap { overflow-x: auto; }
+{% include "style.css" %}
 </style>
 </head>
 <body>
-<header>
-  <strong>Gomme</strong>
-  <nav>
-    <a href="/">Demandes</a>
-    <a href="/brokers">Brokers</a>
-    <a href="/send">Envoi</a>
-    <a href="/profile">Profil</a>
-  </nav>
-  <span class="muted">sur votre machine uniquement</span>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">{{ m.logo() }}Gomme</a>
+    {% block nav %}
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="/"{% if path == "/" %} aria-current="page"{% endif %}>Accueil</a>
+      <a href="/send"{% if path == "/send" %} aria-current="page"{% endif %}>À envoyer{% if to_send_count %} <span class="count">{{ to_send_count }}</span>{% endif %}</a>
+      <a href="/brokers"{% if path.startswith("/brokers") %} aria-current="page"{% endif %}>Brokers</a>
+      <a href="/profile"{% if path.startswith("/profile") %} aria-current="page"{% endif %}>Mon profil</a>
+    </nav>
+    {% endblock %}
+    <span class="local" title="Gomme tourne sur votre ordinateur ; vos données n'en sortent pas.">{{ m.icon("lock") }}Sur votre ordinateur uniquement</span>
+  </div>
 </header>
-<main>
-{% if message %}<p class="message">{{ message }}</p>{% endif %}
+<main{% block main_class %}{% endblock %}>
+{% if message %}<div class="flash" role="status">{{ m.icon("check") }}<div>{{ message }}</div></div>{% endif %}
 {% block content %}{% endblock %}
 </main>
 </body>
