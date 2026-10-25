@@ -1,7 +1,8 @@
 """Email channel: build the message, write it as .eml (manual mode), or send it by SMTP.
 
 Messages go straight from the user's machine to the user's own SMTP server: no third
-party in between. In manual mode Gomme never sees the mail password at all.
+party in between. In manual mode Gomme never sees the mail password at all: the user
+sends each request from their own mail client or webmail (Gmail compose link).
 """
 
 import contextlib
@@ -15,7 +16,7 @@ from email.message import EmailMessage
 from email.utils import format_datetime, formataddr, make_msgid
 from pathlib import Path
 from typing import Protocol
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from gomme.compose import RequestText
 from gomme.config import SmtpConfig, SmtpSecurity
@@ -55,6 +56,20 @@ def write_eml(message: EmailMessage, path: Path) -> Path:
 
 def mailto_link(text: RequestText, to: str) -> str:
     return f"mailto:{quote(to, safe='@')}?subject={quote(text.subject)}&body={quote(text.body)}"
+
+
+GMAIL_COMPOSE_URL = "https://mail.google.com/mail/"
+
+
+def gmail_compose_link(text: RequestText, to: str, account: str) -> str:
+    """Gmail's compose window, filled in. The user reviews and sends it from their own
+    mailbox; nothing goes to Google that sending the email would not send anyway.
+    `authuser` picks the right account when several are signed in."""
+    query = urlencode(
+        {"authuser": account, "view": "cm", "fs": "1", "to": to, "su": text.subject},
+        quote_via=quote,
+    )
+    return f"{GMAIL_COMPOSE_URL}?{query}&body={quote(text.body)}"
 
 
 class SmtpClient(Protocol):

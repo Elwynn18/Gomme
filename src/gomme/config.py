@@ -74,6 +74,13 @@ class EmailMode(StrEnum):
     MANUAL = "manual"  # Gomme writes .eml files the user sends from their mail client
 
 
+class Composer(StrEnum):
+    """Where the web interface opens a request for the user to send it (manual mode)."""
+
+    GMAIL = "gmail"  # Gmail's compose window, in the browser
+    MAIL_APP = "mail_app"  # the system mail application (mailto: link)
+
+
 class SmtpConfig(_StrictModel):
     host: NonBlankStr
     port: Annotated[StrictInt, Field(gt=0, lt=65536)] = 587
@@ -95,6 +102,7 @@ class SmtpConfig(_StrictModel):
 
 class EmailConfig(_StrictModel):
     mode: EmailMode = EmailMode.MANUAL
+    composer: Composer = Composer.MAIL_APP
     smtp: SmtpConfig | None = None
     # Spread sending over several days: providers limit daily volume (Gmail: about 500,
     # less for new accounts) and flag bursts. Eraser uses 250 per day with Gmail.

@@ -5,7 +5,7 @@ import stat
 from datetime import UTC, datetime
 from email.message import EmailMessage
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import parse_qs, unquote, urlsplit
 
 import pytest
 from fakes import FakeSmtp
@@ -14,6 +14,7 @@ from gomme.channels.email import (
     SendError,
     SmtpSender,
     build_message,
+    gmail_compose_link,
     mailto_link,
     write_eml,
 )
@@ -65,6 +66,20 @@ def test_mailto_link_carries_subject_and_body() -> None:
 
     assert link.startswith("mailto:dpo@example.org?subject=")
     assert unquote(link).endswith(TEXT.body)
+
+
+def test_gmail_link_opens_a_filled_compose_window() -> None:
+    link = gmail_compose_link(TEXT, "dpo@example.org", account="jeanne.exemple@example.org")
+
+    parts = urlsplit(link)
+    assert f"{parts.scheme}://{parts.netloc}{parts.path}" == "https://mail.google.com/mail/"
+    query = parse_qs(parts.query)
+    assert query["authuser"] == ["jeanne.exemple@example.org"]
+    assert query["view"] == ["cm"]
+    assert query["to"] == ["dpo@example.org"]
+    assert query["su"] == [TEXT.subject]
+    assert query["body"] == [TEXT.body]
+    assert "+" not in link  # spaces are %20: Gmail would show a "+" literally
 
 
 def test_starttls_session_sends_with_bcc_to_the_user(fake_smtp: FakeSmtp) -> None:
